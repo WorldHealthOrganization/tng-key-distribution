@@ -80,6 +80,10 @@
 
   <repositories>
     <repository>
+      <id>dgc-github</id>
+      <url>https://maven.pkg.github.com/${github.organization}/*</url>
+    </repository>
+    <repository>
       <id>who-github</id>
       <url>https://maven.pkg.github.com/${github.organization}/*</url>
     </repository>
