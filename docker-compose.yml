@@ -3,7 +3,7 @@ version: '3'
 services:
   postgres:
     image: library/postgres:9.6
-    container_name: dgc-verifier-service-postgres
+    container_name: tng-key-distribution-postgres
     ports:
       - 5432:5432
     environment:
@@ -17,7 +17,7 @@ services:
   backend:
     build: .
     image: eu-digital-green-certificates/dgc-verifier-service
-    container_name: dgc-verifier-service
+    container_name: tng-key-distribution
     ports:
       - 8080:8080
     volumes:

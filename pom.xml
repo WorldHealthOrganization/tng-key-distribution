@@ -4,13 +4,13 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>eu.europa.ec.dgc</groupId>
-  <artifactId>dgca-verifier-service</artifactId>
+  <groupId>tng.trustnetwork.keydistribution</groupId>
+  <artifactId>tng-key-distribution</artifactId>
   <version>latest</version>
   <packaging>jar</packaging>
 
-  <name>dgca-verifier-service</name>
-  <description>European Digital Green Certificate Verifier Service project.</description>
+  <name>tng-key-distribution</name>
+  <description>GDHCN Key Distribution Service project.</description>
   <organization>
     <name>T-Systems International GmbH</name>
   </organization>
@@ -47,18 +47,18 @@
     <plugin.os-maven.version>1.7.0</plugin.os-maven.version>
     <plugin.surefire.version>3.1.2</plugin.surefire.version>
     <!-- license -->
-    <license.projectName>EU Digital Green Certificate Verifier Service / dgca-verifier-service</license.projectName>
+    <license.projectName>Key Distribution Service / tng-key-distribution</license.projectName>
     <license.inceptionYear>2021</license.inceptionYear>
     <license.licenseName>apache_v2</license.licenseName>
     <!-- github -->
-    <github.organization>eu-digital-green-certificates</github.organization>
-    <github.project>dgca-verifier-service</github.project>
+    <github.organization>WorldHealthOrganization</github.organization>
+    <github.project>tng-key-distribution</github.project>
     <!-- sonar -->
-    <sonar.organization>eu-digital-green-certificates</sonar.organization>
+    <sonar.organization>WorldHealthOrganization</sonar.organization>
     <sonar.projectKey>${sonar.organization}_${project.artifactId}</sonar.projectKey>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.coverage.exclusions>
-      **/DgcVerifierServiceApplication.java,
+      **/KeyDistributionServiceApplication.java,
       **/model/*,
       **/mapper/*,
       **/entity/*,
@@ -67,15 +67,15 @@
     </sonar.coverage.exclusions>
   </properties>
 
-  <url>https://github.com/eu-digital-green-certificates/dgca-verifier-service</url>
+  <url>https://github.com/WorldHealthOrganization/tng-key-distribution</url>
   <ciManagement>
-    <url>https://github.com/eu-digital-green-certificates/dgca-verifier-service/actions</url>
+    <url>https://github.com/WorldHealthOrganization/tng-key-distribution/actions</url>
   </ciManagement>
   <issueManagement>
-    <url>https://github.com/eu-digital-green-certificates/dgca-verifier-service/issues</url>
+    <url>https://github.com/WorldHealthOrganization/tng-key-distribution/issues</url>
   </issueManagement>
   <scm>
-    <url>https://github.com/eu-digital-green-certificates/dgca-verifier-service</url>
+    <url>https://github.com/WorldHealthOrganization/tng-key-distribution</url>
   </scm>
 
   <repositories>
@@ -346,6 +346,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.2.0</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -381,7 +384,6 @@
         <configuration>
           <configLocation>./codestyle/checkstyle.xml</configLocation>
           <excludes>./target/**/*</excludes>
-          <encoding>UTF-8</encoding>
           <consoleOutput>true</consoleOutput>
           <failsOnError>true</failsOnError>
           <violationSeverity>warning</violationSeverity>
