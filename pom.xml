@@ -87,7 +87,7 @@
 
   <distributionManagement>
     <repository>
-      <id>dgc-github</id>
+      <id>who-github</id>
       <url>https://maven.pkg.github.com/${github.organization}/${github.project}</url>
     </repository>
   </distributionManagement>
