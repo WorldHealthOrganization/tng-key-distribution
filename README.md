@@ -1,10 +1,10 @@
 <h1 align="center">
-    EU Digital COVID Certificate Verifier Service
+    TNG Key Distribution Service
 </h1>
 
 <p align="center">
-    <a href="/../../commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/eu-digital-green-certificates/dgca-verifier-service?style=flat"></a>
-    <a href="/../../issues" title="Open Issues"><img src="https://img.shields.io/github/issues/eu-digital-green-certificates/dgca-verifier-service?style=flat"></a>
+    <a href="/../../commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/worldhealthorganization/tng-key-distribution?style=flat"></a>
+    <a href="/../../issues" title="Open Issues"><img src="https://img.shields.io/github/issues/worldhealthorganization/tng-key-distribution?style=flat"></a>
     <a href="./LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>
 </p>
 
@@ -30,17 +30,17 @@ The DGC Verifier Service is part of the national backends and caches the public 
 
 ### Prerequisites
 
-- [Open JDK 11](https://openjdk.java.net)
+- [Open JDK 17](https://openjdk.java.net)
 - [Maven](https://maven.apache.org)
 - [Docker](https://www.docker.com)
-- An installation of the [DGCG](https://github.com/eu-digital-green-certificates/dgc-gateway)
-- Keys to access the [DGCG](https://github.com/eu-digital-green-certificates/dgc-gateway) via the
-  [DGCG Connector](https://github.com/eu-digital-green-certificates/dgc-lib) of the [DGC-lib](https://github.com/eu-digital-green-certificates/dgc-lib)
+- An installation of the [TNG](https://github.com/worldhealthorganization/smart-trust-network-gateway)
+- Keys to access the [TNG](https://github.com/worldhealthorganization/smart-trust-network-gateway) via the
+  [DDCC Connector](https://github.com/worldhealthorganization/ddcc-gateway-lib) of the [DDCC-gateway-lib](https://github.com/worldhealthorganization/ddcc-gateway-lib)
 - Authenticate to [Github Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)
 
-#### Needed keys for accessing the DGC Gateway 
+#### Needed keys for accessing the Trust Network Gateway (TNG) 
 <p id="access-keys"></p>
-For accessing the DGC Gateway via the DGC Connector you need the following keys in place:
+For accessing the TNG via the DDCC Connector you need the following keys in place:
 
 - The public key of the used Gateway. The public key should be stored in the *tls_trust_store*. If you use one of the 
   provided gateways, you will get the public key as .pem from DIGIT. This .pem needs to be converted into pkcs12 format:
@@ -73,15 +73,15 @@ The following steps need to be followed
 
 ##### GitHub Docker Registry
 
-- Run `docker login docker.pkg.github.com/eu-digital-green-certificates` before running further docker commands.
+- Run `docker login docker.pkg.github.com/worldhealthorganization` before running further docker commands.
   - Use your GitHub username as username
   - Use the generated PAT as password
   
 
 
 For further information about the keys and certificates needed, please refer to the documentation of the 
-[DGCG](https://github.com/eu-digital-green-certificates/dgc-gateway) and the 
-[DGC-lib](https://github.com/eu-digital-green-certificates/dgc-lib)
+[TNG](https://github.com/worldhealthorganization/smart-trust-network-gateway) and the 
+[DDCC-gateway-lib](https://github.com/worldhealthorganization/ddcc-gateway-lib)
   
 ### Build
 
@@ -129,9 +129,9 @@ After all containers have started, you will be able to reach the service on your
 
 ## Documentation  
 
-[OpenAPI Spec](https://eu-digital-green-certificates.github.io/dgca-verifier-service/)
+[OpenAPI Spec](https://worldhealthorganization.github.io/tng-key-distribution/)
  
-[Service description](./docs/dgca-verifier-service.md)
+[Service description](./docs/tng-key-distribution.md)
 
 
 ## Support and feedback

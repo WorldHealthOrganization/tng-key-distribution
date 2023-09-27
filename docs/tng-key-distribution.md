@@ -1,8 +1,8 @@
-# European Digital Green Certificate Applications 
-## DGCA-Verifier-Service
+# World Health Organization Applications 
+## Key Distribution Service
 
 ### Intention
-The DGCA-Verifier-Service provides a template implementation for a member state backend service for a verifier application.
+The Key Distribution Service provides a template implementation for a member state backend service for a verifier application.
 
 ### General Overview
 A general overview of how the different member state backends work together, can be seen in the following picture.
@@ -10,17 +10,17 @@ A general overview of how the different member state backends work together, can
 ![DGCA overview](dgca_overview.png "DGCA Overview")
 
 As you can see in the picture, each member state backend provides the services for it's own applications (e.g. verifier, issuer and wallet).
-The member state synchronises the validation certificates over the [DGCGateway](https://github.com/eu-digital-green-certificates/dgc-gateway).
+The member state synchronises the validation certificates over the [TNG](https://github.com/worldhealthorganization/smart-trust-network-gateway).
 
 ### Purpose and functionality of the DGCA-Verifier-Service
-The verifier service basically caches the public keys that are distributed through the [DGCG](https://github.com/eu-digital-green-certificates/dgc-gateway) to the member states backends. 
+The verifier service basically caches the public keys that are distributed through the [TNG](https://github.com/worldhealthorganization/smart-trust-network-gateway) to the member states backends. 
 The service provides the Trust List of certificates for the verifier apps. The apps can get the list to update their key store via an api. 
-To have an actual trust list the verifier service periodically polls the [DGCG](https://github.com/eu-digital-green-certificates/dgc-gateway) 
+To have an actual trust list the verifier service periodically polls the [TNG](https://github.com/worldhealthorganization/smart-trust-network-gateway) 
 for the actual trust list. 
 
 In the git repository you will find two implementations of that download functionality: 
 
-- The first one ([SignerCertificateDownloadServiceImpl](../src/main/java/tng/trustnetwork/keydistribution/service/SignerCertificateDownloadServiceImpl.java)) implements the common access two the Digital Green Certificate Gateway via the [DGC-lib](https://github.com/eu-digital-green-certificates/dgc-lib). 
+- The first one ([SignerCertificateDownloadServiceImpl](../src/main/java/tng/trustnetwork/keydistribution/service/SignerCertificateDownloadServiceImpl.java)) implements the common access two the Digital Green Certificate Gateway via the [DDCC-gateway-lib](https://github.com/worldhealthorganization/ddcc-gateway-lib). 
   The DGC-lib provides a download connector, which handles the download and check of the certificates from the Digital Green Certificate Gateway. 
   
   
@@ -42,10 +42,10 @@ The api is described with [OpenApi v3](https://swagger.io). You can access the A
 Which results in the following URL on your local machine:
 http://localhost:8080/swagger
 
-From the latest release you can see the OpenApi doc online here: [OpenAPI Spec](https://eu-digital-green-certificates.github.io/dgca-verifier-service/)
+From the latest release you can see the OpenApi doc online here: [OpenAPI Spec](https://worldhealthorganization/tng-key-distribution/)
 
 It is also possible to download the OpenApi file in json format from the latest release:  
-* [openapi.json](https://github.com/eu-digital-green-certificates/dgca-verifier-service/releases/latest/download/openapi.json)
+* [openapi.json](https://github.com/worldhealthorganization/tng-key-distribution/releases/latest/download/openapi.json)
 
 You can than put the file in the openapi viewer of your choice. ([editor.swagger.io](https://editor.swagger.io) for example)
 
