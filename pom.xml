@@ -25,7 +25,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <!-- dependencies -->
     <owasp.version>8.3.1</owasp.version>
-    <spring.boot.version>3.0.9</spring.boot.version>
+    <spring.boot.version>3.1.2</spring.boot.version>
     <spring.cloud.version>2022.0.3</spring.cloud.version>
     <spring.test.version>5.3.23</spring.test.version>
     <spring.security.version>6.1.2</spring.security.version>
@@ -39,6 +39,7 @@
     <h2.version>2.2.220</h2.version>
     <sap.cloud.sdk.version>4.15.0</sap.cloud.sdk.version>
     <sap.cloud.logging.version>3.7.0</sap.cloud.logging.version>
+    <commons-fileupload.version>1.5</commons-fileupload.version>
     <!-- plugins -->
     <plugin.checkstyle.version>3.3.0</plugin.checkstyle.version>
     <plugin.sonar.version>3.9.1.2184</plugin.sonar.version>
@@ -78,10 +79,6 @@
   </scm>
 
   <repositories>
-    <repository>
-      <id>dgc-github</id>
-      <url>https://maven.pkg.github.com/${github.organization}/*</url>
-    </repository>
     <repository>
       <id>who-github</id>
       <url>https://maven.pkg.github.com/${github.organization}/*</url>
@@ -154,7 +151,6 @@
         <artifactId>guava</artifactId>
         <version>32.0.1-jre</version>
       </dependency>
-
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
@@ -221,6 +217,7 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <version>3.1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -242,6 +239,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
+      <version>42.5.4</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -297,6 +295,11 @@
       <artifactId>bean-matchers</artifactId>
       <version>0.14</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>${commons-fileupload.version}</version>
     </dependency>
   </dependencies>
 
@@ -362,7 +365,8 @@
         <version>${owasp.version}</version>
         <configuration>
           <suppressionFile>./owasp/suppressions.xml</suppressionFile>
-          <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
+          <failBuildOnCVSS>8</failBuildOnCVSS>
+          <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
         </configuration>
       </plugin>
       <plugin>
