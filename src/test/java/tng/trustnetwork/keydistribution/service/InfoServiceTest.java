@@ -20,22 +20,17 @@
 
 package tng.trustnetwork.keydistribution.service;
 
-import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import tng.trustnetwork.keydistribution.entity.InfoEntity;
 import tng.trustnetwork.keydistribution.repository.InfoRepository;
 import java.util.List;
 
 @SpringBootTest
 class InfoServiceTest {
-
-    @MockBean
-    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Autowired
     InfoRepository infoRepository;

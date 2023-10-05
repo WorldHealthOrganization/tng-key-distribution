@@ -20,9 +20,8 @@
 
 package tng.trustnetwork.keydistribution.testdata;
 
-import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
-import eu.europa.ec.dgc.utils.CertificateUtils;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
+import tng.trustnetwork.keydistribution.model.TrustListItem;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

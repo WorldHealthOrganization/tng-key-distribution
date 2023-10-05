@@ -1,6 +1,5 @@
 package tng.trustnetwork.keydistribution;
 
-import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
@@ -8,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 @Slf4j
 @SpringBootTest(
@@ -20,9 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
 class OpenApiTest {
-
-    @MockBean
-    private DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Test
     void apiDocs() {

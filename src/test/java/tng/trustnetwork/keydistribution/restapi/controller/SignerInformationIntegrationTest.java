@@ -20,7 +20,6 @@
 
 package tng.trustnetwork.keydistribution.restapi.controller;
 
-import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import tng.trustnetwork.keydistribution.testdata.SignerInformationTestHelper;
 import java.io.UnsupportedEncodingException;
@@ -31,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -47,9 +45,6 @@ class SignerInformationIntegrationTest {
 
     private static final String X_RESUME_TOKEN_HEADER = "X-RESUME-TOKEN";
     private static final String X_KID_HEADER = "X-KID";
-
-    @MockBean
-    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Autowired
     SignerInformationRepository signerInformationRepository;

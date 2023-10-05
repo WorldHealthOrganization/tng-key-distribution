@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-
 @Schema(
     name = "DeltaList",
     type = "object",
@@ -13,6 +12,7 @@ import lombok.Getter;
         + "\"deleted\":[\"3115adf=\"]\n"
         + "}"
 )
+
 @Getter
 @AllArgsConstructor
 public class CertificatesLookupResponseItemDto {

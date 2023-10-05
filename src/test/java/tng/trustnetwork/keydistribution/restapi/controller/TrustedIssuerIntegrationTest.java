@@ -29,10 +29,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
-import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import tng.trustnetwork.keydistribution.repository.TrustedIssuerRepository;
 import tng.trustnetwork.keydistribution.service.InfoService;
 import tng.trustnetwork.keydistribution.testdata.TrustedIssuerTestHelper;
@@ -40,9 +38,6 @@ import tng.trustnetwork.keydistribution.testdata.TrustedIssuerTestHelper;
 @SpringBootTest
 @AutoConfigureMockMvc
 class TrustedIssuerIntegrationTest {
-
-    @MockBean
-    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Autowired
     TrustedIssuerTestHelper trustedIssuerTestHelper;

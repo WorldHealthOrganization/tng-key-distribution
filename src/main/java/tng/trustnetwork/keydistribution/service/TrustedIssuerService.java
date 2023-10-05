@@ -20,7 +20,6 @@
 
 package tng.trustnetwork.keydistribution.service;
 
-import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +29,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 import tng.trustnetwork.keydistribution.mapper.IssuerMapper;
+import tng.trustnetwork.keydistribution.model.TrustedIssuer;
 import tng.trustnetwork.keydistribution.repository.TrustedIssuerRepository;
 
 @Slf4j
@@ -55,7 +55,6 @@ public class TrustedIssuerService {
         }
         return etag;
     }
-
 
     /**
      * Method to query the db for all trusted issuers.

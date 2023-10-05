@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Schema(
     name = "DeltaList",
     type = "object",
@@ -15,6 +14,7 @@ import lombok.NoArgsConstructor;
         + "\"deleted\":[\"3115adf=\"]\n"
         + "}"
 )
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
