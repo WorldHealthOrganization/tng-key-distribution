@@ -34,6 +34,7 @@ import lombok.Data;
         + "\"details\":\"...\"\n"
         + "}"
 )
+
 @Data
 @AllArgsConstructor
 public class ProblemReportDto {

@@ -23,12 +23,10 @@ package tng.trustnetwork.keydistribution.testdata;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
+import tng.trustnetwork.keydistribution.model.TrustedIssuer;
 import tng.trustnetwork.keydistribution.repository.TrustedIssuerRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -83,7 +81,6 @@ public class TrustedIssuerTestHelper {
         }
 
         return issuer;
-
     }
 
     public void insertTrustedIssuer(TrustedIssuerEntity issuer) {

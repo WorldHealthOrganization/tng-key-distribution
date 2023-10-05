@@ -11,15 +11,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(properties = {"dgc.context={\"testContext\": true}"})
 class ContextControllerWithEnvironmentIntegrationTest {
-
-    @MockBean
-    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Autowired
     private MockMvc mockMvc;

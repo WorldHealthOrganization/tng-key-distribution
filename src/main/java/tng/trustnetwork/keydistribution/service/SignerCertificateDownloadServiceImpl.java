@@ -20,8 +20,6 @@
 
 package tng.trustnetwork.keydistribution.service;
 
-import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
-import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +27,7 @@ import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import tng.trustnetwork.keydistribution.model.TrustListItem;
 
 /**
  * A service to download the signer certificates from the digital green certificate gateway.
@@ -39,7 +38,8 @@ import org.springframework.stereotype.Component;
 @Profile("!btp")
 public class SignerCertificateDownloadServiceImpl implements SignerCertificateDownloadService {
 
-    private final DgcGatewayDownloadConnector dgcGatewayConnector;
+    DummyDownloadConnector dummyDownloadConnector = new DummyDownloadConnector();
+
     private final SignerInformationService signerInformationService;
 
     @Override
@@ -49,11 +49,11 @@ public class SignerCertificateDownloadServiceImpl implements SignerCertificateDo
     public void downloadCertificates() {
         log.info("Certificates download started");
 
-        List<TrustListItem> trustedCerts = dgcGatewayConnector.getTrustedCertificates();
+        // TODO Dummy
+        List<TrustListItem> trustedCerts = dummyDownloadConnector.getTrustedCertificates();
 
         signerInformationService.updateTrustedCertsList(trustedCerts);
 
         log.info("Certificates download finished");
     }
-
 }

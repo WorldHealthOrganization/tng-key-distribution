@@ -20,7 +20,6 @@
 
 package tng.trustnetwork.keydistribution.service;
 
-import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
+import tng.trustnetwork.keydistribution.model.TrustListItem;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import tng.trustnetwork.keydistribution.restapi.dto.CertificatesLookupResponseItemDto;
 import tng.trustnetwork.keydistribution.restapi.dto.DeltaListDto;
@@ -42,7 +42,6 @@ import tng.trustnetwork.keydistribution.restapi.dto.DeltaListDto;
 public class SignerInformationService {
 
     private final SignerInformationRepository signerInformationRepository;
-
 
     /**
      * Method to query the db for a certificate with a resume token.
@@ -58,7 +57,6 @@ public class SignerInformationService {
         }
     }
 
-
     /**
      * Method to query the db for a list of kid from all certificates.
      *
@@ -71,7 +69,6 @@ public class SignerInformationService {
         return certsList.stream().map(SignerInformationEntity::getKid).collect(Collectors.toList());
 
     }
-
 
     /**
      * Method to synchronise the certificates in the db with the given List of trusted certificates.
@@ -86,14 +83,12 @@ public class SignerInformationService {
         List<String> alreadyStoredCerts = getListOfValidKids();
         List<String> certsToDelete = new ArrayList<>();
 
-
         if (trustedCertsKids.isEmpty()) {
             signerInformationRepository.setAllDeleted();
             return;
         } else {
             signerInformationRepository.setDeletedByKidsNotIn(trustedCertsKids);
         }
-
 
         List<SignerInformationEntity> signerInformationEntities = new ArrayList<>();
 
@@ -108,7 +103,6 @@ public class SignerInformationService {
         signerInformationRepository.deleteByKidIn(certsToDelete);
         signerInformationRepository.saveAllAndFlush(signerInformationEntities);
     }
-
 
     private SignerInformationEntity getSingerInformationEntity(TrustListItem cert) {
         SignerInformationEntity signerEntity = new SignerInformationEntity();
@@ -172,5 +166,4 @@ public class SignerInformationService {
     private CertificatesLookupResponseItemDto map(SignerInformationEntity entity) {
         return new CertificatesLookupResponseItemDto(entity.getKid(), entity.getRawData());
     }
-
 }

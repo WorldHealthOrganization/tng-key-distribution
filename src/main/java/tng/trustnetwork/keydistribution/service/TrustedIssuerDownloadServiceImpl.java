@@ -20,8 +20,8 @@
 
 package tng.trustnetwork.keydistribution.service;
 
-import eu.europa.ec.dgc.gateway.connector.DgcGatewayTrustedIssuerDownloadConnector;
-import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +30,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import tng.trustnetwork.keydistribution.model.TrustedIssuer;
 
 /**
  * A service to download the signer certificates from the digital green certificate gateway.
@@ -41,10 +42,8 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty("dgc.trustedIssuerDownloader.enabled")
 public class TrustedIssuerDownloadServiceImpl implements TrustedIssuerDownloadService {
 
-    private final DgcGatewayTrustedIssuerDownloadConnector downloadConnector;
-
+    DummyDownloadConnector dummyDownloadConnector = new DummyDownloadConnector();
     private final TrustedIssuerService trustedIssuerService;
-
 
     @Override
     @Scheduled(fixedDelayString = "${dgc.trustedIssuerDownloader.timeInterval}")
@@ -53,11 +52,10 @@ public class TrustedIssuerDownloadServiceImpl implements TrustedIssuerDownloadSe
     public void downloadTrustedIssuers() {
         log.info("Trusted issuers download started");
 
-        List<TrustedIssuer> trustedIssuers = downloadConnector.getTrustedIssuers();
+        List<TrustedIssuer> trustedIssuers = dummyDownloadConnector.getTrustedIssuers();
 
         trustedIssuerService.updateTrustedIssuersList(trustedIssuers);
 
         log.info("Trusted issuers download finished. {} issuers downloaded.", trustedIssuers.size());
     }
-
 }
