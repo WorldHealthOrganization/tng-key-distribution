@@ -17,3 +17,19 @@
  * limitations under the License.
  * ---license-end
  */
+
+package tng.trustnetwork.keydistribution.restapi.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Value;
+
+@Schema(
+        name = "kid",
+        type = "string",
+        example = "8xYtW2837fc="
+)
+
+@Value
+public class KidDto {
+    String kid;
+}

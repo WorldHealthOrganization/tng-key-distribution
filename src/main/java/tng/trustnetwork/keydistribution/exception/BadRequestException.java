@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2022 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,3 +17,25 @@
  * limitations under the License.
  * ---license-end
  */
+
+package tng.trustnetwork.keydistribution.exception;
+
+public class BadRequestException extends RuntimeException {
+    public int getStatus() {
+        return STATUS;
+    }
+
+    private static final int STATUS = 400;
+
+
+    /**
+     * Constructor for BadRequestException.
+     *
+     * @param message Massage of the exception.
+     */
+    public BadRequestException(String message) {
+
+        super(message);
+    }
+
+}

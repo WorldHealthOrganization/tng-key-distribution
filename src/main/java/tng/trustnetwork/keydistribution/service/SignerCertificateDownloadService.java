@@ -17,3 +17,13 @@
  * limitations under the License.
  * ---license-end
  */
+
+package tng.trustnetwork.keydistribution.service;
+
+public interface SignerCertificateDownloadService {
+
+    /**
+     * Synchronises the signer certificates with the gateway.
+     */
+    void downloadCertificates();
+}

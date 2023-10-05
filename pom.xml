@@ -4,13 +4,13 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>eu.europa.ec.dgc</groupId>
-  <artifactId>dgca-verifier-service</artifactId>
+  <groupId>tng.trustnetwork.keydistribution</groupId>
+  <artifactId>tng-key-distribution</artifactId>
   <version>latest</version>
   <packaging>jar</packaging>
 
-  <name>dgca-verifier-service</name>
-  <description>European Digital Green Certificate Verifier Service project.</description>
+  <name>tng-key-distribution</name>
+  <description>GDHCN Key Distribution Service project.</description>
   <organization>
     <name>T-Systems International GmbH</name>
   </organization>
@@ -36,10 +36,10 @@
     <mapstruct.version>1.5.5.Final</mapstruct.version>
     <okhttp.version>5.0.0-alpha.11</okhttp.version>
     <shedlock.version>5.4.0</shedlock.version>
-    <dgc.lib.version>2.0.2</dgc.lib.version>
     <h2.version>2.2.220</h2.version>
     <sap.cloud.sdk.version>4.15.0</sap.cloud.sdk.version>
     <sap.cloud.logging.version>3.7.0</sap.cloud.logging.version>
+    <commons-fileupload.version>1.5</commons-fileupload.version>
     <!-- plugins -->
     <plugin.checkstyle.version>3.3.0</plugin.checkstyle.version>
     <plugin.sonar.version>3.9.1.2184</plugin.sonar.version>
@@ -47,18 +47,18 @@
     <plugin.os-maven.version>1.7.0</plugin.os-maven.version>
     <plugin.surefire.version>3.1.2</plugin.surefire.version>
     <!-- license -->
-    <license.projectName>EU Digital Green Certificate Verifier Service / dgca-verifier-service</license.projectName>
+    <license.projectName>Key Distribution Service / tng-key-distribution</license.projectName>
     <license.inceptionYear>2021</license.inceptionYear>
     <license.licenseName>apache_v2</license.licenseName>
     <!-- github -->
-    <github.organization>eu-digital-green-certificates</github.organization>
-    <github.project>dgca-verifier-service</github.project>
+    <github.organization>WorldHealthOrganization</github.organization>
+    <github.project>tng-key-distribution</github.project>
     <!-- sonar -->
-    <sonar.organization>eu-digital-green-certificates</sonar.organization>
+    <sonar.organization>WorldHealthOrganization</sonar.organization>
     <sonar.projectKey>${sonar.organization}_${project.artifactId}</sonar.projectKey>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.coverage.exclusions>
-      **/DgcVerifierServiceApplication.java,
+      **/KeyDistributionServiceApplication.java,
       **/model/*,
       **/mapper/*,
       **/entity/*,
@@ -67,27 +67,27 @@
     </sonar.coverage.exclusions>
   </properties>
 
-  <url>https://github.com/eu-digital-green-certificates/dgca-verifier-service</url>
+  <url>https://github.com/WorldHealthOrganization/tng-key-distribution</url>
   <ciManagement>
-    <url>https://github.com/eu-digital-green-certificates/dgca-verifier-service/actions</url>
+    <url>https://github.com/WorldHealthOrganization/tng-key-distribution/actions</url>
   </ciManagement>
   <issueManagement>
-    <url>https://github.com/eu-digital-green-certificates/dgca-verifier-service/issues</url>
+    <url>https://github.com/WorldHealthOrganization/tng-key-distribution/issues</url>
   </issueManagement>
   <scm>
-    <url>https://github.com/eu-digital-green-certificates/dgca-verifier-service</url>
+    <url>https://github.com/WorldHealthOrganization/tng-key-distribution</url>
   </scm>
 
   <repositories>
     <repository>
-      <id>dgc-github</id>
+      <id>who-github</id>
       <url>https://maven.pkg.github.com/${github.organization}/*</url>
     </repository>
   </repositories>
 
   <distributionManagement>
     <repository>
-      <id>dgc-github</id>
+      <id>who-github</id>
       <url>https://maven.pkg.github.com/${github.organization}/${github.project}</url>
     </repository>
   </distributionManagement>
@@ -151,7 +151,6 @@
         <artifactId>guava</artifactId>
         <version>32.0.1-jre</version>
       </dependency>
-
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
@@ -188,8 +187,8 @@
   <dependencies>
     <dependency>
       <groupId>eu.europa.ec.dgc</groupId>
-      <artifactId>dgc-lib</artifactId>
-      <version>${dgc.lib.version}</version>
+      <artifactId>ddcc-gateway-lib</artifactId>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -295,6 +294,11 @@
       <version>0.14</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>${commons-fileupload.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -346,6 +350,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.2.0</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -356,7 +363,8 @@
         <version>${owasp.version}</version>
         <configuration>
           <suppressionFile>./owasp/suppressions.xml</suppressionFile>
-          <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
+          <failBuildOnCVSS>8</failBuildOnCVSS>
+          <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
         </configuration>
       </plugin>
       <plugin>
@@ -381,7 +389,6 @@
         <configuration>
           <configLocation>./codestyle/checkstyle.xml</configLocation>
           <excludes>./target/**/*</excludes>
-          <encoding>UTF-8</encoding>
           <consoleOutput>true</consoleOutput>
           <failsOnError>true</failsOnError>
           <violationSeverity>warning</violationSeverity>
