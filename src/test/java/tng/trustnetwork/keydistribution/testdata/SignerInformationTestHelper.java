@@ -20,7 +20,6 @@
 
 package tng.trustnetwork.keydistribution.testdata;
 
-import eu.europa.ec.dgc.utils.CertificateUtils;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
 import tng.trustnetwork.keydistribution.model.TrustListItem;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
