@@ -47,16 +47,16 @@ jobs:
           APP_PACKAGES_USERNAME: ${{ github.actor }}
           APP_PACKAGES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       - name: docker
-        run: |-
-          echo "docker image name: ${APP_PACKAGES_URL}:${APP_VERSION}"
-          echo "${APP_PACKAGES_PASSWORD}" | docker login "${APP_PACKAGES_URL}" \
-          --username "${APP_PACKAGES_USERNAME}" \
-          --password-stdin
-          docker build . \
-          --file ./Dockerfile \
-          --tag "${APP_PACKAGES_URL}:${APP_VERSION}"
-          docker push "${APP_PACKAGES_URL}:${APP_VERSION}"
+        run: >-
+          echo "${APP_PACKAGES_PASSWORD}" |
+          docker login "${APP_PACKAGES_URL}"
+          --username "${APP_PACKAGES_USERNAME}"
+          --password-stdin;
+          docker build .
+          --file ./Dockerfile
+          --tag "${APP_PACKAGES_URL}:${APP_VERSION}";
+          docker push "${APP_PACKAGES_URL}:${APP_VERSION}";
         env:
-          APP_PACKAGES_URL: docker.pkg.github.com/${{ github.repository }}/tng-key-distribution
+          APP_PACKAGES_URL: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
           APP_PACKAGES_USERNAME: ${{ github.actor }}
           APP_PACKAGES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
