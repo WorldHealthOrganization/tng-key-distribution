@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kds.fullname" . }}
+  labels:
+    {{- include "kds.labels" . | nindent 4 }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.tngKds.replicas | int }}
+  selector:
+    matchLabels:
+      {{- include "kds.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kds.templateLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.tngKds.image }}:{{ .Values.tngKds.tag }}
+          imagePullPolicy: {{ .Values.tngKds.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: SERVER_PORT
+              value: {{ .Values.tngKds.serverPort | quote }}
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ .Values.tngKds.springProfiles | quote }}
+            - name: SPRING_DATASOURCE_URL
+              value: {{ .Values.tngKds.springDatasourceUrl | quote }}
+            - name: SPRING_DATASOURCE_DRIVERCLASSNAME
+              value: {{ .Values.tngKds.springDatasourceDriverClassName | quote }}
+            - name: SPRING_DATASOURCE_JNDI_NAME
+              value: {{ .Values.tngKds.springDatasourceJndiName | quote }}
+            - name: SPRING_JPA_DATABASEPLATFORM
+              value: {{ .Values.tngKds.springJpaDatabasePlatform | quote }}
+            - name: SPRING_DATASOURCE_USERNAME
+              value: {{ .Values.tngKds.springDatasourceUsername | quote }}
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: {{ .Values.tngKds.springDatasourcePassword | quote }}

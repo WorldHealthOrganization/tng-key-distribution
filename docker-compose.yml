@@ -16,7 +16,7 @@ services:
 
   tng-kds:
     build: .
-    image: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution:latest
+    image: kds:0.0.1
     volumes:
       - ./certs:/ec/prod/app/san/dgc
       - ./logs:/logs

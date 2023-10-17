@@ -43,14 +43,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Selector labels
-*/}}
-{{- define "kds.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kds.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
 Create the name of the service account to use
 */}}
 {{- define "kds.serviceAccountName" -}}
@@ -60,3 +52,17 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Template labels
+*/}}
+{{- define "kds.templateLabels" -}}
+  app: {{ template "kds.fullname" . }}
+{{- end -}}
+
+{{/*
+Selector labels
+*/}}
+{{- define "kds.selectorLabels" -}}
+  app: {{ template "kds.fullname" . }}
+{{- end -}}

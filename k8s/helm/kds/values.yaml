@@ -4,15 +4,11 @@
 
 replicaCount: 1
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+namespace: default
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -80,3 +76,28 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+postgres:
+  image: postgres
+  tag: latest
+  password: admin
+  user: postgres
+  database: postgres
+  replicas: 2
+  pullPolicy: IfNotPresent
+  port: 5432
+
+tngKds:
+  image: localhost:5000/kds
+  tag: latest
+  pullPolicy: IfNotPresent
+  serverPort: 8080
+  replicas: 2
+  springProfiles: "log2console,local"
+  springDatasourceUrl: "jdbc:postgresql://postgres-service:5432/postgres"
+  springDatasourceDriverClassName: "org.postgresql.Driver"
+  springDatasourceJndiName: "false"
+  springJpaDatabasePlatform: "org.hibernate.dialect.PostgreSQLDialect"
+  springDatasourceUsername: postgres
+  springDatasourcePassword: admin
+
