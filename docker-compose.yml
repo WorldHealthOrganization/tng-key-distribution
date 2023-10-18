@@ -2,41 +2,35 @@ version: '3'
 
 services:
   postgres:
-    image: library/postgres:9.6
-    container_name: tng-key-distribution-postgres
+    image: postgres
     ports:
       - 5432:5432
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      - POSTGRES_PASSWORD=admin  # do not use this for production deployments
+      - PGPASSWORD=admin  # do not use this for production deployments
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
     restart: unless-stopped
     networks:
       persistence:
 
-  backend:
+  tng-kds:
     build: .
-    image: eu-digital-green-certificates/dgc-verifier-service
-    container_name: tng-key-distribution
-    ports:
-      - 8080:8080
+    image: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution:latest
     volumes:
       - ./certs:/ec/prod/app/san/dgc
+      - ./logs:/logs
+    ports:
+      - 8080:8080
     environment:
       - SERVER_PORT=8080
       - SPRING_PROFILES_ACTIVE=cloud
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://dgc-verifier-service-postgres:5432/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver
+      - SPRING_DATASOURCE_JNDI_NAME=false
+      - SPRING_JPA_DATABASEPLATFORM=org.hibernate.dialect.PostgreSQLDialect
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
-      - DGC_GATEWAY_CONNECTOR_ENDPOINT=https://dgc-gateway.example.com
-      - DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH=file:/ec/prod/app/san/dgc/tls_trust_store.p12
-      - DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD=dgcg-p4ssw0rd
-      - DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_ALIAS=1
-      - DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH=file:/ec/prod/app/san/dgc/tls_key_store.p12
-      - DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD=dgcg-p4ssw0rd
-      - DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS=ta
-      - DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH=file:/ec/prod/app/san/dgc/trust_anchor.jks
-      - DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD=dgcg-p4ssw0rd
+      - SPRING_DATASOURCE_PASSWORD=admin # do not use this for production deployments
     depends_on:
       - postgres
     networks:
@@ -44,5 +38,5 @@ services:
       persistence:
 
 networks:
-  backend:
   persistence:
+  backend:

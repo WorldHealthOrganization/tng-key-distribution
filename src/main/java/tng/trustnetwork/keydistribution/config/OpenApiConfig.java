@@ -25,8 +25,8 @@ public class OpenApiConfig {
     public OpenAPI openApi() {
         return new OpenAPI()
             .info(new Info()
-                .title("Digital Green Certificate Verifier Service")
-                .description("The API defines how to exchange verification information for digital green certificates.")
+                .title("TNG Key Distribution Service")
+                .description("The API defines the key distribution service for digital green certificates.")
                 .version(buildProperties.getVersion())
                 .license(new License()
                     .name("Apache 2.0")
