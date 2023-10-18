@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: localhost:5000/kds
+  repository: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution 
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
