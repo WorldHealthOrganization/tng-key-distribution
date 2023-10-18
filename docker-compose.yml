@@ -16,7 +16,7 @@ services:
 
   tng-kds:
     build: .
-    image: kds:0.0.1
+    image: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution:latest
     volumes:
       - ./certs:/ec/prod/app/san/dgc
       - ./logs:/logs
@@ -24,7 +24,7 @@ services:
       - 8080:8080
     environment:
       - SERVER_PORT=8080
-      - SPRING_PROFILES_ACTIVE=log2console,local
+      - SPRING_PROFILES_ACTIVE=cloud
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
       - SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver
       - SPRING_DATASOURCE_JNDI_NAME=false

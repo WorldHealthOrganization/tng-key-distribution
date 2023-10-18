@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tngkds-backend.fullname" . }}
+  labels:
+    {{- include "tngkds-backend.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tngkds-backend.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "tngkds-backend.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+          {{ range .Values.service.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .port }}
+              protocol: {{ .protocol }}
+          {{ end }}
+          env:
+            - name: SERVER_PORT
+              value: "{{ .Values.server.port }}"
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ .Values.spring.profile }}
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}.{{ .Release.Namespace }}.{{ .Values.psql.cluster }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
+            - name: SPRING_DATASOURCE_DRIVERCLASSNAME
+              value: "org.postgresql.Driver"
+            - name: SPRING_DATASOURCE_JNDI_NAME
+              value: "false"
+            - name: SPRING_JPA_DATABASEPLATFORM
+              value: "org.hibernate.dialect.PostgreSQLDialect"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "tngkds-backend.fullname" . }}-secret
+                  key: pgUser
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "tngkds-backend.fullname" . }}-secret
+                  key: pgPassword
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

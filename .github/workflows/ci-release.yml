@@ -49,7 +49,7 @@ jobs:
           docker push "${APP_PACKAGES_URL}:latest"
           docker push "${APP_PACKAGES_URL}:${APP_VERSION}"
         env:
-          APP_PACKAGES_URL: docker.pkg.github.com/${{ github.repository }}/dgca-verifier-service
+          APP_PACKAGES_URL: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
           APP_PACKAGES_USERNAME: ${{ github.actor }}
           APP_PACKAGES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       - name: assets
@@ -82,8 +82,8 @@ jobs:
           cf target -o ${CF_ORG} -s ${CF_SPACE}
           cf push ${APP_NAME} --docker-image ${APP_IMAGE}:${APP_VERSION} --docker-username ${CF_DOCKER_USERNAME}
         env:
-          APP_NAME: dgca-verifier-service-eu-test
-          APP_IMAGE: docker.pkg.github.com/${{ github.repository }}/dgca-verifier-service
+          APP_NAME: tng-key-distribution-test
+          APP_IMAGE: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
           CF_API: ${{ secrets.CF_API }}
           CF_ORG: ${{ secrets.CF_ORG }}
           CF_SPACE: ${{ secrets.CF_SPACE }}
