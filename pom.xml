@@ -306,7 +306,7 @@
       <artifactId>shedlock-spring</artifactId>
       <version>${shedlock.version}</version>
     </dependency>
-    <dependency>
+    <!-- dependency>
       <groupId>io.pivotal.cfenv</groupId>
       <artifactId>java-cfenv-boot</artifactId>
       <version>${pivotal.cfenv.version}</version>
@@ -316,7 +316,7 @@
           <artifactId>spring-boot</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
+    </!dependency>
     <dependency>
       <groupId>com.sap.cloud.sdk.cloudplatform</groupId>
       <artifactId>scp-cf</artifactId>
@@ -326,8 +326,15 @@
       <groupId>com.sap.hcp.cf.logging</groupId>
       <artifactId>cf-java-logging-support-logback</artifactId>
       <version>${sap.cloud.logging.version}</version>
-    </dependency>
+    </dependency -->
     <!-- https://mvnrepository.com/artifact/com.google.code.bean-matchers/bean-matchers -->
+    <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk18on</artifactId>
+      <version>1.76</version>
+  </dependency>
+
     <dependency>
       <groupId>com.google.code.bean-matchers</groupId>
       <artifactId>bean-matchers</artifactId>
