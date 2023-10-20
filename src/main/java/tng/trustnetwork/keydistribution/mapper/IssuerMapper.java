@@ -20,12 +20,12 @@
 
 package tng.trustnetwork.keydistribution.mapper;
 
+import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import tng.trustnetwork.keydistribution.dto.TrustedIssuerDto;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
-import tng.trustnetwork.keydistribution.model.TrustedIssuer;
 
 @Mapper(componentModel = "spring")
 public interface IssuerMapper {

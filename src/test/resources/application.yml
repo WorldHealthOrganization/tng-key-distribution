@@ -32,9 +32,31 @@ dgc:
     enabled: false
     timeInterval: 60000
     lockLimit: 1800000
+#  gateway:
+#    connector:
+#      enabled: false
+  certificatesDownloader:
+    timeInterval: 1800000
+    lockLimit: 3600000
   gateway:
     connector:
-      enabled: false
+      enabled: true
+      endpoint: https://tng-dev.who.int
+      proxy:
+        enabled: false
+      max-cache-age: 300
+      tls-trust-store: #CA of TNG Gateway of TLS certificate
+        alias: tng-tls-server-certificate
+        password: dgcg-p4ssw0rd
+        path: certs/tng_tls_server_truststore.p12
+      tls-key-store: # client cert key pair of participant
+        alias: clientcredentials
+        password: dgcg-p4ssw0rd
+        path: certs/tls_key_store.p12
+      trust-anchor: # TA pem file of TNG that was used for signing
+        alias: trustanchor
+        password: dgcg-p4ssw0rd
+        path: certs/trustanchor_store.jks
 springdoc:
   api-docs:
     path: /api/docs

@@ -1,7 +1,8 @@
 package tng.trustnetwork.keydistribution.service;
 
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
+import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
-import tng.trustnetwork.keydistribution.model.TrustListItem;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import tng.trustnetwork.keydistribution.testdata.SignerInformationTestHelper;
 import java.util.ArrayList;
@@ -26,12 +27,12 @@ class SignerCertificateDownloadServiceImplTest {
     SignerInformationTestHelper signerInformationTestHelper;
 
     @MockBean
-    DummyDownloadConnector dummyDownloadConnector;
+    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Test
     void downloadEmptyCertificatesList() {
         ArrayList<TrustListItem> trustList = new ArrayList<>();
-        Mockito.when(dummyDownloadConnector.getTrustedCertificates()).thenReturn(trustList);
+        Mockito.when(dgcGatewayDownloadConnector.getTrustedCertificates()).thenReturn(trustList);
 
         signerCertificateDownloadService.downloadCertificates();
 

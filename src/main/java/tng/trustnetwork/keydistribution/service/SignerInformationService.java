@@ -20,6 +20,7 @@
 
 package tng.trustnetwork.keydistribution.service;
 
+import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
-import tng.trustnetwork.keydistribution.model.TrustListItem;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import tng.trustnetwork.keydistribution.restapi.dto.CertificatesLookupResponseItemDto;
 import tng.trustnetwork.keydistribution.restapi.dto.DeltaListDto;

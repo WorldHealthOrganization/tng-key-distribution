@@ -2,6 +2,9 @@ package tng.trustnetwork.keydistribution.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
+import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -10,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
-import tng.trustnetwork.keydistribution.model.TrustedIssuer;
 import tng.trustnetwork.keydistribution.repository.TrustedIssuerRepository;
 import tng.trustnetwork.keydistribution.testdata.TrustedIssuerTestHelper;
 
@@ -28,12 +30,12 @@ class TrustedIssuerDownloadServiceImplTest {
     TrustedIssuerTestHelper trustedIssuerTestHelper;
 
     @MockBean
-    DummyDownloadConnector dummyDownloadConnector;
+    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Test
     void downloadEmptyIssuerList() {
         ArrayList<TrustedIssuer> trustList = new ArrayList<>();
-        Mockito.when(dummyDownloadConnector.getTrustedIssuers()).thenReturn(trustList);
+        Mockito.when(dgcGatewayDownloadConnector.getTrustedIssuers()).thenReturn(trustList);
 
         trustedIssuerDownloadService.downloadTrustedIssuers();
 

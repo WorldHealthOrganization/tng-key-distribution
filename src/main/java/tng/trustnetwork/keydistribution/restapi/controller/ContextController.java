@@ -80,7 +80,7 @@ public class ContextController {
             String context = null;
 
             if (properties.getContext().isEmpty()) {
-                Resource resource = new ClassPathResource("/static/context.json");
+                Resource resource = new ClassPathResource("/static/context.json");//TODO: cleanup EU context information
                 context = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
             } else {
                 context = properties.getContext();

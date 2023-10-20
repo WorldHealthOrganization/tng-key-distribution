@@ -51,7 +51,23 @@ dgc:
     enabled: true
     timeInterval: 1800000
     lockLimit: 3600000
+#  gateway:
+#    connector:
+#      enabled: true
+#      endpoint: ${DGC_GATEWAY_CONNECTOR_ENDPOINT}
+#      proxy:
+#        enabled: false
+#      max-cache-age: 300
+#      tls-trust-store: #CA of TNG Gateway of TLS certificate
+#        password: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD}
+#        path: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH}
+#      tls-key-store:  # client cert key pair of participant
+#        password: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD}
+#        path: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH}
+#      trust-anchor: # TA pem file of TNG that was used for signing
+#        alias: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS}
+#        password: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD}
+#        path: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH}
   gateway:
     connector:
       enabled: false
-

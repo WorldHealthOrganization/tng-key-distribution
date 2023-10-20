@@ -21,6 +21,7 @@
 package tng.trustnetwork.keydistribution.service;
 
 import com.google.code.beanmatchers.BeanMatchers;
+import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import tng.trustnetwork.keydistribution.dto.TrustedIssuerDto;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
-import tng.trustnetwork.keydistribution.model.TrustListItem;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import tng.trustnetwork.keydistribution.restapi.dto.DeltaListDto;
 import tng.trustnetwork.keydistribution.testdata.SignerInformationTestHelper;
