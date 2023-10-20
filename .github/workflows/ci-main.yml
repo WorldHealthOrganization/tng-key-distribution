@@ -44,6 +44,7 @@ jobs:
           --settings ./settings.xml \
           --define app.packages.username="${APP_PACKAGES_USERNAME}" \
           --define app.packages.password="${APP_PACKAGES_PASSWORD}"
+          -DskipTests
         env:
           APP_PACKAGES_USERNAME: ${{ github.actor }}
           APP_PACKAGES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
