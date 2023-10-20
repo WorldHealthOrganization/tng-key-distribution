@@ -2,7 +2,7 @@ FROM eclipse-temurin:17-jre
 
 WORKDIR /
 
-COPY [ "./target/tng-key-distribution-latest.jar", "/tng-key-distribution.jar" ]
+COPY [ "./target/*.jar", "/tng-key-distribution.jar" ]
 
 ENV JAVA_OPTS="$JAVA_OPTS -Xms256M -Xmx1G"
 
