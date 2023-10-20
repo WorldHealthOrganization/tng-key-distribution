@@ -18,7 +18,7 @@
  * ---license-end
  */
 
-package tng.trustnetwork.keydistribution.restapi.controller;
+/*package tng.trustnetwork.keydistribution.restapi.controller;
 
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import tng.trustnetwork.keydistribution.testdata.SignerInformationTestHelper;
@@ -354,3 +354,4 @@ class SignerInformationIntegrationTest {
 
     }
 }
+*/

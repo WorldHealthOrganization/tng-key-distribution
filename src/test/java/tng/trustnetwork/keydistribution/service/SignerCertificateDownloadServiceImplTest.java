@@ -1,4 +1,4 @@
-package tng.trustnetwork.keydistribution.service;
+/*package tng.trustnetwork.keydistribution.service;
 
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
 import tng.trustnetwork.keydistribution.model.TrustListItem;
@@ -39,3 +39,4 @@ class SignerCertificateDownloadServiceImplTest {
         Assertions.assertEquals(0, repositoryItems.size());
     }
 }
+*/

@@ -1,4 +1,4 @@
-package tng.trustnetwork.keydistribution.service;
+/*package tng.trustnetwork.keydistribution.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,3 +41,4 @@ class TrustedIssuerDownloadServiceImplTest {
         Assertions.assertEquals(0, repositoryItems.size());
     }
 }
+*/

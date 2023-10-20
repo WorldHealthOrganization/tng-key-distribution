@@ -18,7 +18,7 @@
  * ---license-end
  */
 
-package tng.trustnetwork.keydistribution.testdata;
+/*package tng.trustnetwork.keydistribution.testdata;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -138,3 +138,4 @@ public class TrustedIssuerTestHelper {
         return list;
     }
 }
+*/

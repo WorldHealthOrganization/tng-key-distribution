@@ -18,7 +18,7 @@
  * ---license-end
  */
 
-package tng.trustnetwork.keydistribution.testdata;
+/*package tng.trustnetwork.keydistribution.testdata;
 
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
 import tng.trustnetwork.keydistribution.model.TrustListItem;
@@ -165,3 +165,4 @@ public class SignerInformationTestHelper {
         return item;
     }
 }
+*/

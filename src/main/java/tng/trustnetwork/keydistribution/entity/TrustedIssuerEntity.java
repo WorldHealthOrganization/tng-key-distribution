@@ -53,38 +53,38 @@ public class TrustedIssuerEntity {
     /**
      * The revoked hash.
      */
-    @Column(name = "etag", nullable = false, length = 36)
+    @Column(name = "etag", length = 36)
     private String etag;
 
     /**
      * Timestamp of the Record.
      */
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private ZonedDateTime createdAt = ZonedDateTime.now();
 
     /**
      * ISO 3166 Alpha-2 Country Code
      * (plus code "EU" for administrative European Union entries).
      */
-    @Column(name = "country", nullable = false, length = 2)
+    @Column(name = "country", length = 2)
     private String country;
 
     /**
      * URL of the service, can be HTTP(s) or DID URL.
      */
-    @Column(name = "url", nullable = false, length = 1024)
+    @Column(name = "url", length = 1024)
     private String url;
 
     /**
      * Name of the service.
      */
-    @Column(name = "name", nullable = false, length = 512)
+    @Column(name = "name", length = 512)
     private String name;
 
     /**
      * Type of the URL (HTTP, DID).
      */
-    @Column(name = "url_type", nullable = false, length = 25)
+    @Column(name = "url_type", length = 25)
     @Enumerated(EnumType.STRING)
     private UrlType urlType;
 
@@ -109,7 +109,7 @@ public class TrustedIssuerEntity {
     /**
      * Signature of the TrustAnchor.
      */
-    @Column(name = "signature", nullable = false, length = 6000)
+    @Column(name = "signature", length = 6000)
     String signature;
 
     public enum UrlType {

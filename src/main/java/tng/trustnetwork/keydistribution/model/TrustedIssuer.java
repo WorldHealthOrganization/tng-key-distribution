@@ -17,7 +17,12 @@ public class TrustedIssuer {
 
     public TrustedIssuer() {
     }
-
+   
+    public TrustedIssuer(String uuid, String country) {
+        this.uuid = uuid;
+        this.country = country;
+    }
+    
     public String getUrl() {
         return this.url;
     }

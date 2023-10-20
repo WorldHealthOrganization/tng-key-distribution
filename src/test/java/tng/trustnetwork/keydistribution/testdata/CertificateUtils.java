@@ -18,7 +18,7 @@
  * ---license-end
  */
 
-package tng.trustnetwork.keydistribution.testdata;
+/*package tng.trustnetwork.keydistribution.testdata;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -106,3 +106,4 @@ public class CertificateUtils {
         return MessageDigest.getInstance("SHA-256").digest(data);
     }
 }
+*/

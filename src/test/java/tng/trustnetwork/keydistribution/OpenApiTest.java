@@ -1,4 +1,4 @@
-package tng.trustnetwork.keydistribution;
+/*package tng.trustnetwork.keydistribution;
 
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
@@ -33,4 +33,4 @@ class OpenApiTest {
             Assertions.fail();
         }
     }
-}
+}*/

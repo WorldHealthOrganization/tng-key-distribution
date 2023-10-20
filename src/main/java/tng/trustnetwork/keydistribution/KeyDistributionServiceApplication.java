@@ -24,12 +24,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import tng.trustnetwork.keydistribution.config.KdsConfigProperties;
 
 /**
  * The Application class.
  */
 @SpringBootApplication
+@EnableScheduling
 @EnableConfigurationProperties(KdsConfigProperties.class)
 public class KeyDistributionServiceApplication extends SpringBootServletInitializer {
 

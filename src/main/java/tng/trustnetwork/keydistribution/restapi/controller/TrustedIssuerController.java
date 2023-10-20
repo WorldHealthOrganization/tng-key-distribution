@@ -31,6 +31,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,14 +48,14 @@ import tng.trustnetwork.keydistribution.service.TrustedIssuerService;
 @RequestMapping("/")
 @Slf4j
 @RequiredArgsConstructor
+@EnableFeignClients
 public class TrustedIssuerController {
 
 
     private final TrustedIssuerService trustedIssuerService;
 
     private final IssuerMapper issuerMapper;
-
-
+        
     /**
      * Http Method for getting trusted issuers.
      */
@@ -97,5 +98,4 @@ public class TrustedIssuerController {
         return ResponseEntity.ok().eTag(currentEtag).body(issuerMapper.trustedIssuerEntityToTrustedIssuerDto(
             trustedIssuerService.getAllIssuers(currentEtag)));
     }
-
 }

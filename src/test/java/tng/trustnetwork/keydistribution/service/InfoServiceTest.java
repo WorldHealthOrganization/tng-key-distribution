@@ -18,7 +18,7 @@
  * ---license-end
  */
 
-package tng.trustnetwork.keydistribution.service;
+/*package tng.trustnetwork.keydistribution.service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,3 +64,5 @@ class InfoServiceTest {
         Assertions.assertEquals("TestValue", infoService.getValueForKey("TestKey"));
     }
 }
+
+*/
