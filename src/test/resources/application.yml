@@ -32,15 +32,12 @@ dgc:
     enabled: false
     timeInterval: 60000
     lockLimit: 1800000
-#  gateway:
-#    connector:
-#      enabled: false
   certificatesDownloader:
     timeInterval: 1800000
     lockLimit: 3600000
   gateway:
     connector:
-      enabled: true
+      enabled: false
       endpoint: https://tng-dev.who.int
       proxy:
         enabled: false
