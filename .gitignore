@@ -47,3 +47,6 @@ build/
 
 .settings.xml
 pom.xml.versionsBackup
+
+### Helm Charts ###
+Chart.lock

@@ -5,7 +5,9 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
+  # Create this image before your local installing with: "docker build -t kds:0.0.1" and load
+  # this image into your local minikube cluster with: "minikube image load kds:0.0.1"
+  repository: kds:0.0.1
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
