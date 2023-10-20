@@ -5,12 +5,16 @@
 replicaCount: 1
 
 image:
+  # Create this image before your local installing with: "docker build -t kds:0.0.1" and load
+  # this image into your local minikube cluster with: "minikube image load kds:0.0.1"
   repository: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "0.0.1-2840d04"
 
-imagePullSecrets: []
+#kubectl -n <k8s-namespace> create secret docker-registry <k8s-docker-registry-secret-name> --docker-server=ghcr.io --docker-username=<github-username> --docker-password=<github-personal-access-token>  --docker-email=<email-address> -o yaml
+#kubectl -n kds create secret docker-registry tng-distribution-pull-secret --docker-server=ghcr.io --docker-username=anonymous --docker-password=<PAT>  --docker-email=anonymous@example.com -o yaml
+imagePullSecrets: tng-distribution-pull-secret
 nameOverride: ""
 fullnameOverride: ""
 
