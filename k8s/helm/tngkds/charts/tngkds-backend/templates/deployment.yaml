@@ -24,6 +24,20 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: gateway-connector-tls-keystore
+          ConfigMap:
+            name: tng_kds_TlsTruststoreConfigMap
+        - name: gateway-connector-tls-truststore
+          ConfigMap:
+            name: tng_kds_TlsKeystoreConfigMap
+        - name: tng-kds-tls-truststore
+          secret:
+            secretName: tng-kds-tls-truststore
+        - name: tng-kds-tls-keystore
+          secret:
+            secretName: tng-kds-tls-keystore
+            
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -36,6 +50,11 @@ spec:
               containerPort: {{ .port }}
               protocol: {{ .protocol }}
           {{ end }}
+          volumeMounts:
+            - name: gateway-connector-tls-keystore
+              mountPath: /mnt/{{- .Values.gateway.connector.TlsKeystore | quote | }}
+            - name: gateway-connector-tls-truststore
+              mountPath: /mnt/{{- .Values.gateway.connector.TlsTruststore | quote | }}
           env:
             - name: SERVER_PORT
               value: "{{ .Values.server.port }}"
@@ -59,6 +78,24 @@ spec:
                 secretKeyRef:
                   name: {{ include "tngkds-backend.fullname" . }}-secret
                   key: pgPassword
+            - name: DGC_GATEWAY_CONNECTOR_ENDPOINT
+              value: {{ .Values.gateway.connector.Endpoint }}
+            - name: DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH
+              value: {{ .Values.gateway.connector.TlsTruststore }}
+            - name: DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "tng-kds-tls-truststore.password-secret"
+                  key: gatewayConnectorTlsTruststorePassword
+            - name: DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH
+              value: {{ .Values.gateway.connector.TlsKeystore }}
+            - name: DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "tng-kds-tls-keystore.password-secret"
+                  key: gatewayConnectorTlsKeystorePassword
+            - name: DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS
+              value: {{ .Values.gateway.connector.TrustanchorAlias }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

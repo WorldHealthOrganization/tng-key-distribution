@@ -106,3 +106,11 @@ spring:
 # Server port
 server:
   port: 8080
+
+# gateway connector
+gateway:
+  connector:
+    Endpoint: https://tng-dev.who.int
+    TlsTruststore: 
+    TlsKeystore: 
+    TrustanchorAlias: trustanchor

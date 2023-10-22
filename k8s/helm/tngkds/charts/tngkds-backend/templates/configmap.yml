@@ -5,3 +5,17 @@ metadata:
 data:
   host: "{{ .Values.configMap.data.host }}"
   dbname: "{{ .Values.configMap.data.dbName }}"
+---
+apiVersion: apps/v1
+kind: ConfigMap
+metadata:
+  name: tng_kds_TlsTruststoreConfigMap
+  binaryData:
+    truststore.jks: {{ printf "%s" .Values.gateway.connector.TlsTruststore | .Files.Get }}
+---
+apiVersion: apps/v1
+kind: ConfigMap
+metadata:
+  name: tng_kds_TlsKeystoreConfigMap
+  binaryData:
+    keystore.jks: {{ printf "%s" .Values.gateway.connector.TlsKeystore | .Files.Get }}
