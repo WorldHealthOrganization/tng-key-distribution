@@ -1,6 +1,7 @@
 package tng.trustnetwork.keydistribution.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,13 +19,14 @@ public class URServiceImpl implements URService{
 	
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Value( "${universal.resolver}" )
+	private String universalResolver;
 
 	@Override
 	public DIDDocumentUnmarshal URApiCall(String didKey) {
 		
-		String urHoString= "https://dev.uniresolver.io/1.0/identifiers/";
-		
-		DIDDocument did = restTemplate.getForObject(urHoString+didKey, DIDDocument.class);
+		DIDDocument did = restTemplate.getForObject(universalResolver+didKey, DIDDocument.class);
 		
 		if(null != did) {
 			  ObjectMapper mapper = new ObjectMapper();
