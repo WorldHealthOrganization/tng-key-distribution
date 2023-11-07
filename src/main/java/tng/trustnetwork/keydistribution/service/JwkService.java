@@ -1,15 +1,24 @@
 package tng.trustnetwork.keydistribution.service;
 
+import eu.europa.ec.dgc.gateway.connector.dto.CertificateTypeDto;
+import eu.europa.ec.dgc.gateway.connector.dto.TrustListItemDto;
 import java.util.List;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import tng.trustnetwork.keydistribution.dto.CertificateTypeDto;
-import tng.trustnetwork.keydistribution.dto.TrustListItemDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import tng.trustnetwork.keydistribution.client.KdsGatewayConnectorRestClient;
 
-public interface JwkService {
+@Service
+@RequiredArgsConstructor
+public class JwkService {
     
-    public ResponseEntity<String> gatewayApiCall();
+    private KdsGatewayConnectorRestClient kdsGatewayConnectorRestClient;
     
-    //public List<TrustListItemDto> gatewayApiCall();
+    public List<TrustListItemDto> gatewayApiForAll() {
+        return kdsGatewayConnectorRestClient.getTrustedCertificates();
+    }
+
+    public List<TrustListItemDto> gatewayApiForType(CertificateTypeDto type) {
+        return kdsGatewayConnectorRestClient.getTrustedCertificates(type);
+    }
 
 }

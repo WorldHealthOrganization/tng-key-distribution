@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <fileset-config file-format-version="1.2.0" simple-config="false" sync-formatter="false">
-  <local-check-config name="maven-checkstyle-plugin check" location="file:/C:/Users/A200173891/git/tng-key-distributions/codestyle/checkstyle.xml" type="remote" description="maven-checkstyle-plugin configuration check">
-    <property name="checkstyle.header.file" value="C:\Users\A200173891\eclipse-workspace\WHO\.metadata\.plugins\org.eclipse.core.resources\.projects\tng-key-distributions\com.basistech.m2e.code.quality.checkstyleConfigurator\checkstyle-header-check.txt"/>
+  <local-check-config name="maven-checkstyle-plugin check" location="file:/C:/Users/A200173891/git/tng-key-distribution_feature_423/codestyle/checkstyle.xml" type="remote" description="maven-checkstyle-plugin configuration check">
+    <property name="checkstyle.header.file" value="C:\Users\A200173891\eclipse-workspace\WHO\.metadata\.plugins\org.eclipse.core.resources\.projects\tng-key-distribution_feature_423\com.basistech.m2e.code.quality.checkstyleConfigurator\checkstyle-header-check.txt"/>
     <property name="checkstyle.cache.file" value="${project_loc}/target/checkstyle-cachefile"/>
   </local-check-config>
   <fileset name="java-sources-check" enabled="true" check-config-name="maven-checkstyle-plugin check" local="true">

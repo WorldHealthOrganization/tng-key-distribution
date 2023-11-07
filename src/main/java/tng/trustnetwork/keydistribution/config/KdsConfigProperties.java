@@ -26,7 +26,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties("dgc")
+@ConfigurationProperties("kds")
 public class KdsConfigProperties {
 
     private final CertificatesDownloader certificatesDownloader = new CertificatesDownloader();

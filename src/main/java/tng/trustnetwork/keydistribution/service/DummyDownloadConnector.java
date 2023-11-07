@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import tng.trustnetwork.keydistribution.model.TrustListItem;
 import tng.trustnetwork.keydistribution.model.TrustedIssuer;
 
-@ConditionalOnProperty({"dgc.gateway.connector.enabled"})
+@ConditionalOnProperty({"kds.gateway.connector.enabled"})
 @Service
 @EnableScheduling
 @RequiredArgsConstructor

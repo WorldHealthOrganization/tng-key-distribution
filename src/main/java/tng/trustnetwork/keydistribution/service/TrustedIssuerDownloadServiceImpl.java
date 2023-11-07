@@ -39,16 +39,16 @@ import tng.trustnetwork.keydistribution.model.TrustedIssuer;
 @RequiredArgsConstructor
 @Component
 @Profile("!btp")
-@ConditionalOnProperty("dgc.trustedIssuerDownloader.enabled")
+@ConditionalOnProperty("kds.trustedIssuerDownloader.enabled")
 public class TrustedIssuerDownloadServiceImpl implements TrustedIssuerDownloadService {
 
     DummyDownloadConnector dummyDownloadConnector = new DummyDownloadConnector();
     private final TrustedIssuerService trustedIssuerService;
 
     @Override
-    @Scheduled(fixedDelayString = "${dgc.trustedIssuerDownloader.timeInterval}")
+    @Scheduled(fixedDelayString = "${kds.trustedIssuerDownloader.timeInterval}")
     @SchedulerLock(name = "TrustedIssuerDownloadService_downloadTrustedIssuers", lockAtLeastFor = "PT0S",
-        lockAtMostFor = "${dgc.trustedIssuerDownloader.lockLimit}")
+        lockAtMostFor = "${kds.trustedIssuerDownloader.lockLimit}")
     public void downloadTrustedIssuers() {
         log.info("Trusted issuers download started");
 

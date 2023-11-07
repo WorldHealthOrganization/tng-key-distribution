@@ -43,9 +43,9 @@ public class SignerCertificateDownloadServiceImpl implements SignerCertificateDo
     private final SignerInformationService signerInformationService;
 
     @Override
-    @Scheduled(fixedDelayString = "${dgc.certificatesDownloader.timeInterval}")
+    @Scheduled(fixedDelayString = "${kds.certificatesDownloader.timeInterval}")
     @SchedulerLock(name = "SignerCertificateDownloadService_downloadCertificates", lockAtLeastFor = "PT0S",
-        lockAtMostFor = "${dgc.certificatesDownloader.lockLimit}")
+        lockAtMostFor = "${kds.certificatesDownloader.lockLimit}")
     public void downloadCertificates() {
         log.info("Certificates download started");
 

@@ -2,16 +2,18 @@ server:
   port: 8080
 spring:
   application:
-    name: tng-key-distribution
+    name: tng-key-distributions
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
     username: sa
-    password: password
+    password: $ {password}
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
   liquibase:
     change-log: classpath:db/changelog.xml
   h2:
@@ -29,7 +31,7 @@ management:
     health:
       enabled: true
   endpoints:
-    enabled-by-default: false
+    enabled-by-default: true
     web:
       base-path: /management
       exposure:
@@ -43,7 +45,27 @@ springdoc:
     enabled: true
   swagger-ui:
     path: /swagger
-dgc:
+kds:
+  gateway:
+    connector:
+      enabled: true
+      endpoint: https://tng-dev.who.int
+      tls-trust-store: #CA of TNG Gateway of TLS certificate
+        password: ${password}
+        path: certs\tng_tls_server_truststore.p12
+      tls-key-store: # client cert key pair of participant
+        alias: tng-tls-server-certificate
+        password: ${password}
+        path: certs\tls_key_store.p12
+      trust-anchor: # TA pem file of TNG that was used for signing
+        alias: trustanchor
+        password: ${password}
+        path: certs\trustanchor_store.jks
+      proxy:
+        host: sia-lb.telekom.de
+        port: 8080
+        enabled: true
+        max-cache-age: 300
   certificatesDownloader:
     timeInterval: 1800000
     lockLimit: 3600000
@@ -55,7 +77,8 @@ dgc:
     enabled: true
     timeInterval: 1800000
     lockLimit: 3600000
-  gateway:
-    connector:
-      enabled: false
-
+     
+#  gateway:
+ #   connector:
+ #     enabled: false
+ 
