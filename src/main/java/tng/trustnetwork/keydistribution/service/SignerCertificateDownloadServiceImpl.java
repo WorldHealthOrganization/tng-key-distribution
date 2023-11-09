@@ -26,6 +26,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 @Profile("!btp")
+@ConditionalOnProperty("dgc.gateway.connector.enabled")
 public class SignerCertificateDownloadServiceImpl implements SignerCertificateDownloadService {
 
     private final DgcGatewayDownloadConnector dgcGatewayConnector;

@@ -20,17 +20,22 @@
 
 package tng.trustnetwork.keydistribution.service;
 
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import tng.trustnetwork.keydistribution.entity.InfoEntity;
 import tng.trustnetwork.keydistribution.repository.InfoRepository;
-import java.util.List;
 
 @SpringBootTest
 class InfoServiceTest {
+
+    @MockBean
+    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Autowired
     InfoRepository infoRepository;
@@ -45,11 +50,8 @@ class InfoServiceTest {
 
     @Test
     void saveInfo() throws Exception {
-
         infoService.setValueForKey("TestKey", "TestValue");
-
         List<InfoEntity> entities = infoRepository.findAll();
-
         Assertions.assertEquals(1, entities.size());
         Assertions.assertEquals("TestKey", entities.get(0).getIdentifierKey());
         Assertions.assertEquals("TestValue", entities.get(0).getValue());
@@ -57,10 +59,8 @@ class InfoServiceTest {
 
     @Test
     void getInfo() throws Exception {
-
         InfoEntity entity = new InfoEntity("TestKey", "TestValue");
         infoRepository.save(entity);
-
         Assertions.assertEquals("TestValue", infoService.getValueForKey("TestKey"));
     }
 }

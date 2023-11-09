@@ -17,6 +17,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @SpringBootTest
 class SignerCertificateDownloadServiceImplTest {
 
+    @MockBean
+    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
+
     @Autowired
     SignerCertificateDownloadServiceImpl signerCertificateDownloadService;
 
@@ -25,9 +28,6 @@ class SignerCertificateDownloadServiceImplTest {
 
     @Autowired
     SignerInformationTestHelper signerInformationTestHelper;
-
-    @MockBean
-    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Test
     void downloadEmptyCertificatesList() {
@@ -38,5 +38,21 @@ class SignerCertificateDownloadServiceImplTest {
 
         List<SignerInformationEntity> repositoryItems = signerInformationRepository.findAllByDeletedOrderByIdAsc(false);
         Assertions.assertEquals(0, repositoryItems.size());
+    }
+
+    @Test
+    void downloadCertificates() {
+        ArrayList<TrustListItem> trustList = new ArrayList<>();
+        trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_1_STR));
+        Mockito.when(dgcGatewayDownloadConnector.getTrustedCertificates()).thenReturn(trustList);
+
+        signerCertificateDownloadService.downloadCertificates();
+
+        List<SignerInformationEntity> repositoryItems = signerInformationRepository.findAll();
+        Assertions.assertEquals(1, repositoryItems.size());
+
+        SignerInformationEntity repositoryItem = repositoryItems.get(0);
+        Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_1_KID, repositoryItem.getKid());
+        Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_1_STR, repositoryItem.getRawData());
     }
 }

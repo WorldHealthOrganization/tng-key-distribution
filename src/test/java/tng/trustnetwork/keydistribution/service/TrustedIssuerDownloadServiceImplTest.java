@@ -2,9 +2,6 @@ package tng.trustnetwork.keydistribution.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
-import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayTrustedIssuerDownloadConnector;
+import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 import tng.trustnetwork.keydistribution.repository.TrustedIssuerRepository;
 import tng.trustnetwork.keydistribution.testdata.TrustedIssuerTestHelper;
@@ -19,6 +19,13 @@ import tng.trustnetwork.keydistribution.testdata.TrustedIssuerTestHelper;
 @SpringBootTest
 @TestPropertySource(properties = {"dgc.trustedIssuerDownloader.enabled=true"})
 class TrustedIssuerDownloadServiceImplTest {
+
+    @MockBean
+    DgcGatewayDownloadConnector dgcGatewayDownloadConnectorMock;
+
+    @MockBean
+    DgcGatewayTrustedIssuerDownloadConnector dgcGatewayTrustedIssuerDownloadConnector;
+
 
     @Autowired
     TrustedIssuerDownloadServiceImpl trustedIssuerDownloadService;
@@ -29,17 +36,38 @@ class TrustedIssuerDownloadServiceImplTest {
     @Autowired
     TrustedIssuerTestHelper trustedIssuerTestHelper;
 
-    @MockBean
-    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
-
     @Test
     void downloadEmptyIssuerList() {
         ArrayList<TrustedIssuer> trustList = new ArrayList<>();
-        Mockito.when(dgcGatewayDownloadConnector.getTrustedIssuers()).thenReturn(trustList);
+        Mockito.when(dgcGatewayTrustedIssuerDownloadConnector.getTrustedIssuers()).thenReturn(trustList);
 
         trustedIssuerDownloadService.downloadTrustedIssuers();
 
         List<TrustedIssuerEntity> repositoryItems = trustedIssuerRepository.findAll();
         Assertions.assertEquals(0, repositoryItems.size());
+    }
+
+    @Test
+    void downloadIssuers() {
+        List<TrustedIssuer> trustedIssuers = trustedIssuerTestHelper.getTrustedIssuerList();
+
+        Mockito.when(dgcGatewayTrustedIssuerDownloadConnector.getTrustedIssuers()).thenReturn(trustedIssuers);
+
+        trustedIssuerDownloadService.downloadTrustedIssuers();
+
+        List<TrustedIssuerEntity> repositoryItems = trustedIssuerRepository.findAll();
+        Assertions.assertEquals(1, repositoryItems.size());
+
+        TrustedIssuer trustedIssuer = trustedIssuers.get(0);
+
+        TrustedIssuerEntity repositoryItem = repositoryItems.get(0);
+        Assertions.assertEquals(trustedIssuer.getCountry(), repositoryItem.getCountry());
+        Assertions.assertEquals(trustedIssuer.getKeyStorageType(), repositoryItem.getKeyStorageType());
+        Assertions.assertEquals(trustedIssuer.getName(), repositoryItem.getName());
+        Assertions.assertEquals(trustedIssuer.getSignature(), repositoryItem.getSignature());
+        Assertions.assertEquals(trustedIssuer.getThumbprint(), repositoryItem.getThumbprint());
+        Assertions.assertEquals(trustedIssuer.getSslPublicKey(), repositoryItem.getSslPublicKey());
+        Assertions.assertEquals(trustedIssuer.getUrl(), repositoryItem.getUrl());
+        Assertions.assertEquals(trustedIssuer.getType().toString(), repositoryItem.getUrlType().toString());
     }
 }

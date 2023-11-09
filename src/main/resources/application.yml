@@ -48,12 +48,12 @@ dgc:
     timeInterval: 1800000
     lockLimit: 3600000
   trustedIssuerDownloader:
-    enabled: true
+    enabled: false
     timeInterval: 1800000
     lockLimit: 3600000
-#  gateway:
-#    connector:
-#      enabled: true
+  gateway:
+    connector:
+      enabled: false
 #      endpoint: ${DGC_GATEWAY_CONNECTOR_ENDPOINT}
 #      proxy:
 #        enabled: false
@@ -68,6 +68,3 @@ dgc:
 #        alias: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS}
 #        password: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD}
 #        path: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH}
-  gateway:
-    connector:
-      enabled: false

@@ -37,7 +37,7 @@ dgc:
     lockLimit: 3600000
   gateway:
     connector:
-      enabled: false
+      enabled: true
       endpoint: https://tng-dev.who.int
       proxy:
         enabled: false
