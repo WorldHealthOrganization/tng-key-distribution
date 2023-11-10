@@ -32,9 +32,6 @@ dgc:
     enabled: false
     timeInterval: 60000
     lockLimit: 1800000
-  certificatesDownloader:
-    timeInterval: 1800000
-    lockLimit: 3600000
   gateway:
     connector:
       enabled: false
@@ -54,7 +51,7 @@ dgc:
 #        alias: trustanchor
 #        password: dgcg-p4ssw0rd
 #        path: certs/trustanchor_store.jks
-springdoc:
+#springdoc:
   api-docs:
     path: /api/docs
   swagger-ui:

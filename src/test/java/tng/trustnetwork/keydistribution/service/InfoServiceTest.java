@@ -43,24 +43,33 @@ class InfoServiceTest {
     @Autowired
     InfoService infoService;
 
+
+
     @BeforeEach
     void clearRepositoryData()  {
         infoRepository.deleteAll();
     }
 
+
     @Test
     void saveInfo() throws Exception {
+
         infoService.setValueForKey("TestKey", "TestValue");
+
         List<InfoEntity> entities = infoRepository.findAll();
+
         Assertions.assertEquals(1, entities.size());
         Assertions.assertEquals("TestKey", entities.get(0).getIdentifierKey());
         Assertions.assertEquals("TestValue", entities.get(0).getValue());
+
     }
 
     @Test
     void getInfo() throws Exception {
+
         InfoEntity entity = new InfoEntity("TestKey", "TestValue");
         infoRepository.save(entity);
+
         Assertions.assertEquals("TestValue", infoService.getValueForKey("TestKey"));
     }
 }

@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SignerInformationTestHelper {
 
+
     public static final String TEST_CERT_1_STR =
         "MIICrDCCAZSgAwIBAgIEYH+7ujANBgkqhkiG9w0BAQsFADAYMRYwFAYDVQQDDA1l"
             + "ZGdjX2Rldl90ZXN0MB4XDTIxMDQyMTA1NDQyNloXDTIyMDQyMTA1NDQyNlowGDEW"
@@ -105,7 +106,7 @@ public class SignerInformationTestHelper {
         String kid;
         try {
             kid = certificateUtils.getCertKid(convertStringToX509Cert(certStr));
-        } catch (CertificateException e) {
+        }catch (CertificateException e) {
             kid = "kid_"+ ZonedDateTime.now();
         }
 
@@ -130,7 +131,7 @@ public class SignerInformationTestHelper {
         String kid;
         try {
             kid = certificateUtils.getCertKid(convertStringToX509Cert(certStr));
-        } catch (CertificateException e) {
+        }catch (CertificateException e) {
             kid = "kid_"+ ZonedDateTime.now();
         }
 
@@ -154,7 +155,7 @@ public class SignerInformationTestHelper {
         String kid;
         try {
             kid = certificateUtils.getCertKid(convertStringToX509Cert(certStr));
-        } catch (CertificateException e) {
+        }catch (CertificateException e) {
             kid = "kid_"+ ZonedDateTime.now();
         }
 
@@ -165,4 +166,5 @@ public class SignerInformationTestHelper {
 
         return item;
     }
+
 }

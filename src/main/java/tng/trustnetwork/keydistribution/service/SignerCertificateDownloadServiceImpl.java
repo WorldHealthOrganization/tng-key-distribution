@@ -38,7 +38,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 @Profile("!btp")
-@ConditionalOnProperty("dgc.gateway.connector.enabled")
+//@ConditionalOnProperty("dgc.gateway.connector.enabled")
 public class SignerCertificateDownloadServiceImpl implements SignerCertificateDownloadService {
 
     private final DgcGatewayDownloadConnector dgcGatewayConnector;

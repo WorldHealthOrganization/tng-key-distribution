@@ -38,4 +38,5 @@ class OpenApiTest {
             Assertions.fail();
         }
     }
+
 }

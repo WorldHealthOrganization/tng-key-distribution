@@ -38,6 +38,7 @@ public class TrustedIssuerTestHelper {
     @Autowired
     TrustedIssuerRepository trustedIssuerRepository;
 
+
     public TrustedIssuerEntity getIssuer(int number) {
         TrustedIssuerEntity issuer = new TrustedIssuerEntity();
 
@@ -82,11 +83,14 @@ public class TrustedIssuerTestHelper {
         }
 
         return issuer;
+
     }
+
 
     public void insertTrustedIssuer(TrustedIssuerEntity issuer) {
         trustedIssuerRepository.save(issuer);
     }
+
 
     public List<TrustedIssuer> getTrustedIssuerList() {
         List<TrustedIssuer> list = new ArrayList<>();
@@ -138,4 +142,5 @@ public class TrustedIssuerTestHelper {
         list.add(issuer);
         return list;
     }
+
 }

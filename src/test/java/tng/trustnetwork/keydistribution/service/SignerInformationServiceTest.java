@@ -65,6 +65,7 @@ class SignerInformationServiceTest {
         signerInformationRepository.deleteAll();
     }
 
+
     @Test
     void updateEmptyRepositoryWithEmptyCertList()  {
         ArrayList<TrustListItem> trustList = new ArrayList<>();
@@ -74,6 +75,7 @@ class SignerInformationServiceTest {
         List<SignerInformationEntity> repositoryItems = signerInformationRepository.findAll();
 
         Assertions.assertEquals(0, repositoryItems.size());
+
     }
 
     @Test
@@ -91,6 +93,7 @@ class SignerInformationServiceTest {
 
         Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_1_KID, repositoryItem.getKid());
         Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_1_STR, repositoryItem.getRawData());
+
     }
 
     @Test
@@ -115,6 +118,7 @@ class SignerInformationServiceTest {
         repositoryItem = repositoryItems.get(2);
         Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_3_KID, repositoryItem.getKid());
         Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_3_STR, repositoryItem.getRawData());
+
     }
 
     @Test
@@ -171,6 +175,7 @@ class SignerInformationServiceTest {
         Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_2_STR, repositoryItem0.getRawData());
         Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_3_KID, repositoryItem1.getKid());
         Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_3_STR, repositoryItem1.getRawData());
+
     }
 
     @Test
@@ -186,6 +191,7 @@ class SignerInformationServiceTest {
         List<SignerInformationEntity> repositoryItems = signerInformationRepository.findAllByDeletedOrderByIdAsc(false);
 
         Assertions.assertEquals(0, repositoryItems.size());
+
     }
 
     @Test
@@ -217,5 +223,7 @@ class SignerInformationServiceTest {
 
         assertThat(TrustedIssuerDto.class, allOf(hasValidBeanConstructor(), hasValidBeanEquals(),
             hasValidGettersAndSetters(), hasValidBeanHashCode(), hasValidBeanToString()));
+
     }
+
 }

@@ -24,7 +24,7 @@ class TrustedIssuerDownloadServiceImplTest {
     DgcGatewayDownloadConnector dgcGatewayDownloadConnectorMock;
 
     @MockBean
-    DgcGatewayTrustedIssuerDownloadConnector dgcGatewayTrustedIssuerDownloadConnector;
+    DgcGatewayTrustedIssuerDownloadConnector dgcGatewayDownloadConnector;
 
 
     @Autowired
@@ -39,7 +39,7 @@ class TrustedIssuerDownloadServiceImplTest {
     @Test
     void downloadEmptyIssuerList() {
         ArrayList<TrustedIssuer> trustList = new ArrayList<>();
-        Mockito.when(dgcGatewayTrustedIssuerDownloadConnector.getTrustedIssuers()).thenReturn(trustList);
+        Mockito.when(dgcGatewayDownloadConnector.getTrustedIssuers()).thenReturn(trustList);
 
         trustedIssuerDownloadService.downloadTrustedIssuers();
 
@@ -51,7 +51,7 @@ class TrustedIssuerDownloadServiceImplTest {
     void downloadIssuers() {
         List<TrustedIssuer> trustedIssuers = trustedIssuerTestHelper.getTrustedIssuerList();
 
-        Mockito.when(dgcGatewayTrustedIssuerDownloadConnector.getTrustedIssuers()).thenReturn(trustedIssuers);
+        Mockito.when(dgcGatewayDownloadConnector.getTrustedIssuers()).thenReturn(trustedIssuers);
 
         trustedIssuerDownloadService.downloadTrustedIssuers();
 
@@ -70,4 +70,5 @@ class TrustedIssuerDownloadServiceImplTest {
         Assertions.assertEquals(trustedIssuer.getUrl(), repositoryItem.getUrl());
         Assertions.assertEquals(trustedIssuer.getType().toString(), repositoryItem.getUrlType().toString());
     }
+
 }

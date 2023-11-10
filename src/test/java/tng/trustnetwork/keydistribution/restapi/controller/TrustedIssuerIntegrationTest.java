@@ -39,6 +39,9 @@ import tng.trustnetwork.keydistribution.testdata.TrustedIssuerTestHelper;
 @AutoConfigureMockMvc
 class TrustedIssuerIntegrationTest {
 
+    @org.springframework.boot.test.mock.mockito.MockBean
+    eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
+
     @Autowired
     TrustedIssuerTestHelper trustedIssuerTestHelper;
 
@@ -63,11 +66,14 @@ class TrustedIssuerIntegrationTest {
         mockMvc.perform(get("/trustedissuers"))
             .andExpect(status().isOk())
             .andExpect(content().json("[]"));
+
     }
+
 
     @Test
     void requestTrustedIssuers() throws Exception {
         trustedIssuerTestHelper.insertTrustedIssuer(trustedIssuerTestHelper.getIssuer(1));
+
 
         mockMvc.perform(get("/trustedissuers"))
             .andExpect(status().isOk())
@@ -79,11 +85,13 @@ class TrustedIssuerIntegrationTest {
             .andExpect(jsonPath("$[0].keyStorageType").value("JWKS"))
             .andExpect(jsonPath("$[0].signature").value("Signature1"))
             .andExpect(jsonPath("$[0].name").value("example1.de"));
+
     }
 
     @Test
     void requestTrustedIssuersWithHeader() throws Exception {
         trustedIssuerTestHelper.insertTrustedIssuer(trustedIssuerTestHelper.getIssuer(1));
+
 
         mockMvc.perform(get("/trustedissuers").header(HttpHeaders.IF_NONE_MATCH, "NoMatchEtag"))
             .andExpect(status().isOk())
@@ -95,6 +103,7 @@ class TrustedIssuerIntegrationTest {
             .andExpect(jsonPath("$[0].keyStorageType").value("JWKS"))
             .andExpect(jsonPath("$[0].signature").value("Signature1"))
             .andExpect(jsonPath("$[0].name").value("example1.de"));
+
     }
 
     @Test
@@ -104,5 +113,7 @@ class TrustedIssuerIntegrationTest {
 
         mockMvc.perform(get("/trustedissuers").header(HttpHeaders.IF_NONE_MATCH, "TestEtag"))
             .andExpect(status().isNotModified());
+
     }
+
 }
