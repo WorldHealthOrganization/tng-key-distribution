@@ -1,5 +1,6 @@
 package tng.trustnetwork.keydistribution;
 
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @Slf4j
 @SpringBootTest(
@@ -19,10 +21,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 )
 class OpenApiTest {
 
+    @MockBean
+    private DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
+
     @Test
     void apiDocs() {
         try (BufferedInputStream in = new BufferedInputStream(new URL("http://localhost:8080/openapi").openStream());
-            FileOutputStream out = new FileOutputStream("target/openapi.json")) {
+             FileOutputStream out = new FileOutputStream("target/openapi.json")) {
             byte[] buffer = new byte[1024];
             int read;
             while ((read = in.read(buffer, 0, buffer.length)) != -1) {
@@ -33,4 +38,5 @@ class OpenApiTest {
             Assertions.fail();
         }
     }
+
 }

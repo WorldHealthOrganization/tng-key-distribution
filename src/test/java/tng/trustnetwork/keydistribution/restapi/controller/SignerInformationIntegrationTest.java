@@ -43,8 +43,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class SignerInformationIntegrationTest {
 
+
     private static final String X_RESUME_TOKEN_HEADER = "X-RESUME-TOKEN";
     private static final String X_KID_HEADER = "X-KID";
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Autowired
     SignerInformationRepository signerInformationRepository;
@@ -98,6 +102,7 @@ class SignerInformationIntegrationTest {
             .andExpect(header().longValue(X_RESUME_TOKEN_HEADER, certId_1))
             .andExpect(header().stringValues(X_KID_HEADER, "8xYtW2837ac="))
             .andExpect(c -> assertCertStrEqual(c, SignerInformationTestHelper.TEST_CERT_1_STR));
+
     }
 
     @Test
@@ -302,9 +307,9 @@ class SignerInformationIntegrationTest {
             "de", "thumbp2", date1, true);
 
         mockMvc.perform(post("/signercertificateUpdate")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("[\"8xYtW2837ac=\",\"EzVuT0kOpJc=\"]")
-            .characterEncoding("utf-8"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("[\"8xYtW2837ac=\",\"EzVuT0kOpJc=\"]")
+                .characterEncoding("utf-8"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(content().json("{\"de\":[{\"kid\":\"8xYtW2837ac=\","
@@ -346,6 +351,9 @@ class SignerInformationIntegrationTest {
             .andExpect(content().json("{}"));
 
     }
+
+
+
 
     private void assertCertStrEqual(MvcResult result, String certStr) throws  UnsupportedEncodingException {
         String resultCert = result.getResponse().getContentAsString();

@@ -50,3 +50,10 @@ pom.xml.versionsBackup
 
 ### Helm Charts ###
 Chart.lock
+
+### Certificates
+*.pem
+*.cer
+*.key
+*.p12
+*.jks

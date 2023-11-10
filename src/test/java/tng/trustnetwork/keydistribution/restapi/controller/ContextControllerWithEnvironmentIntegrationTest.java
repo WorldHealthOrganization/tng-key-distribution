@@ -16,6 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @TestPropertySource(properties = {"dgc.context={\"testContext\": true}"})
 class ContextControllerWithEnvironmentIntegrationTest {
+    
+    @MockBean
+    eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Autowired
     private MockMvc mockMvc;
