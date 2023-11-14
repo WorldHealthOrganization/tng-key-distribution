@@ -3,9 +3,6 @@ package tng.trustnetwork.keydistribution.client;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.File;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -88,14 +85,9 @@ public class KdsGatewayConnectorConfigProperties {
     @Setter
     @AllArgsConstructor
     public static class Proxy {
-
-        public Proxy(boolean b, Object object, int i) {
-			// TODO Auto-generated constructor stub
-		}
-
-		/**
+        /**
          * Enable HTTP Proxy.
-         */
+         **/
         private boolean enabled;
 
         /**

@@ -10,9 +10,9 @@ import tng.trustnetwork.keydistribution.client.KdsGatewayConnectorRestClient;
 @Service
 @RequiredArgsConstructor
 public class JwkService {
-    
-    private KdsGatewayConnectorRestClient kdsGatewayConnectorRestClient;
-    
+
+    private final  KdsGatewayConnectorRestClient kdsGatewayConnectorRestClient;
+
     public List<TrustListItemDto> gatewayApiForAll() {
         return kdsGatewayConnectorRestClient.getTrustedCertificates();
     }

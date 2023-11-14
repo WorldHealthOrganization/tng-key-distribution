@@ -25,7 +25,7 @@ import org.springframework.util.ResourceUtils;
 @Slf4j
 public class KdsGatewayConnectorKeystore {
 
-    private final KdsGatewayConnectorConfigProperties kdsConfigProperties = new KdsGatewayConnectorConfigProperties();
+    private final KdsGatewayConnectorConfigProperties kdsConfigProperties;
     
     /**
      * Creates a KeyStore instance with keys for DGC TrustAnchor.
