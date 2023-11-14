@@ -9,7 +9,7 @@ import tng.trustnetwork.keydistribution.client.KdsGatewayConnectorRestClient;
 
 @Service
 @RequiredArgsConstructor
-public class JwkService {
+public class JwkServiceImpl implements JwkService {
 
     private final  KdsGatewayConnectorRestClient kdsGatewayConnectorRestClient;
 
