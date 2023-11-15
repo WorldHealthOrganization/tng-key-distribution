@@ -30,6 +30,6 @@ dependencies:
     condition: global.tngkds-postgres.enabled, tngkds-postgres.enabled
     alias: tngkds-postgres
   - name: tngkds-backend
-    condition: global.tngkds_backend.enabled
+    condition: global.tngkds_backend.enabled, tngkds_backend.enabled
     version: 0.1.0
     alias: tngkds-backend
