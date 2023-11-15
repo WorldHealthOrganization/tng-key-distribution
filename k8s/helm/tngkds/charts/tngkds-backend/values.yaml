@@ -92,7 +92,7 @@ affinity: {}
 
 # Postgres
 psql:
-  serviceName: postgres
+  serviceName: tngkds-tngkds-postgres
   port: 5432
   dbName: postgres
   cluster: svc.cluster.local
