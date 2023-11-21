@@ -57,6 +57,10 @@ spec:
                 secretKeyRef:
                   name: {{ include "tngkds-backend.fullname" . }}-secret
                   key: pgPassword
+          volumeMounts:
+            - name: secrets-jks
+              mountPath: /certs
+              readOnly: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -71,3 +75,14 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: secrets-jks
+          secret:
+            secretName: mtls-secret
+            items:
+              - key: tls_key_store.p12
+                path: tls_key_store.p12
+              - key: trustanchor_store.jks
+                path: trustanchor_store.jks
+              - key: tng_tls_server_truststore.p12
+                path: tng_tls_server_truststore.p12
