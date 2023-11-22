@@ -57,6 +57,24 @@ spec:
                 secretKeyRef:
                   name: {{ include "tngkds-backend.fullname" . }}-secret
                   key: pgPassword
+            - name: GATEWAY_TLS-TRUST-STORE_PATH
+              value: {{ .Values.gateway.connector.tls_trust_store.path }}
+            - name: GATEWAY_TLS-TRUST-STORE_PASSWORD
+              value: {{ .Values.gateway.connector.tls_trust_store.password }}
+            - name: GATEWAY_TLS-TRUST-STORE_ALIAS
+              value: {{ .Values.gateway.connector.tls_trust_store.alias }}
+            - name: GATEWAY_TLS-KEY-STORE_PATH
+              value: {{ .Values.gateway.connector.tls_key_store.path }}
+            - name: GATEWAY_TLS-KEY-STORE_PASSWORD
+              value: {{ .Values.gateway.connector.tls_key_store.password }}
+            - name: GATEWAY_TLS-KEY-STORE_ALIAS
+              value: {{.Values.gateway.connector.tls_key_store.alias }}
+            - name: GATEWAY_TRUST-ANCHOR_PATH
+              value: {{ .Values.gateway.connector.trust_anchor.path }}
+            - name: GATEWAY_TRUST-ANCHOR_PASSWORD
+              value: {{ .Values.gateway.connector.trust_anchor.password }}
+            - name: GATEWAY_TRUST-ANCHOR_ALIAS
+              value: {{ .Values.gateway.connector.trust_anchor.alias }}
           volumeMounts:
             - name: secrets-jks
               mountPath: /certs
