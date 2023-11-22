@@ -76,7 +76,7 @@ spec:
             - name: DGC_GATEWAY_CONNECTOR_TRUST_ANCHOR_ALIAS
               value: {{ .Values.gateway.connector.trust_anchor.alias }}
             - name: DGC_GATEWAY_CONNECTOR_ENABLED
-              value: {{ .Values.gateway.connector.enabled }}
+              value: {{ .Values.gateway.connector.enabled |quote }}
             - name: DGC_GATEWAY_CONNECTOR_ENDPOINT
               value: {{ .Values.gateway.connector.endpoint }}
           volumeMounts:
