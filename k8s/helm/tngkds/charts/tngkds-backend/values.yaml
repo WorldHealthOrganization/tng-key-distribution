@@ -115,19 +115,19 @@ server:
 gateway:
   connector:
     enabled: true
-    endpoint: https://tng-dev.who.int
+    endpoint: <endpoint of the tng>
     proxy:
       enabled: false
     max-cache-age: 300
     tls_trust_store: #CA of TNG Gateway of TLS certificate
-      alias: tng-tls-server-certificate
-      password: dgcg-p4ssw0rd
-      path: /certs/tng_tls_server_truststore.p12
+      alias: <alias of the cert in truststore>
+      password: <password to open truststore>
+      path: <full pathname of the truststore file>
     tls_key_store: # client cert key pair of participant
-      alias: clientcredentials
-      password: dgcg-p4ssw0rd
-      path: /certs/tls_key_store.p12
+      alias: <alias of the cert in keystore>
+      password: <password to open keystore>
+      path: <full path of the keystore file>
     trust_anchor: # TA pem file of TNG that was used for signing
-      alias: trustanchor
-      password: dgcg-p4ssw0rd
-      path: /certs/trustanchor_store.jks
+      alias: <alias of the trust_anchor chert>
+      password: <password to open trust_anchor_store>
+      path: <full path of the trust_anchor_store>
