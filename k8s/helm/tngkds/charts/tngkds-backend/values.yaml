@@ -10,7 +10,7 @@ image:
   repository: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.0.1-2840d04"
+  tag: "0.0.1-d890889"  #"0.0.1-2840d04"
 
 #kubectl -n <k8s-namespace> create secret docker-registry <k8s-docker-registry-secret-name> --docker-server=ghcr.io --docker-username=<github-username> --docker-password=<github-personal-access-token>  --docker-email=<email-address> -o yaml
 #kubectl -n kds create secret docker-registry tng-distribution-pull-secret --docker-server=ghcr.io --docker-username=anonymous --docker-password=<PAT>  --docker-email=anonymous@example.com -o yaml
@@ -110,3 +110,24 @@ spring:
 # Server port
 server:
   port: 8080
+
+
+gateway:
+  connector:
+    enabled: true
+    endpoint: <endpoint of the tng>
+    proxy:
+      enabled: false
+    max-cache-age: 300
+    tls_trust_store: #CA of TNG Gateway of TLS certificate
+      alias: <alias of the cert in truststore>
+      password: <password to open truststore>
+      path: <full pathname of the truststore file>
+    tls_key_store: # client cert key pair of participant
+      alias: <alias of the cert in keystore>
+      password: <password to open keystore>
+      path: <full path of the keystore file>
+    trust_anchor: # TA pem file of TNG that was used for signing
+      alias: <alias of the trust_anchor chert>
+      password: <password to open trust_anchor_store>
+      path: <full path of the trust_anchor_store>
