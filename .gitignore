@@ -57,3 +57,6 @@ Chart.lock
 *.key
 *.p12
 *.jks
+
+# Packages
+*.tgz

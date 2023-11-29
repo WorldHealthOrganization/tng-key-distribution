@@ -1,9 +1,24 @@
 # Default values for tngkds.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global:
+  tngkds-postgres:
+    enabled: true
+    path: /()(*)
+    port: 5432
+  tngkds-backend:
+    enabled: true
+    path: /()(*)
+    port: 8080
 
 tngkds-postgres:
   enabled: true
+  global:
+    postgresql:
+      auth:
+        existingSecret: tngkds-postgres-secret
+  auth:
+    existingSecret: tngkds-postgres-secret
   path: /()(*)
   port: 5432
 
