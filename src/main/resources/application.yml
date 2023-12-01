@@ -56,5 +56,5 @@ dgc:
       enabled: false
       
 universal:
-  resolver: "https://dev.uniresolver.io/1.0/identifiers/"   
+  resolver: "https://dev.uniresolver.io/1.0/identifiers"   
 
