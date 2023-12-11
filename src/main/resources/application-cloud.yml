@@ -9,8 +9,5 @@ spring:
     password: postgres
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
-liquibase:
-  url: jdbc:postgresql://localhost:5432/postgres
-  username: postgres
-  password: postgres
+  liquibase:
+    enabled: false
