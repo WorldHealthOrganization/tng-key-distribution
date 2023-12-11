@@ -57,6 +57,32 @@ spec:
                 secretKeyRef:
                   name: {{ include "tngkds-backend.fullname" . }}-secret
                   key: pgPassword
+            - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_PATH
+              value: {{ .Values.gateway.connector.tls_trust_store.path }}
+            - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_PASSWORD
+              value: {{ .Values.gateway.connector.tls_trust_store.password }}
+            - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_ALIAS
+              value: {{ .Values.gateway.connector.tls_trust_store.alias }}
+            - name: DGC_GATEWAY_CONNECTOR_TLS_KEY_STORE_PATH
+              value: {{ .Values.gateway.connector.tls_key_store.path }}
+            - name: DGC_GATEWAY_CONNECTOR_TLS_KEY_STORE_PASSWORD
+              value: {{ .Values.gateway.connector.tls_key_store.password }}
+            - name: DGC_GATEWAY_CONNECTOR_TLS_KEY_STORE_ALIAS
+              value: {{.Values.gateway.connector.tls_key_store.alias }}
+            - name: DGC_GATEWAY_CONNECTOR_TRUST_ANCHOR_PATH
+              value: {{ .Values.gateway.connector.trust_anchor.path }}
+            - name: DGC_GATEWAY_CONNECTOR_TRUST_ANCHOR_PASSWORD
+              value: {{ .Values.gateway.connector.trust_anchor.password }}
+            - name: DGC_GATEWAY_CONNECTOR_TRUST_ANCHOR_ALIAS
+              value: {{ .Values.gateway.connector.trust_anchor.alias }}
+            - name: DGC_GATEWAY_CONNECTOR_ENABLED
+              value: {{ .Values.gateway.connector.enabled |quote }}
+            - name: DGC_GATEWAY_CONNECTOR_ENDPOINT
+              value: {{ .Values.gateway.connector.endpoint }}
+          volumeMounts:
+            - name: secrets-jks
+              mountPath: /certs
+              readOnly: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -71,3 +97,14 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: secrets-jks
+          secret:
+            secretName: mtls-secret
+            items:
+              - key: tls_key_store.p12
+                path: tls_key_store.p12
+              - key: trustanchor_store.jks
+                path: trustanchor_store.jks
+              - key: tng_tls_server_truststore.p12
+                path: tng_tls_server_truststore.p12
