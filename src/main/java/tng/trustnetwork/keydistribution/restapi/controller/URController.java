@@ -17,6 +17,7 @@ public class URController {
 	private URService urService;
 	
 	@GetMapping(path = "/getDID/{didKey}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @io.swagger.v3.oas.annotations.tags.Tag(name = "Temporary Testing API")
 	public ResponseEntity<DIDDocumentUnmarshal> getDIDDocument(@PathVariable String didKey){
 		
 		DIDDocumentUnmarshal DIDDocumentUnmarshal = urService.URApiCall(didKey);
