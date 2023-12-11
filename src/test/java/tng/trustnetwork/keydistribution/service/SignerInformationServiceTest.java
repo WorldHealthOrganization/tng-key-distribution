@@ -21,26 +21,35 @@
 package tng.trustnetwork.keydistribution.service;
 
 import com.google.code.beanmatchers.BeanMatchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
+import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
 import tng.trustnetwork.keydistribution.dto.TrustedIssuerDto;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
-import tng.trustnetwork.keydistribution.model.TrustListItem;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import tng.trustnetwork.keydistribution.restapi.dto.DeltaListDto;
 import tng.trustnetwork.keydistribution.testdata.SignerInformationTestHelper;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import static com.google.code.beanmatchers.BeanMatchers.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanEquals;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanHashCode;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToString;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 
 @SpringBootTest
 class SignerInformationServiceTest {
+
+    @MockBean
+    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Autowired
     SignerInformationRepository signerInformationRepository;
@@ -56,6 +65,7 @@ class SignerInformationServiceTest {
         signerInformationRepository.deleteAll();
     }
 
+
     @Test
     void updateEmptyRepositoryWithEmptyCertList()  {
         ArrayList<TrustListItem> trustList = new ArrayList<>();
@@ -65,6 +75,7 @@ class SignerInformationServiceTest {
         List<SignerInformationEntity> repositoryItems = signerInformationRepository.findAll();
 
         Assertions.assertEquals(0, repositoryItems.size());
+
     }
 
     @Test
@@ -82,6 +93,7 @@ class SignerInformationServiceTest {
 
         Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_1_KID, repositoryItem.getKid());
         Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_1_STR, repositoryItem.getRawData());
+
     }
 
     @Test
@@ -106,6 +118,7 @@ class SignerInformationServiceTest {
         repositoryItem = repositoryItems.get(2);
         Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_3_KID, repositoryItem.getKid());
         Assertions.assertEquals(SignerInformationTestHelper.TEST_CERT_3_STR, repositoryItem.getRawData());
+
     }
 
     @Test
@@ -144,6 +157,7 @@ class SignerInformationServiceTest {
         signerInformationTestHelper.insertCertString(SignerInformationTestHelper.TEST_CERT_1_STR);
         signerInformationTestHelper.insertCertString(SignerInformationTestHelper.TEST_CERT_2_STR);
 
+
         ArrayList<TrustListItem> trustList = new ArrayList<>();
         trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_2_STR));
         trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_3_STR));
@@ -177,6 +191,7 @@ class SignerInformationServiceTest {
         List<SignerInformationEntity> repositoryItems = signerInformationRepository.findAllByDeletedOrderByIdAsc(false);
 
         Assertions.assertEquals(0, repositoryItems.size());
+
     }
 
     @Test
@@ -208,5 +223,7 @@ class SignerInformationServiceTest {
 
         assertThat(TrustedIssuerDto.class, allOf(hasValidBeanConstructor(), hasValidBeanEquals(),
             hasValidGettersAndSetters(), hasValidBeanHashCode(), hasValidBeanToString()));
+
     }
+
 }

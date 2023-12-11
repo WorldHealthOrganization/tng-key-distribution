@@ -22,6 +22,9 @@ import org.springframework.test.web.servlet.MvcResult;
 @AutoConfigureMockMvc
 class ContextControllerIntegrationTest {
 
+    @org.springframework.boot.test.mock.mockito.MockBean
+    eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -44,4 +47,5 @@ class ContextControllerIntegrationTest {
         }
         Assertions.assertEquals(resultContext, fileContext);
     }
+
 }

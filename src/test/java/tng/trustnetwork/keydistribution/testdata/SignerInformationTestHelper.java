@@ -20,8 +20,9 @@
 
 package tng.trustnetwork.keydistribution.testdata;
 
+import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
+import eu.europa.ec.dgc.utils.CertificateUtils;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
-import tng.trustnetwork.keydistribution.model.TrustListItem;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SignerInformationTestHelper {
+
 
     public static final String TEST_CERT_1_STR =
         "MIICrDCCAZSgAwIBAgIEYH+7ujANBgkqhkiG9w0BAQsFADAYMRYwFAYDVQQDDA1l"
@@ -104,7 +106,7 @@ public class SignerInformationTestHelper {
         String kid;
         try {
             kid = certificateUtils.getCertKid(convertStringToX509Cert(certStr));
-        } catch (CertificateException e) {
+        }catch (CertificateException e) {
             kid = "kid_"+ ZonedDateTime.now();
         }
 
@@ -129,7 +131,7 @@ public class SignerInformationTestHelper {
         String kid;
         try {
             kid = certificateUtils.getCertKid(convertStringToX509Cert(certStr));
-        } catch (CertificateException e) {
+        }catch (CertificateException e) {
             kid = "kid_"+ ZonedDateTime.now();
         }
 
@@ -153,7 +155,7 @@ public class SignerInformationTestHelper {
         String kid;
         try {
             kid = certificateUtils.getCertKid(convertStringToX509Cert(certStr));
-        } catch (CertificateException e) {
+        }catch (CertificateException e) {
             kid = "kid_"+ ZonedDateTime.now();
         }
 
@@ -164,4 +166,5 @@ public class SignerInformationTestHelper {
 
         return item;
     }
+
 }
