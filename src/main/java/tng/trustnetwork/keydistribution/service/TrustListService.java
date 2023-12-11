@@ -8,17 +8,17 @@ import eu.europa.ec.dgc.gateway.connector.dto.TrustedIssuerDto;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty("dgc.gateway.connector.enabled")
 public class TrustListService {
 
-    @Autowired
-   private final DgcGatewayConnectorRestClient dgcGatewayConnectorRestClient;
+
+    private final DgcGatewayConnectorRestClient dgcGatewayConnectorRestClient;
 
     public ResponseEntity<List<TrustListItemDto>> gatewayApiForType(CertificateTypeDto type) {
         return ResponseEntity.ok().body(dgcGatewayConnectorRestClient.getTrustList(type).getBody());

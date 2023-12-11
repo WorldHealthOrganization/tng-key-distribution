@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,9 @@ import tng.trustnetwork.keydistribution.service.TrustListService;
 
 @RestController
 @Slf4j
+@ConditionalOnProperty("dgc.gateway.connector.enabled")
 public class TrustListController {
+
     @Autowired
     private TrustListService trustListTypeService;
 
