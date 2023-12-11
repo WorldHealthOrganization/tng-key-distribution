@@ -31,7 +31,7 @@ public class TrustListController {
 
 
     @GetMapping(path = "/trustList/{type}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(tags = {"Trust Lists"})
+    @Operation(tags = {"Trust Lists", "Temporary Testing API"})
     public ResponseEntity<List<TrustListItemDto>> dataLoader(@PathVariable("type")
                                                                  CertificateTypeDto type) throws BadRequestException {
         return trustListTypeService.gatewayApiForType(type);
@@ -40,7 +40,7 @@ public class TrustListController {
     @GetMapping(path = "trustList/issuers", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
         summary = "Returns the list of trusted issuers filtered by criterias.",
-        tags = {"Trust Lists"},
+        tags = {"Trust Lists", "Temporary Testing API"},
         parameters = {
             @Parameter(
                 in = ParameterIn.QUERY,
@@ -73,7 +73,7 @@ public class TrustListController {
     @Operation(
         summary = "Returns a filtered list of trusted certificates. The provided search criteria are additive."
             + " It is possible to provide more than one value for each criteria. (Except for withFederation)",
-        tags = {"Trust Lists"},
+        tags = {"Trust Lists", "Temporary Testing API"},
         parameters = {
             @Parameter(
                 in = ParameterIn.QUERY,
