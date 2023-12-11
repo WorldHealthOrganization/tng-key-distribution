@@ -1,0 +1,6 @@
+FROM liquibase/liquibase
+
+COPY /src/main/resources/db/changelog /liquibase/db/changelog
+COPY /src/main/resources/db/changelog.yaml /liquibase/db
+
+

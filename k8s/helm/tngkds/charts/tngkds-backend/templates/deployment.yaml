@@ -22,11 +22,10 @@ spec:
     spec:
       initContainers:
         - name: liquibase
-          image: liquibase/liquibase:latest
+          image: liquibase:0.1.12
           command: ["/bin/sh", "-c"]
           args:
-            - ls -l /liquibase/changelog;
-              liquibase update --changeLogFile=changelog.yaml;
+            - liquibase update --changeLogFile=db/changelog.yaml;
           env:
             - name: LIQUIBASE_COMMAND_URL
               value: "jdbc:postgresql://{{ .Values.psql.serviceName }}.{{ .Release.Namespace }}.{{ .Values.psql.cluster }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
@@ -41,12 +40,9 @@ spec:
                   name: {{ include "tngkds-backend.fullname" . }}-secret
                   key: pgPassword
             - name: LIQUIBASE_SEARCH_PATH
-              value: /liquibase/changelog
+              value: /liquibase
             - name: LIQUIBASE_LOG_LEVEL
-              value: INFO
-          volumeMounts:
-            - name: liquibase-changelog-volume
-              mountPath: /liquibase/changelog
+              value: ERROR
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}
       containers:
@@ -125,9 +121,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        - name: liquibase-changelog-volume
-          configMap:
-            name: liquibase-changelog
         - name: secrets-jks
           secret:
             secretName: mtls-secret
