@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import tng.trustnetwork.keydistribution.clients.UniversalResolverClient;
 import tng.trustnetwork.keydistribution.model.DidDocument;
 import tng.trustnetwork.keydistribution.model.DidDocumentUnmarshal;
 
