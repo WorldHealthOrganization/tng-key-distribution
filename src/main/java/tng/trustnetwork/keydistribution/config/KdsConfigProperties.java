@@ -20,13 +20,14 @@
 
 package tng.trustnetwork.keydistribution.config;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties("dgc")
+@ConfigurationProperties("dgc") //TODO separate kds and dgc-lib properties
 public class KdsConfigProperties {
 
     private final CertificatesDownloader certificatesDownloader = new CertificatesDownloader();
@@ -34,6 +35,12 @@ public class KdsConfigProperties {
     private final TrustedIssuerDownloader trustedIssuerDownloader = new TrustedIssuerDownloader();
 
     private String context = "";
+
+    /**
+     * Http-Proxy Configuration.
+     */
+    private KdsConfigProperties.Proxy
+        proxy = new KdsConfigProperties.Proxy(false, null, -1);
 
     @Getter
     @Setter
@@ -49,4 +56,28 @@ public class KdsConfigProperties {
         private Integer timeInterval;
         private Integer lockLimit;
     }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class Proxy {
+
+        /**
+         * Enable HTTP Proxy.
+         */
+        private boolean enabled;
+
+        /**
+         * Host Address of Proxy server (without protocol).
+         * (e.g. proxy.example-corp.com)
+         */
+        private String host;
+
+        /**
+         * Port of Proxy Server.
+         * (e.g. 8080)
+         */
+        private int port;
+    }
+
 }
