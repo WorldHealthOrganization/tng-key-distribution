@@ -1,43 +1,50 @@
 package tng.trustnetwork.keydistribution.service;
 
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import tng.trustnetwork.keydistribution.model.DIDDocument;
-import tng.trustnetwork.keydistribution.model.DIDDocumentUnmarshal;
+import tng.trustnetwork.keydistribution.model.DidDocument;
+import tng.trustnetwork.keydistribution.model.DidDocumentUnmarshal;
 
 @SpringBootTest
-public class UniversalResolverServiceImplTest {
-	
-	@MockBean
-	private UniversalResolverClient universalResolverClient;
-	
-	@Autowired
-	private URServiceImpl uRServiceImpl;
+class UniversalResolverServiceImplTest {
 
-	
-	@Test
-	void resolveDIDDocumentNotNull() {
-		
-		DIDDocument DIDDocument  =  new DIDDocument();
-		Mockito.when(universalResolverClient.getDIDDocument("did:web:tng-cdn-dev.who.int:trustlist")).thenReturn(DIDDocument);
-		DIDDocumentUnmarshal DIDDocumentUnmarshal = uRServiceImpl.URApiCall("did:web:tng-cdn-dev.who.int:trustlist");
-		Assertions.assertNotNull(DIDDocumentUnmarshal);
-		
-	}
-	
-	@Test
-	void resolveDIDDocumentNull() {
-		
-		DIDDocument DIDDocument  =  new DIDDocument();
-		Mockito.when(universalResolverClient.getDIDDocument("test")).thenReturn(null);
-		DIDDocumentUnmarshal DIDDocumentUnmarshal = uRServiceImpl.URApiCall("test");
-		Assertions.assertNull(DIDDocumentUnmarshal);
-		
-	}
-	
+    @MockBean
+    private UniversalResolverClient universalResolverClient;
+
+    @Autowired
+    private UniversalResolverService universalResolverService;
+
+    @MockBean
+    DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
+
+    @Autowired
+    SignerCertificateDownloadServiceImpl signerCertificateDownloadService;
+
+    @Test
+    void resolveDIDDocumentNotNull() {
+
+        DidDocument didDocument = new DidDocument();
+        Mockito.when(universalResolverClient.getDidDocument("did:web:tng-cdn-dev.who.int:trustlist"))
+               .thenReturn(didDocument);
+        DidDocumentUnmarshal didDocumentUnmarshal =
+            universalResolverService.universalResolverApiCall("did:web:tng-cdn-dev.who.int:trustlist");
+        Assertions.assertNotNull(didDocumentUnmarshal);
+
+    }
+
+    @Test
+    void resolveDIDDocumentNull() {
+
+        DidDocument didDocument = new DidDocument();
+        Mockito.when(universalResolverClient.getDidDocument("test")).thenReturn(null);
+        DidDocumentUnmarshal didDocumentUnmarshal = universalResolverService.universalResolverApiCall("test");
+        Assertions.assertNull(didDocumentUnmarshal);
+
+    }
+
 }

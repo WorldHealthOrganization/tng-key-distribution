@@ -25,7 +25,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-
 import tng.trustnetwork.keydistribution.config.KdsConfigProperties;
 
 /**
@@ -42,9 +41,9 @@ public class KeyDistributionServiceApplication extends SpringBootServletInitiali
      * @param args the args for the main method
      */
     public static void main(String[] args) {
+
         SpringApplication.run(KeyDistributionServiceApplication.class, args);
-        
-     
+
     }
 
 }
