@@ -38,8 +38,6 @@
     <okhttp.version>5.0.0-alpha.11</okhttp.version>
     <shedlock.version>5.4.0</shedlock.version>
     <h2.version>2.2.220</h2.version>
-    <sap.cloud.sdk.version>4.15.0</sap.cloud.sdk.version>
-    <sap.cloud.logging.version>3.7.0</sap.cloud.logging.version>
     <commons-fileupload.version>1.5</commons-fileupload.version>
     <!-- plugins -->
     <plugin.checkstyle.version>3.3.0</plugin.checkstyle.version>
@@ -220,12 +218,6 @@
         <artifactId>liquibase-core</artifactId>
         <version>${liquibase.version}</version>
       </dependency>
-      <dependency>
-        <groupId>com.sap.cloud.sdk</groupId>
-        <artifactId>sdk-bom</artifactId>
-        <version>${sap.cloud.sdk.version}</version>
-        <type>pom</type>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -321,16 +313,6 @@
           <artifactId>spring-boot</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.sap.cloud.sdk.cloudplatform</groupId>
-      <artifactId>scp-cf</artifactId>
-      <version>${sap.cloud.sdk.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sap.hcp.cf.logging</groupId>
-      <artifactId>cf-java-logging-support-logback</artifactId>
-      <version>${sap.cloud.logging.version}</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.google.code.bean-matchers/bean-matchers -->
     <dependency>
