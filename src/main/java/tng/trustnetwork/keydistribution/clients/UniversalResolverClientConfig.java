@@ -10,16 +10,19 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.HttpHost;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tng.trustnetwork.keydistribution.config.KdsConfigProperties;
 
 @Configuration
 @RequiredArgsConstructor
 public class UniversalResolverClientConfig {
+
+    private final KdsConfigProperties properties;
 
     // Create a custom TrustManager that trusts all certificates
     TrustManager[] trustAllCerts = new TrustManager[] {
@@ -60,6 +63,16 @@ public class UniversalResolverClientConfig {
                                                          new BasicHeader("Connection", "keep-alive")
                                                      ))
                                                      .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                                                     .setProxy(getProxy())
                                                      .build());
+    }
+
+    private HttpHost getProxy() {
+
+        if (properties.getProxy().isEnabled()) {
+            return new HttpHost(properties.getProxy().getHost(), properties.getProxy().getPort());
+        } else {
+            return null;
+        }
     }
 }
