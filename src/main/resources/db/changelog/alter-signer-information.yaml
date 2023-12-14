@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+  - changeSet:
+      id: delete old data
+      author: admin
+      changes:
+        - delete:
+            tableName: signer_information
+  - changeSet:
+      id: alter-signer-information
+      author: admin
+      changes:
+        - addColumn:
+            tableName: signer_information
+            columns:
+              - column:
+                  name: country
+                  type: varchar(2)
+              - column:
+                  name: thumbprint
+                  type: varchar(512)
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deleted
+                  type: boolean

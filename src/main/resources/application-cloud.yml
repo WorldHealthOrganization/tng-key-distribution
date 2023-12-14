@@ -9,3 +9,5 @@ spring:
     password: postgres
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    enabled: false
