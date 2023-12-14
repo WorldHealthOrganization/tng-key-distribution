@@ -22,7 +22,7 @@ spec:
     spec:
       initContainers:
         - name: liquibase
-          image: liquibase:0.1.12
+          image: "{{ .Values.liquibaseImage.repository }}:{{ .Values.liquibaseImage.tag }}"
           command: ["/bin/sh", "-c"]
           args:
             - liquibase update --changeLogFile=db/changelog.yaml;
