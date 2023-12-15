@@ -57,6 +57,10 @@ jobs:
           --file ./Dockerfile
           --tag "${APP_PACKAGES_URL}:${APP_VERSION}";
           docker push "${APP_PACKAGES_URL}:${APP_VERSION}";
+          docker build .
+          --file ./DB-Changelog-Dockerfile
+          --tag "${APP_PACKAGES_URL}-initcontainer:${APP_VERSION}";
+          docker push "${APP_PACKAGES_URL}-initcontainer:${APP_VERSION}";
         env:
           APP_PACKAGES_URL: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
           APP_PACKAGES_USERNAME: ${{ github.actor }}
