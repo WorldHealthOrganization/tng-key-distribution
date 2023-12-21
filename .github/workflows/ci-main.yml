@@ -9,14 +9,14 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: adopt
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.m2/repository
@@ -57,6 +57,10 @@ jobs:
           --file ./Dockerfile
           --tag "${APP_PACKAGES_URL}:${APP_VERSION}";
           docker push "${APP_PACKAGES_URL}:${APP_VERSION}";
+          docker build .
+          --file ./DB-Changelog-Dockerfile
+          --tag "${APP_PACKAGES_URL}-initcontainer:${APP_VERSION}";
+          docker push "${APP_PACKAGES_URL}-initcontainer:${APP_VERSION}";
         env:
           APP_PACKAGES_URL: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
           APP_PACKAGES_USERNAME: ${{ github.actor }}
