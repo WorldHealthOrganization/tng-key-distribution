@@ -44,6 +44,8 @@ public class DecentralizedIdentifierServiceImpl implements DecentralizedIdentifi
 			decentralizedIdentifierEntity.setController(didDocumentUnmarshal.getController());
 			decentralizedIdentifierEntity.setContext(String.join(",",didDocumentUnmarshal.getContext()));
 			decentralizedIdentifierEntity.setProof(decentralizedIdentifierMapper.proofToProofEntity(didDocumentUnmarshal.getProof()));
+			
+			 List<VerificationMethodEntity> verificationMethodEntities = new ArrayList<>();
 			 
 			 List<ResolvedKey> resolvedKeys =  didDocumentUnmarshal.getVerificationMethod().getResolvedKeys();
 			
