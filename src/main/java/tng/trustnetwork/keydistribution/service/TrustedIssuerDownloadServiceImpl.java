@@ -22,10 +22,14 @@ package tng.trustnetwork.keydistribution.service;
 
 import eu.europa.ec.dgc.gateway.connector.DgcGatewayTrustedIssuerDownloadConnector;
 import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
+import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer.UrlType;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
