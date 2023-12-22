@@ -36,7 +36,7 @@ public class VerificationMethodEntity {
 	@Column(name = "vm_id", nullable = true, length = 100)
 	private String vmId;
 
-	@Column(name = "type", nullable = true, length = 50)
+	@Column(name = "type", nullable = true, length = 100)
 	private String type;
 
 	@Column(name = "controller", nullable = true, length = 100)

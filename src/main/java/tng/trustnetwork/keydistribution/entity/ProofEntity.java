@@ -28,22 +28,22 @@ public class ProofEntity {
 	@Column(name = "id",columnDefinition="BIGINT")
 	private String id;
 	
-	@Column(name = "type", nullable = false, length = 100)
+	@Column(name = "type", nullable = true, length = 100)
 	private String type;
 	
-	@Column(name = "created", nullable = false, length = 100)
+	@Column(name = "created", nullable = true, length = 100)
 	private String created;
 	
-	@Column(name = "nonce", nullable = false, length = 100)
+	@Column(name = "nonce", nullable = true, length = 100)
 	private String nonce;
 	
-	@Column(name = "proof_purpose", nullable = false, length = 100)
+	@Column(name = "proof_purpose", nullable = true, length = 100)
 	private String proofPurpose;
 	
-	@Column(name = "verification_method", nullable = false, length = 100)
+	@Column(name = "verification_method", nullable = true, length = 100)
 	private String verificationMethod;
 	
-	@Column(name = "jws", nullable = false, length = 100)
+	@Column(name = "jws", nullable = false, length = 500)
 	private String jws;
 	
 	@OneToOne(fetch = FetchType.LAZY)

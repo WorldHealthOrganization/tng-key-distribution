@@ -44,9 +44,9 @@ public class UniversalResolverController {
     @Tag(name = "Temporary Testing API")
     public ResponseEntity<List<DecentralizedIdentifierEntity>> getDidDocumentFromDatabase(@PathVariable String didKey) {
 
-    	DidDocumentUnmarshal didDocumentUnmarshal = urService.universalResolverApiCall(didKey);
+    //	DidDocumentUnmarshal didDocumentUnmarshal = urService.universalResolverApiCall(didKey);
     	
-    	decentralizedIdentifierService.updateDecentralizedIdentifierList(didDocumentUnmarshal);
+    //	decentralizedIdentifierService.updateDecentralizedIdentifierList(didDocumentUnmarshal);
     	
     	List<DecentralizedIdentifierEntity> decentralizedIdentifierEntity = decentralizedIdentifierService.getDecentralizedIdentifierEntity(didKey);
         return ResponseEntity.ok(decentralizedIdentifierEntity);

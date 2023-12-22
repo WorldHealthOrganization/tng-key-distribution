@@ -29,19 +29,19 @@ public class PublicKeyJwkEntity {
 	@Column(name = "id",columnDefinition="BIGINT")
 	private String id;
 	
-	@Column(name = "crv", nullable = false, length = 100)
+	@Column(name = "crv", nullable = true, length = 100)
 	private String crv;
 	
-	@Column(name = "kty", nullable = false, length = 100)
+	@Column(name = "kty", nullable = true, length = 100)
 	private String kty;
 	
-	@Column(name = "x", nullable = false, length = 100)
+	@Column(name = "x", nullable = true, length = 100)
 	private String xvalue;
 	
-	@Column(name = "y", nullable = false, length = 100)
+	@Column(name = "y", nullable = true, length = 100)
 	private String yvalue;
 	
-	@Column(name = "x5c", nullable = false, length = 100)
+	@Column(name = "x5c", nullable = true, length = 7000)
 	private String x5c;
 	
 	@OneToOne(fetch = FetchType.LAZY)

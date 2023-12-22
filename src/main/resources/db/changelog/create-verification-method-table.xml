@@ -7,7 +7,7 @@
   <changeSet id="create-info-table" author="laurenz-simon">
     <createTable tableName="verification_method">
        <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="true" primaryKey="true" primaryKeyName="verification_method_id"/>
+        <constraints nullable="false" primaryKey="true" primaryKeyName="verification_method_id"/>
       </column>
       <column name="vm_id" type="VARCHAR(100)">
         <constraints nullable="true"/>

@@ -7,18 +7,18 @@
   <changeSet id="create-info-table" author="laurenz-simon">
     <createTable tableName="proof">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="true" primaryKey="true" primaryKeyName="proof_id"/>
+        <constraints nullable="false" primaryKey="true" primaryKeyName="proof_id"/>
       </column>
-      <column name="type" type="VARCHAR(50)">
+      <column name="type" type="VARCHAR(100)">
         <constraints nullable="true"/>
       </column>
-      <column name="created" type="VARCHAR(50)">
+      <column name="created" type="VARCHAR(100)">
         <constraints nullable="true"/>
       </column>
-       <column name="nonce" type="VARCHAR(50)">
+       <column name="nonce" type="VARCHAR(100)">
         <constraints nullable="true"/>
       </column>
-       <column name="proof_purpose" type="VARCHAR(50)">
+       <column name="proof_purpose" type="VARCHAR(100)">
         <constraints nullable="true"/>
       </column>
        <column name="verification_method" type="VARCHAR(100)">

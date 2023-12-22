@@ -32,13 +32,13 @@ public class DecentralizedIdentifierEntity {
 	@Column(name = "id",columnDefinition="BIGINT")
 	private String id;
 	
-	@Column(name = "did_id", nullable = true, length = 50)
+	@Column(name = "did_id", nullable = true, length = 100)
 	private String didId;
 
-	@Column(name = "context", nullable = true, length = 50)
+	@Column(name = "context", nullable = true, length = 100)
 	private String context;
 
-	@Column(name = "controller", nullable = true, length = 50)
+	@Column(name = "controller", nullable = true, length = 100)
 	private String controller;
 
 	@OneToMany(cascade = CascadeType.ALL)

@@ -26,10 +26,13 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 import tng.trustnetwork.keydistribution.mapper.IssuerMapper;
+import tng.trustnetwork.keydistribution.model.DidDocumentUnmarshal;
 import tng.trustnetwork.keydistribution.repository.TrustedIssuerRepository;
 
 @Slf4j
@@ -42,6 +45,12 @@ public class TrustedIssuerService {
     private final IssuerMapper issuerMapper;
 
     private final TrustedIssuerRepository trustedIssuerRepository;
+    
+    @Autowired
+    private UniversalResolverService urService;
+    
+    @Autowired
+    private DecentralizedIdentifierService decentralizedIdentifierService;
 
     /**
      * Get the current etag.
@@ -80,6 +89,16 @@ public class TrustedIssuerService {
 
         for (TrustedIssuer trustedIssuer : trustedIssuers) {
             trustedIssuerEntities.add(getTrustedIssuerEntity(newEtag, trustedIssuer));
+        }
+        
+        //ToDo: universalResolverApiCall and updateDecentralizedIdentifierList call to be moved withing loop above once DDCCGW-563 is fixed
+        
+        TrustedIssuer trustedIssuer = new TrustedIssuer();
+        trustedIssuer.setType(TrustedIssuer.UrlType.DID);
+        trustedIssuer.setUrl("did:web:tng-cdn-dev.who.int:trustlist");
+        if(TrustedIssuer.UrlType.DID == trustedIssuer.getType()) {
+        	DidDocumentUnmarshal didDocumentUnmarshal = urService.universalResolverApiCall(trustedIssuer.getUrl());
+        	decentralizedIdentifierService.updateDecentralizedIdentifierList(didDocumentUnmarshal);
         }
 
         trustedIssuerRepository.saveAll(trustedIssuerEntities);

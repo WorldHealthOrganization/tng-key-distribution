@@ -7,7 +7,7 @@
   <changeSet id="create-info-table" author="laurenz-simon">
     <createTable tableName="public_key_jwk">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="true" primaryKey="true" primaryKeyName="public_key_jwk_id"/>
+        <constraints nullable="false" primaryKey="true" primaryKeyName="public_key_jwk_id"/>
       </column>
       <column name="kty" type="VARCHAR(100)">
         <constraints nullable="true"/>
