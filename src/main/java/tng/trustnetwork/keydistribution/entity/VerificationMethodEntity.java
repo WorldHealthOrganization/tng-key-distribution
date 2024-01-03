@@ -23,22 +23,22 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VerificationMethodEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id",columnDefinition="BIGINT")
-	private String id;
-	
-	@Column(name = "vm_id", nullable = true, length = 100)
-	private String vmId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", columnDefinition = "BIGINT")
+    private String id;
 
-	@Column(name = "type", nullable = true, length = 100)
-	private String type;
+    @Column(name = "vm_id", nullable = true, length = 100)
+    private String vmId;
 
-	@Column(name = "controller", nullable = true, length = 100)
-	private String controller;
+    @Column(name = "type", nullable = true, length = 100)
+    private String type;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id")
-	private PublicKeyJwkEntity publicKeyJwk;
-	
+    @Column(name = "controller", nullable = true, length = 100)
+    private String controller;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id")
+    private PublicKeyJwkEntity publicKeyJwk;
+
 }

@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import tng.trustnetwork.keydistribution.entity.DecentralizedIdentifierEntity;
 
 public interface DecentralizedIdentifierRepository extends JpaRepository<DecentralizedIdentifierEntity, String> {
-	
-	List<DecentralizedIdentifierEntity> findAllById(String id);
-	List<DecentralizedIdentifierEntity> findByDidId(String id);
+    List<DecentralizedIdentifierEntity> findAllById(String id);
+
+    List<DecentralizedIdentifierEntity> findByDidId(String id);
 }

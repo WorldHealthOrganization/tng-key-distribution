@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,19 +44,21 @@ public class TrustedIssuerService {
     private final IssuerMapper issuerMapper;
 
     private final TrustedIssuerRepository trustedIssuerRepository;
-    
+
     @Autowired
     private UniversalResolverService urService;
-    
+
     @Autowired
     private DecentralizedIdentifierService decentralizedIdentifierService;
 
     /**
      * Get the current etag.
+     *
      * @return the current etag
      */
 
     public String getEtag() {
+
         String etag = infoService.getValueForKey(InfoService.CURRENT_ETAG);
         if (etag == null) {
             etag = "";
@@ -71,6 +72,7 @@ public class TrustedIssuerService {
      * @return List holding the found trusted issuers.
      */
     public List<TrustedIssuerEntity> getAllIssuers(String etag) {
+
         return trustedIssuerRepository.findAllByEtag(etag);
     }
 
@@ -78,10 +80,10 @@ public class TrustedIssuerService {
      * Method to synchronise the issuers in the db with the given List of trusted issuers.
      *
      * @param trustedIssuers defines the list of trusted issuers.
-     *
      */
     @Transactional
     public void updateTrustedIssuersList(List<TrustedIssuer> trustedIssuers) {
+
         String newEtag = UUID.randomUUID().toString();
 
         List<TrustedIssuerEntity> trustedIssuerEntities = new ArrayList<>();
@@ -90,15 +92,16 @@ public class TrustedIssuerService {
         for (TrustedIssuer trustedIssuer : trustedIssuers) {
             trustedIssuerEntities.add(getTrustedIssuerEntity(newEtag, trustedIssuer));
         }
-        
-        //ToDo: universalResolverApiCall and updateDecentralizedIdentifierList call to be moved withing loop above once DDCCGW-563 is fixed
-        
+
+        //ToDo: universalResolverApiCall and updateDecentralizedIdentifierList
+        // call to be moved withing loop above once DDCCGW-563 is fixed
+
         TrustedIssuer trustedIssuer = new TrustedIssuer();
         trustedIssuer.setType(TrustedIssuer.UrlType.DID);
         trustedIssuer.setUrl("did:web:tng-cdn-dev.who.int:trustlist");
-        if(TrustedIssuer.UrlType.DID == trustedIssuer.getType()) {
-        	DidDocumentUnmarshal didDocumentUnmarshal = urService.universalResolverApiCall(trustedIssuer.getUrl());
-        	decentralizedIdentifierService.updateDecentralizedIdentifierList(didDocumentUnmarshal);
+        if (TrustedIssuer.UrlType.DID == trustedIssuer.getType()) {
+            DidDocumentUnmarshal didDocumentUnmarshal = urService.universalResolverApiCall(trustedIssuer.getUrl());
+            decentralizedIdentifierService.updateDecentralizedIdentifierList(didDocumentUnmarshal);
         }
 
         trustedIssuerRepository.saveAll(trustedIssuerEntities);
@@ -111,12 +114,14 @@ public class TrustedIssuerService {
     }
 
     private TrustedIssuerEntity getTrustedIssuerEntity(String etag, TrustedIssuer trustedIssuer) {
+
         TrustedIssuerEntity entity = issuerMapper.trustedIssuerToTrustedIssuerEntity(trustedIssuer);
         entity.setEtag(etag);
         return entity;
     }
 
     private void cleanupData(String etag) {
+
         trustedIssuerRepository.deleteAllByEtag(etag);
     }
 
