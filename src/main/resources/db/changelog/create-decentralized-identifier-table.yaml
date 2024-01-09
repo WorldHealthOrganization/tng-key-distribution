@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-decentralized-identifier-table
+      author: admin
+      changes:
+        - createTable:
+            tableName: decentralized_identifier
+            columns:
+              - column:
+                  autoIncrement: true
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: decentralized_identifier_id
+                    nullable: false
+              - column:
+                  name: did_id
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: context
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: controller
+                  type: varchar(50)
+                  constraints:
+                    nullable: true
+

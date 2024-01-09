@@ -7,3 +7,11 @@ databaseChangeLog:
       file: db/changelog/create-info-table.yaml
   - include:
       file: db/changelog/create-trusted-issuer-table.yaml
+  - include:
+      file: db/changelog/create-decentralized-identifier-table.yaml
+  - include:
+      file: db/changelog/create-proof-table.yaml
+  - include:
+      file: db/changelog/create-verification-method-table.yaml
+  - include:
+      file: db/changelog/create-public-key-jwk-table.yaml    

@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-verification-method-table
+      author: admin
+      changes:
+        - createTable:
+            tableName: verification_method
+            columns:
+              - column:
+                  autoIncrement: true
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: verification_method_id
+                    nullable: false
+              - column:
+                  name: vm_id
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: type
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: controller
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: decentralized_identifier_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+             
