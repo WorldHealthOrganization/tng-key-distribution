@@ -9,14 +9,14 @@ jobs:
     env:
       APP_VERSION: ${{ github.event.release.tag_name }}
     steps:
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: adopt
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.m2/repository
@@ -48,6 +48,10 @@ jobs:
           --tag "${APP_PACKAGES_URL}:${APP_VERSION}"
           docker push "${APP_PACKAGES_URL}:latest"
           docker push "${APP_PACKAGES_URL}:${APP_VERSION}"
+          docker build .
+          --file ./DB-Changelog-Dockerfile
+          --tag "${APP_PACKAGES_URL}-initcontainer:${APP_VERSION}";
+          docker push "${APP_PACKAGES_URL}-initcontainer:${APP_VERSION}";
         env:
           APP_PACKAGES_URL: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
           APP_PACKAGES_USERNAME: ${{ github.actor }}
@@ -60,34 +64,3 @@ jobs:
           ./target/generated-resources/licenses.xml#licenses-${APP_VERSION}.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  deploy:
-    runs-on: ubuntu-20.04
-    environment: dev
-    needs:
-      - build
-    env:
-      APP_VERSION: ${{ github.event.release.tag_name }}
-    steps:
-      - name: cf setup
-        run: |-
-          curl -sL "https://packages.cloudfoundry.org/stable?release=${CF_RELEASE}&version=${CF_VERSION}" | \
-          sudo tar -zx -C /usr/local/bin
-        env:
-          CF_VERSION: 7.2.0
-          CF_RELEASE: linux64-binary
-      - name: cf push
-        run: |-
-          cf api ${CF_API}
-          cf auth
-          cf target -o ${CF_ORG} -s ${CF_SPACE}
-          cf push ${APP_NAME} --docker-image ${APP_IMAGE}:${APP_VERSION} --docker-username ${CF_DOCKER_USERNAME}
-        env:
-          APP_NAME: tng-key-distribution-test
-          APP_IMAGE: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
-          CF_API: ${{ secrets.CF_API }}
-          CF_ORG: ${{ secrets.CF_ORG }}
-          CF_SPACE: ${{ secrets.CF_SPACE }}
-          CF_USERNAME: ${{ secrets.CF_USERNAME }}
-          CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
-          CF_DOCKER_USERNAME: ${{ secrets.CF_DOCKER_USERNAME }}
-          CF_DOCKER_PASSWORD: ${{ secrets.CF_DOCKER_PASSWORD }}

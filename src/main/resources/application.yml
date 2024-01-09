@@ -13,7 +13,8 @@ spring:
     hibernate:
       ddl-auto: validate
   liquibase:
-    change-log: classpath:db/changelog.xml
+    enabled: true
+    change-log: classpath:db/changelog.yaml
   h2:
     console:
       enabled: true
@@ -61,18 +62,18 @@ dgc:
   gateway:
     connector:
       enabled: false
-#      endpoint: ${DGC_GATEWAY_CONNECTOR_ENDPOINT}
-#      proxy:
-#        enabled: false
-#      max-cache-age: 300
-#      tls-trust-store:
-#        password: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD}
-#        path: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH}
-#      tls-key-store:
-#        alias: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_ALIAS}
-#        password: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD}
-#        path: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH}
-#      trust-anchor:
-#        alias: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS}
-#        password: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD}
-#        path: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH}
+      endpoint: ${DGC_GATEWAY_CONNECTOR_ENDPOINT}
+      proxy:
+        enabled: false
+      max-cache-age: 300
+      tls-trust-store:
+        password: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD}
+        path: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH}
+      tls-key-store:
+        alias: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_ALIAS}
+        password: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD}
+        path: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH}
+      trust-anchor:
+        alias: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS}
+        password: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD}
+        path: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH}

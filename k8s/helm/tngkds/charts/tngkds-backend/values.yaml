@@ -18,6 +18,11 @@ imagePullSecrets: tng-distribution-pull-secret
 nameOverride: ""
 fullnameOverride: ""
 
+# Liquibase
+liquibaseImage:
+  repository: ghcr.io/worldhealthorganization/tng-key-distribution/tngkds-liquibase
+  tag: "0.0.1"
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -111,7 +116,7 @@ spring:
 server:
   port: 8080
 
-
+# Smart TN Gateway
 gateway:
   connector:
     enabled: true

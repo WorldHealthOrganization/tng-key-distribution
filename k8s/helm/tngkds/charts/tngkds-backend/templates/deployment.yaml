@@ -20,6 +20,29 @@ spec:
       labels:
         {{- include "tngkds-backend.labels" . | nindent 8 }}
     spec:
+      initContainers:
+        - name: liquibase
+          image: "{{ .Values.liquibaseImage.repository }}:{{ .Values.liquibaseImage.tag }}"
+          command: ["/bin/sh", "-c"]
+          args:
+            - liquibase update --changeLogFile=db/changelog.yaml;
+          env:
+            - name: LIQUIBASE_COMMAND_URL
+              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}.{{ .Release.Namespace }}.{{ .Values.psql.cluster }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
+            - name: LIQUIBASE_COMMAND_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "tngkds-backend.fullname" . }}-secret
+                  key: pgUser
+            - name: LIQUIBASE_COMMAND_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "tngkds-backend.fullname" . }}-secret
+                  key: pgPassword
+            - name: LIQUIBASE_SEARCH_PATH
+              value: /liquibase
+            - name: LIQUIBASE_LOG_LEVEL
+              value: ERROR
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}
       containers:

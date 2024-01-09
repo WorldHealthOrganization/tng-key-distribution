@@ -14,7 +14,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
   liquibase:
-    change-log: classpath:db/changelog.xml
+    change-log: classpath:db/changelog.yaml
   h2:
     console:
       enabled: true
