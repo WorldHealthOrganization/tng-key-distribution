@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import tng.trustnetwork.keydistribution.entity.DecentralizedIdentifierEntity;
 import tng.trustnetwork.keydistribution.mapper.DecentralizedIdentifierMapper;
 import tng.trustnetwork.keydistribution.model.DidDocumentUnmarshal;
@@ -24,6 +25,9 @@ public class DecentralizedIdentifierServiceImplTest {
 	
 	@MockBean
 	private DecentralizedIdentifierMapper decentralizedIdentifierMapper;
+	
+	 @MockBean
+	 DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 	
 	@Autowired
 	DecentralizedIdentifierTestHelper decentralizedIdentifierTestHelper;
