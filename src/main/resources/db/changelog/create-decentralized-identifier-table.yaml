@@ -29,4 +29,14 @@ databaseChangeLog:
                   type: varchar(50)
                   constraints:
                     nullable: true
+              - column:
+                  name: proof_id
+                  type: bigint
+                  constraints:
+                    nullable: true     
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false     
 

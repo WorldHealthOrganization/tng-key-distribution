@@ -34,4 +34,14 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     nullable: true
+              - column:
+                  name: public_key_jwk_id
+                  type: bigint
+                  constraints:
+                    nullable: true 
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false        
              

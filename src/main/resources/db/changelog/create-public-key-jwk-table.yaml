@@ -40,7 +40,8 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
-                  name: verification_method_id
-                  type: bigint
+                  name: created_at
+                  type: datetime
                   constraints:
-                    nullable: true
+                    nullable: false     
+

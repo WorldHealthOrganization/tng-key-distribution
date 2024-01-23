@@ -2,13 +2,11 @@ package tng.trustnetwork.keydistribution.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -33,8 +31,8 @@ public class ProofEntity {
 
     @Column(name = "created", nullable = true, length = 100)
     private String created;
-
     @Column(name = "nonce", nullable = true, length = 100)
+    
     private String nonce;
 
     @Column(name = "proof_purpose", nullable = true, length = 100)
@@ -45,8 +43,8 @@ public class ProofEntity {
 
     @Column(name = "jws", nullable = false, length = 500)
     private String jws;
+    
+    @Column(name = "created_at", nullable = false)
+    private ZonedDateTime createdAt = ZonedDateTime.now();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "decentralized_identifier_id")
-    private DecentralizedIdentifierEntity decentralizedIdentifierEntity;
 }

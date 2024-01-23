@@ -45,7 +45,8 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
-                  name: decentralized_identifier_id
-                  type: bigint
+                  name: created_at
+                  type: datetime
                   constraints:
-                    nullable: true
+                    nullable: false     
+
