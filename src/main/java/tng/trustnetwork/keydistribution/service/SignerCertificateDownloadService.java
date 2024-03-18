@@ -20,10 +20,38 @@
 
 package tng.trustnetwork.keydistribution.service;
 
-public interface SignerCertificateDownloadService {
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
+import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
-    /**
-     * Synchronises the signer certificates with the gateway.
-     */
-    void downloadCertificates();
+/**
+ * A service to download the signer certificates from the digital green certificate gateway.
+ */
+@Slf4j
+@RequiredArgsConstructor
+@Component
+//@ConditionalOnProperty("dgc.gateway.connector.enabled")
+public class SignerCertificateDownloadService {
+
+    private final DgcGatewayDownloadConnector dgcGatewayConnector;
+    private final SignerInformationService signerInformationService;
+
+    @Scheduled(fixedDelayString = "${dgc.certificatesDownloader.timeInterval}")
+    @SchedulerLock(name = "SignerCertificateDownloadService_downloadCertificates", lockAtLeastFor = "PT0S",
+        lockAtMostFor = "${dgc.certificatesDownloader.lockLimit}")
+    public void downloadCertificates() {
+        log.info("Certificates download started");
+
+        List<TrustListItem> trustedCerts = dgcGatewayConnector.getTrustedCertificates();
+
+        signerInformationService.updateTrustedCertsList(trustedCerts);
+
+        log.info("Certificates download finished");
+    }
 }

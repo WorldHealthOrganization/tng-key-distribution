@@ -15,13 +15,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
-class SignerCertificateDownloadServiceImplTest {
+class SignerCertificateDownloadServiceTest {
 
     @MockBean
     DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Autowired
-    SignerCertificateDownloadServiceImpl signerCertificateDownloadService;
+    SignerCertificateDownloadService signerCertificateDownloadService;
 
     @Autowired
     SignerInformationRepository signerInformationRepository;

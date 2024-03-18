@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
@@ -41,6 +42,10 @@ public class VerificationMethodEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "public_key_jwk_id")
     private PublicKeyJwkEntity publicKeyJwk;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_document_id")
+    private DecentralizedIdentifierEntity parentDocument;
     
     @Column(name = "created_at", nullable = false)
     private ZonedDateTime createdAt = ZonedDateTime.now();

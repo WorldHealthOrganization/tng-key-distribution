@@ -24,22 +24,22 @@ public class PublicKeyJwkEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "BIGINT")
+    @Column(name = "id")
     private String id;
 
-    @Column(name = "crv", nullable = true, length = 100)
+    @Column(name = "crv", length = 100)
     private String crv;
 
-    @Column(name = "kty", nullable = true, length = 100)
+    @Column(name = "kty", length = 100)
     private String kty;
 
-    @Column(name = "x", nullable = true, length = 100)
+    @Column(name = "x", length = 100)
     private String xvalue;
 
-    @Column(name = "y", nullable = true, length = 100)
+    @Column(name = "y", length = 100)
     private String yvalue;
 
-    @Column(name = "x5c", nullable = true, length = 7000)
+    @Column(name = "x5c", length = 7000)
     private String x5c;
     
     @Column(name = "created_at", nullable = false)

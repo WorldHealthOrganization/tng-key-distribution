@@ -8,6 +8,10 @@ spring:
     url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
     username: sa
     password: ''
+  jackson:
+    deserialization:
+      read-unknown-enum-values-using-default-value: true
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:

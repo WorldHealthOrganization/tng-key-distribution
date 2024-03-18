@@ -33,24 +33,16 @@ public class DecentralizedIdentifierEntity {
     @Column(name = "id", columnDefinition = "BIGINT")
     private String id;
 
-    @Column(name = "did_id", nullable = true, length = 100)
-    private String didId;
-
-    @Column(name = "context", nullable = true, length = 100)
-    private String context;
-
-    @Column(name = "controller", nullable = true, length = 100)
-    private String controller;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "decentralized_identifier_id")
-    private List<VerificationMethodEntity> verificationMethod;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "proof_id")
-    private ProofEntity proof;
-    
     @Column(name = "created_at", nullable = false)
     private ZonedDateTime createdAt = ZonedDateTime.now();
+
+    @Column(name = "did_id", length = 100)
+    private String didId;
+
+    @OneToMany(mappedBy = "parentDocument")
+    private List<VerificationMethodEntity> verificationMethods;
+
+    @Column(name = "raw", length = 10_000)
+    private String raw;
 
 }

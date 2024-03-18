@@ -7,18 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Proof {
+public class RsaPublicKeyJwk extends PublicKeyJwk {
 
-    private String type;
+    private String n;
 
-    private String created;
-
-    private String nonce;
-
-    private String proofPurpose;
-
-    private String verificationMethod;
-
-    private String jws;
+    private String e;
 
 }

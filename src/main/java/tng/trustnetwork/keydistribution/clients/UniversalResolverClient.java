@@ -1,6 +1,7 @@
 package tng.trustnetwork.keydistribution.clients;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import tng.trustnetwork.keydistribution.model.DidDocument;
@@ -10,6 +11,6 @@ import tng.trustnetwork.keydistribution.model.DidDocument;
 public interface UniversalResolverClient {
 
     @GetMapping(value = "/{didKey}", produces = "application/json")
-    DidDocument getDidDocument(@PathVariable("didKey") String didKey);
+    ResponseEntity<DidDocument> getDidDocument(@PathVariable("didKey") String didKey);
 
 }
