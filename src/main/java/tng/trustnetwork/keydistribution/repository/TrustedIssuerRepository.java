@@ -24,7 +24,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 
-public interface TrustedIssuerRepository extends JpaRepository<TrustedIssuerEntity, String> {
+public interface TrustedIssuerRepository extends JpaRepository<TrustedIssuerEntity, Long> {
 
     void deleteAllByEtag(String etag);
 

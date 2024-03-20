@@ -1,6 +1,7 @@
 package tng.trustnetwork.keydistribution.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,8 +10,10 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsaPublicKeyJwk extends PublicKeyJwk {
 
-    private String n;
+    @JsonProperty("n")
+    private String nvalue;
 
-    private String e;
+    @JsonProperty("e")
+    private String evalue;
 
 }

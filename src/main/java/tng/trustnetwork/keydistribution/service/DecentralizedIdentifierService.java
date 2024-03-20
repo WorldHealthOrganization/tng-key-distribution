@@ -1,14 +1,15 @@
 package tng.trustnetwork.keydistribution.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tng.trustnetwork.keydistribution.entity.DecentralizedIdentifierEntity;
-import tng.trustnetwork.keydistribution.entity.VerificationMethodEntity;
+import tng.trustnetwork.keydistribution.mapper.DidMapper;
 import tng.trustnetwork.keydistribution.model.DidDocument;
 import tng.trustnetwork.keydistribution.repository.DecentralizedIdentifierRepository;
+import tng.trustnetwork.keydistribution.repository.PublicKeyJwkRepository;
+import tng.trustnetwork.keydistribution.repository.VerificationMethodRepository;
 
 @Slf4j
 @Service
@@ -17,25 +18,33 @@ public class DecentralizedIdentifierService {
 
     private final DecentralizedIdentifierRepository decentralizedIdentifierRepository;
 
-    public void updateDecentralizedIdentifierList(DidDocument didDocumentUnmarshal, String raw) {
-        // TODO Auto-generated method stub
-        if (null != didDocumentUnmarshal) {
-            DecentralizedIdentifierEntity decentralizedIdentifierEntity = new DecentralizedIdentifierEntity();
-            decentralizedIdentifierEntity.setDidId(didDocumentUnmarshal.getId());
+    private final VerificationMethodRepository verificationMethodRepository;
 
-            List<VerificationMethodEntity> verificationMethodEntities = new ArrayList<>();
+    private final PublicKeyJwkRepository publicKeyJwkRepository;
 
-            /*List<ResolvedKey> resolvedKeys = didDocumentUnmarshal.getVerificationMethod().getResolvedKeys();
+    private final DidMapper didMapper;
 
-            for (ResolvedKey resolvedKey : resolvedKeys) {
-                verificationMethodEntities.add(
-                    decentralizedIdentifierMapper.resolvedKeyToVerificationMethodEntity(resolvedKey));
-            }
+    /**
+     * Update list of stored DID with given Document.
+     *
+     * @param didDocument Parsed DIDDocument
+     * @param raw         RAW-JSON-Value of the DID Document. This will be stored to allow validation of LD-Proof later.
+     */
+    public void updateDecentralizedIdentifierList(DidDocument didDocument, String raw) {
 
-            decentralizedIdentifierEntity.setVerificationMethod(verificationMethodEntities);*/
-            decentralizedIdentifierRepository.save(decentralizedIdentifierEntity);
+        DecentralizedIdentifierEntity didEntity = didMapper.toEntity(didDocument, raw);
 
-        }
+        decentralizedIdentifierRepository.save(didEntity);
+
+        didEntity.getVerificationMethods()
+                 .stream()
+                 .filter(Objects::nonNull)
+                 .forEach(verificationMethod -> {
+
+                     verificationMethod.setParentDocument(didEntity);
+                     publicKeyJwkRepository.save(verificationMethod.getPublicKeyJwk());
+                     verificationMethodRepository.save(verificationMethod);
+                 });
     }
 
 }

@@ -25,18 +25,19 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VerificationMethodEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", columnDefinition = "BIGINT")
-    private String id;
+    private Long id;
 
-    @Column(name = "vm_id", nullable = true, length = 100)
+    @Column(name = "vm_id", length = 100)
     private String vmId;
 
-    @Column(name = "type", nullable = true, length = 100)
+    @Column(name = "type", length = 100)
     private String type;
 
-    @Column(name = "controller", nullable = true, length = 100)
+    @Column(name = "controller", length = 100)
     private String controller;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -46,7 +47,7 @@ public class VerificationMethodEntity {
     @ManyToOne
     @JoinColumn(name = "parent_document_id")
     private DecentralizedIdentifierEntity parentDocument;
-    
+
     @Column(name = "created_at", nullable = false)
     private ZonedDateTime createdAt = ZonedDateTime.now();
 

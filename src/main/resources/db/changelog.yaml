@@ -10,8 +10,6 @@ databaseChangeLog:
   - include:
       file: db/changelog/create-decentralized-identifier-table.yaml
   - include:
-      file: db/changelog/create-proof-table.yaml
+      file: db/changelog/create-public-key-jwk-table.yaml
   - include:
       file: db/changelog/create-verification-method-table.yaml
-  - include:
-      file: db/changelog/create-public-key-jwk-table.yaml    

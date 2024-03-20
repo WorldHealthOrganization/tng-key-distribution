@@ -13,9 +13,11 @@ public class EcPublicKeyJwk extends PublicKeyJwk {
 
     private Curve crv;
 
-    private String x;
+    @JsonProperty("x")
+    private String xvalue;
 
-    private String y;
+    @JsonProperty("y")
+    private String yvalue;
 
     public enum Curve {
         @JsonEnumDefaultValue

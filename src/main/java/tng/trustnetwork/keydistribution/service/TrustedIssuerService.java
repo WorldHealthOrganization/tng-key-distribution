@@ -20,6 +20,7 @@
 
 package tng.trustnetwork.keydistribution.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 import tng.trustnetwork.keydistribution.mapper.IssuerMapper;
-import tng.trustnetwork.keydistribution.model.DidDocument;
 import tng.trustnetwork.keydistribution.repository.TrustedIssuerRepository;
 
 @Slf4j
@@ -90,9 +90,15 @@ public class TrustedIssuerService {
             trustedIssuerEntities.add(getTrustedIssuerEntity(newEtag, trustedIssuer));
 
             if (TrustedIssuer.UrlType.DID == trustedIssuer.getType()) {
-                UniversalResolverService.DidDocumentWithRawResponse
-                    didDocument = urService.universalResolverApiCall(trustedIssuer.getUrl());
-                decentralizedIdentifierService.updateDecentralizedIdentifierList(didDocument.didDocument(), didDocument.raw());
+                try {
+                    UniversalResolverService.DidDocumentWithRawResponse didDocument =
+                        urService.universalResolverApiCall(trustedIssuer.getUrl());
+
+                    decentralizedIdentifierService.updateDecentralizedIdentifierList(didDocument.didDocument(),
+                                                                                     didDocument.raw());
+                } catch (JsonProcessingException e) {
+                    log.error("Failed to download/parse DID {}", trustedIssuer.getUrl());
+                }
             }
         }
 

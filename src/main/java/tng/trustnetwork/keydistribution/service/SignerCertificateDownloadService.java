@@ -36,12 +36,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-//@ConditionalOnProperty("dgc.gateway.connector.enabled")
 public class SignerCertificateDownloadService {
 
     private final DgcGatewayDownloadConnector dgcGatewayConnector;
     private final SignerInformationService signerInformationService;
 
+    /**
+     * Download TrustedCertificates from Gateway.
+     */
     @Scheduled(fixedDelayString = "${dgc.certificatesDownloader.timeInterval}")
     @SchedulerLock(name = "SignerCertificateDownloadService_downloadCertificates", lockAtLeastFor = "PT0S",
         lockAtMostFor = "${dgc.certificatesDownloader.lockLimit}")

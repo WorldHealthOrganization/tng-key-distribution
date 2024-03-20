@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: create-public-key-jwk-table
-      author: admin
+      author: f11h
       changes:
         - createTable:
             tableName: public_key_jwk
@@ -15,13 +15,18 @@ databaseChangeLog:
                     primaryKeyName: public_key_jwk_id
                     nullable: true
               - column:
-                  name: kty
-                  type: varchar(100)
+                  name: created_at
+                  type: datetime
                   constraints:
-                    nullable: true
+                    nullable: false
+              - column:
+                  name: kty
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
               - column:
                   name: crv
-                  type: varchar(100)
+                  type: varchar(50)
                   constraints:
                     nullable: true
               - column:
@@ -35,13 +40,18 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
-                  name: x5c
-                  type: varchar(7000)
+                  name: e
+                  type: varchar(5000)
                   constraints:
                     nullable: true
               - column:
-                  name: created_at
-                  type: datetime
+                  name: n
+                  type: varchar(5000)
                   constraints:
-                    nullable: false     
+                    nullable: true
+              - column:
+                  name: x5c
+                  type: varchar(10000)
+                  constraints:
+                    nullable: true
 
