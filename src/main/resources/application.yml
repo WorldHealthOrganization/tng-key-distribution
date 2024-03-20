@@ -51,10 +51,11 @@ springdoc:
 universal:
   resolver: "https://dev.uniresolver.io/1.0/identifiers"
 dgc:
-  proxy:
-    enabled: false
-    host:
-    port: -1
+  clients:
+    proxy:
+      enabled: false
+      host:
+      port: -1
   certificatesDownloader:
     timeInterval: 1800000
     lockLimit: 3600000
