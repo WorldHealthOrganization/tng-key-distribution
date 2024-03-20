@@ -22,28 +22,38 @@ import tng.trustnetwork.keydistribution.model.VerificationMethod;
 public interface DidMapper {
 
     @Mapping(target = "didId", source = "didDocument.id")
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "verificationMethods", source = "didDocument.verificationMethod")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     DecentralizedIdentifierEntity toEntity(DidDocument didDocument, String raw);
 
     @SubclassMapping(target = RsaPublicKeyJwkEntity.class, source = RsaPublicKeyJwk.class)
     @SubclassMapping(target = EcPublicKeyJwkEntity.class, source = EcPublicKeyJwk.class)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     PublicKeyJwkEntity toEntity(PublicKeyJwk publicKeyJwk);
 
-    @Mapping(target = "xvalue", source = "x")
-    @Mapping(target = "yvalue", source = "y")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     EcPublicKeyJwkEntity toEntity(EcPublicKeyJwk model);
 
-    @Mapping(target = "evalue", source = "e")
-    @Mapping(target = "nvalue", source = "n")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     RsaPublicKeyJwkEntity toEntity(RsaPublicKeyJwk model);
 
     @SubclassMapping(target = VerificationMethodEntity.class, source = JwkVerificationMethod.class)
+    @Mapping(target = "vmId", source = "verificationMethod.id")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "parentDocument", ignore = true)
+    @Mapping(target = "publicKeyJwk", ignore = true)
     VerificationMethodEntity toEntity(VerificationMethod verificationMethod);
 
     @Mapping(target = "type", constant = "JsonWebKey2020")
     @Mapping(target = "vmId", source = "verificationMethod.id")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "parentDocument", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     VerificationMethodEntity toEntity(JwkVerificationMethod verificationMethod);
 
     default <T> T unwrap(StringOrObject<T> wrapped) {

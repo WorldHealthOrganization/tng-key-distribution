@@ -31,6 +31,9 @@ import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 public interface IssuerMapper {
 
     @Mapping(source = "type", target = "urlType")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "etag", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     TrustedIssuerEntity trustedIssuerToTrustedIssuerEntity(TrustedIssuer trustedIssuer);
 
 

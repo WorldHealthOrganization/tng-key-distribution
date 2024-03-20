@@ -26,5 +26,5 @@ databaseChangeLog:
                     nullable: true
               - column:
                   name: raw
-                  type: varchar(10000000)
+                  type: clob
 
