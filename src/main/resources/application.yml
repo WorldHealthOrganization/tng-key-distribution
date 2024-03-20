@@ -64,20 +64,22 @@ dgc:
     lockLimit: 3600000
   gateway:
     connector:
-      enabled: true
-      endpoint: https://tng-dev.who.int/
+      enabled: false
+      endpoint: ${DGC_GATEWAY_CONNECTOR_ENDPOINT}
       proxy:
-        enabled: true
-        host: sia-lb.telekom.de
-        port: 8080
+        enabled: false
       max-cache-age: 300
       tls-trust-store:
-        password: pass
-        path: tng_dev.p12
+        password: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD}
+        path: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH}
       tls-key-store:
-        alias: tls_auth
-        password: pass
-        path: tng_dev.p12
+        alias: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_ALIAS}
+        password: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD}
+        path: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH}
+      trust-anchor:
+        alias: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS}
+        password: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD}
+        path: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH}
   static-trusted-issuer:
     - name: WHO Trustlist (DEV)
       country: WH
