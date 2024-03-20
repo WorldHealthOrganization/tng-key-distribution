@@ -78,6 +78,12 @@ dgc:
         password: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD}
         path: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH}
       trust-anchor:
-        alias: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS}
-        password: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD}
-        path: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH}
+        alias: trustanchor
+        password: pass
+        path: tng_dev.p12
+  static-trusted-issuer:
+    - name: WHO Trustlist (DEV)
+      country: WH
+      type: did
+      url: did:web:tng-cdn-dev.who.int:trustlist
+      signature: No-Signature # required because of DB restrictions

@@ -29,6 +29,7 @@ import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import tng.trustnetwork.keydistribution.config.KdsConfigProperties;
 
 /**
  * A service to download the signer certificates from the digital green certificate gateway.
@@ -43,6 +44,8 @@ public class TrustedIssuerDownloadService {
 
     private final TrustedIssuerService trustedIssuerService;
 
+    private final KdsConfigProperties configProperties;
+
     /**
      * Download TrustedIssuers and Resolve DID Documents.
      */
@@ -53,16 +56,8 @@ public class TrustedIssuerDownloadService {
 
         log.info("Trusted issuers download started");
 
-        // ToDo: WHO Trustlist DID is added manually because of open bug DDCCGW-563 is fixed
-        TrustedIssuer whoTrustList = new TrustedIssuer();
-        whoTrustList.setType(TrustedIssuer.UrlType.DID);
-        whoTrustList.setUrl("did:web:tng-cdn-dev.who.int:trustlist");
-        whoTrustList.setCountry("WH");
-        whoTrustList.setName("WHO Trustlist");
-        whoTrustList.setSignature("NoSignature");
-
         ArrayList<TrustedIssuer> trustedIssuers = new ArrayList<>();
-        trustedIssuers.add(whoTrustList);
+        trustedIssuers.addAll(configProperties.getStaticTrustedIssuer());
         trustedIssuers.addAll(downloadConnector.getTrustedIssuers());
 
         trustedIssuerService.updateTrustedIssuersList(trustedIssuers);
