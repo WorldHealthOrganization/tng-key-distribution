@@ -23,12 +23,10 @@ package tng.trustnetwork.keydistribution.service;
 import eu.europa.ec.dgc.gateway.connector.DgcGatewayTrustedIssuerDownloadConnector;
 import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -45,20 +43,27 @@ public class TrustedIssuerDownloadService {
 
     private final TrustedIssuerService trustedIssuerService;
 
+    /**
+     * Download TrustedIssuers and Resolve DID Documents.
+     */
     @Scheduled(fixedDelayString = "${dgc.trustedIssuerDownloader.timeInterval}")
-   /* @SchedulerLock(name = "TrustedIssuerDownloadService_downloadTrustedIssuers", lockAtLeastFor = "PT0S",
-        lockAtMostFor = "${dgc.trustedIssuerDownloader.lockLimit}")*/
+    @SchedulerLock(name = "TrustedIssuerDownloadService_downloadTrustedIssuers", lockAtLeastFor = "PT0S",
+        lockAtMostFor = "${dgc.trustedIssuerDownloader.lockLimit}")
     public void downloadTrustedIssuers() {
-        log.info("Trusted issuers download started");
 
-        List<TrustedIssuer> trustedIssuers = downloadConnector.getTrustedIssuers();
+        log.info("Trusted issuers download started");
 
         // ToDo: WHO Trustlist DID is added manually because of open bug DDCCGW-563 is fixed
         TrustedIssuer whoTrustList = new TrustedIssuer();
         whoTrustList.setType(TrustedIssuer.UrlType.DID);
         whoTrustList.setUrl("did:web:tng-cdn-dev.who.int:trustlist");
-        trustedIssuers = new ArrayList<>(trustedIssuers);
+        whoTrustList.setCountry("WH");
+        whoTrustList.setName("WHO Trustlist");
+        whoTrustList.setSignature("NoSignature");
+
+        ArrayList<TrustedIssuer> trustedIssuers = new ArrayList<>();
         trustedIssuers.add(whoTrustList);
+        trustedIssuers.addAll(downloadConnector.getTrustedIssuers());
 
         trustedIssuerService.updateTrustedIssuersList(trustedIssuers);
 

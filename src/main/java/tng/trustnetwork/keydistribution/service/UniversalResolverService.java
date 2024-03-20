@@ -1,8 +1,9 @@
 package tng.trustnetwork.keydistribution.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import tng.trustnetwork.keydistribution.clients.UniversalResolverClient;
 import tng.trustnetwork.keydistribution.model.DidDocument;
@@ -15,11 +16,21 @@ public class UniversalResolverService {
 
     private final UniversalResolverClient universalResolverClient;
 
-    public DidDocumentWithRawResponse universalResolverApiCall(String didKey) {
+    private final ObjectMapper objectMapper;
 
-        ResponseEntity<DidDocument> response = universalResolverClient.getDidDocument(didKey);
+    /**
+     * Try to resolve DID Document by ID at UniversalResolverService.
+     *
+     * @param didId Identifier of document to resolve
+     * @return Parsed and RAW DID Document
+     * @throws JsonProcessingException when parsing of downloaded document failed.
+     */
+    public DidDocumentWithRawResponse universalResolverApiCall(String didId) throws JsonProcessingException {
 
-        return new DidDocumentWithRawResponse(response.getBody(), response.toString());
+        String rawResponse = universalResolverClient.getDidDocument(didId);
+        DidDocument didDocument = objectMapper.readValue(rawResponse, DidDocument.class);
+
+        return new DidDocumentWithRawResponse(didDocument, rawResponse);
     }
 
     public record DidDocumentWithRawResponse(
