@@ -1,13 +1,17 @@
 package tng.trustnetwork.keydistribution.service;
 
+import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import tng.trustnetwork.keydistribution.model.DidDocument;
+import tng.trustnetwork.keydistribution.clients.UniversalResolverClient;
+import tng.trustnetwork.keydistribution.model.EcPublicKeyJwk;
+import tng.trustnetwork.keydistribution.model.JwkVerificationMethod;
 
 @SpringBootTest
 class UniversalResolverServiceTest {
@@ -15,13 +19,15 @@ class UniversalResolverServiceTest {
     @MockBean
     DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
-    @Autowired
-    SignerCertificateDownloadService signerCertificateDownloadService;
+    @MockBean
+    UniversalResolverClient universalResolverClientMock;
 
     @Autowired
-    ObjectMapper objectMapper;
+    UniversalResolverService universalResolverService;
 
-    String did = """                                  
+    private static final String testDidId = "did:web:did.actor:mike";
+
+    private static final String testDid = """                                  
                  {
                    "@context": [
                      "https://www.w3.org/ns/did/v1",
@@ -43,46 +49,53 @@ class UniversalResolverServiceTest {
                        "type": "JsonWebKey2020",
                        "publicKeyJwk": {
                          "kty": "EC",
-                         "crv": "BLS12381_G1",
-                         "x": "hxF12gtsn9ju4-kJq2-nUjZQKVVWpcBAYX5VHnUZMDilClZsGuOaDjlXS8pFE1GG"
-                       }
-                     },
-                     {
-                       "id": "#g2",
-                       "controller": "did:web:did.actor:mike",
-                       "type": "JsonWebKey2020",
-                       "publicKeyJwk": {
-                         "kty": "EC",
-                         "crv": "BLS12381_G2",
-                         "x": "l4MeBsn_OGa2OEDtHeHdq0TBC8sYh6QwoI7QsNtZk9oAru1OnGClaAPlMbvvs73EABDB6GjjzybbOHarkBmP6pon8H1VuMna0nkEYihZi8OodgdbwReDiDvWzZuXXMl-"
+                         "crv": "P-256",
+                         "x": "xValue"
                        }
                      }
                    ],
                    "authentication": [
-                     "did:web:did.actor:mike#g1",
-                     "did:web:did.actor:mike#g2"
+                     "did:web:did.actor:mike#g1"
                    ],
                    "assertionMethod": [
-                     "did:web:did.actor:mike#g1",
-                     "did:web:did.actor:mike#g2"
+                     "did:web:did.actor:mike#g1"
                    ]
                  }
                  """;
 
     @Test
-    void resolveDIDDocumentNotNull() {
+    void itShouldReturnParsedDidDocument() throws JsonProcessingException {
 
+        when(universalResolverClientMock.getDidDocument(testDidId))
+            .thenReturn(testDid);
+
+        UniversalResolverService.DidDocumentWithRawResponse response =
+            universalResolverService.universalResolverApiCall(testDidId);
+
+        Assertions.assertEquals(testDid, response.raw());
+        Assertions.assertEquals(testDidId, response.didDocument().getId());
+        Assertions.assertEquals(1, response.didDocument().getVerificationMethod().size());
+        Assertions.assertEquals(testDidId, response.didDocument().getVerificationMethod().get(0).getObjectValue().getController());
+        Assertions.assertEquals("#g1", response.didDocument().getVerificationMethod().get(0).getObjectValue().getId());
+
+        Assertions.assertInstanceOf(JwkVerificationMethod.class, response.didDocument().getVerificationMethod().get(0).getObjectValue());
+        JwkVerificationMethod jwkVerificationMethod =
+            (JwkVerificationMethod) response.didDocument().getVerificationMethod().get(0).getObjectValue();
+
+        Assertions.assertInstanceOf(EcPublicKeyJwk.class, jwkVerificationMethod.getPublicKeyJwk());
+        EcPublicKeyJwk ecPublicKeyJwk = (EcPublicKeyJwk) jwkVerificationMethod.getPublicKeyJwk();
+
+        Assertions.assertEquals(EcPublicKeyJwk.Curve.P256 , ecPublicKeyJwk.getCrv());
+        Assertions.assertEquals("xValue", ecPublicKeyJwk.getXvalue());
     }
 
     @Test
-    void ttest() throws JsonProcessingException {
+    void itShouldThrowAnExceptionIfJsonIsInvalid() {
 
+        when(universalResolverClientMock.getDidDocument(testDidId))
+            .thenReturn("noValidJson");
 
-        DidDocument parsed = objectMapper.readValue(did, DidDocument.class);
-
-        String newJson = objectMapper.writeValueAsString(parsed);
-
-        newJson = newJson;
-
+        Assertions.assertThrows(JsonProcessingException.class, () ->
+            universalResolverService.universalResolverApiCall(testDidId));
     }
 }

@@ -62,6 +62,6 @@ public interface DidMapper {
 
     default String toSingleString(List<String> list) {
 
-        return String.join(",", list);
+        return list == null ? null : String.join(",", list);
     }
 }

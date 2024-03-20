@@ -4,6 +4,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tng.trustnetwork.keydistribution.entity.DecentralizedIdentifierEntity;
 import tng.trustnetwork.keydistribution.mapper.DidMapper;
 import tng.trustnetwork.keydistribution.model.DidDocument;
@@ -30,10 +31,10 @@ public class DecentralizedIdentifierService {
      * @param didDocument Parsed DIDDocument
      * @param raw         RAW-JSON-Value of the DID Document. This will be stored to allow validation of LD-Proof later.
      */
+    @Transactional
     public void updateDecentralizedIdentifierList(DidDocument didDocument, String raw) {
 
         DecentralizedIdentifierEntity didEntity = didMapper.toEntity(didDocument, raw);
-
         decentralizedIdentifierRepository.save(didEntity);
 
         didEntity.getVerificationMethods()
