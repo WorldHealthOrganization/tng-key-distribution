@@ -5,7 +5,7 @@ spring:
     name: tng-key-distribution
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
+    url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=TRUE;DB_CLOSE_DELAY=-1;
     username: sa
     password: ''
   jackson:
@@ -51,11 +51,10 @@ springdoc:
 universal:
   resolver: "https://dev.uniresolver.io/1.0/identifiers"
 dgc:
-  clients:
-    proxy:
-      enabled: false
-      host:
-      port: -1
+  proxy:
+    enabled: true
+    host: sia-lb.telekom.de
+    port: 8080
   certificatesDownloader:
     timeInterval: 1800000
     lockLimit: 3600000
@@ -65,20 +64,18 @@ dgc:
     lockLimit: 3600000
   gateway:
     connector:
-      enabled: false
-      endpoint: ${DGC_GATEWAY_CONNECTOR_ENDPOINT}
+      enabled: true
+      endpoint: https://tng-dev.who.int/
       proxy:
-        enabled: false
+        enabled: true
+        host: sia-lb.telekom.de
+        port: 8080
       max-cache-age: 300
       tls-trust-store:
-        password: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD}
-        path: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH}
+        password: pass
+        path: tng_dev.p12
       tls-key-store:
-        alias: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_ALIAS}
-        password: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD}
-        path: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH}
-      trust-anchor:
-        alias: trustanchor
+        alias: tls_auth
         password: pass
         path: tng_dev.p12
   static-trusted-issuer:
