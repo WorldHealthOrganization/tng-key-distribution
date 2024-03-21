@@ -20,9 +20,9 @@
 
 package tng.trustnetwork.keydistribution.config;
 
+import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import java.util.ArrayList;
 import java.util.List;
-import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
