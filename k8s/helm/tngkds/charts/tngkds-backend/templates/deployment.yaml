@@ -28,17 +28,11 @@ spec:
             - liquibase update --changeLogFile=db/changelog.yaml;
           env:
             - name: LIQUIBASE_COMMAND_URL
-              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}.{{ .Release.Namespace }}.{{ .Values.psql.cluster }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
+              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
             - name: LIQUIBASE_COMMAND_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "tngkds-backend.fullname" . }}-secret
-                  key: pgUser
+              value: {{ .Values.psql.username }}
             - name: LIQUIBASE_COMMAND_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "tngkds-backend.fullname" . }}-secret
-                  key: pgPassword
+              value: {{ .Values.psql.password }}
             - name: LIQUIBASE_SEARCH_PATH
               value: /liquibase
             - name: LIQUIBASE_LOG_LEVEL
@@ -63,7 +57,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: {{ .Values.spring.profile }}
             - name: SPRING_DATASOURCE_URL
-              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}.{{ .Release.Namespace }}.{{ .Values.psql.cluster }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
+              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
             - name: SPRING_DATASOURCE_DRIVERCLASSNAME
               value: "org.postgresql.Driver"
             - name: SPRING_DATASOURCE_JNDI_NAME
@@ -71,15 +65,9 @@ spec:
             - name: SPRING_JPA_DATABASEPLATFORM
               value: "org.hibernate.dialect.PostgreSQLDialect"
             - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "tngkds-backend.fullname" . }}-secret
-                  key: pgUser
+              value: {{ .Values.psql.username }}
             - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "tngkds-backend.fullname" . }}-secret
-                  key: pgPassword
+              value: {{ .Values.psql.password }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_PATH
               value: {{ .Values.gateway.connector.tls_trust_store.path }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_PASSWORD
