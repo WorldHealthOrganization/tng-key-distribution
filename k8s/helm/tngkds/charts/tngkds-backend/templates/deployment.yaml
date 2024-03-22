@@ -30,9 +30,9 @@ spec:
             - name: LIQUIBASE_COMMAND_URL
               value: "jdbc:postgresql://{{ .Values.psql.serviceName }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
             - name: LIQUIBASE_COMMAND_USERNAME
-              value: {{ .Values.psql.username }}
+              value: {{ .Values.psql.username | quote }}
             - name: LIQUIBASE_COMMAND_PASSWORD
-              value: {{ .Values.psql.password }}
+              value: {{ .Values.psql.password | quote }}
             - name: LIQUIBASE_SEARCH_PATH
               value: /liquibase
             - name: LIQUIBASE_LOG_LEVEL
@@ -65,9 +65,9 @@ spec:
             - name: SPRING_JPA_DATABASEPLATFORM
               value: "org.hibernate.dialect.PostgreSQLDialect"
             - name: SPRING_DATASOURCE_USERNAME
-              value: {{ .Values.psql.username }}
+              value: {{ .Values.psql.username | quote }}
             - name: SPRING_DATASOURCE_PASSWORD
-              value: {{ .Values.psql.password }}
+              value: {{ .Values.psql.password | quote }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_PATH
               value: {{ .Values.gateway.connector.tls_trust_store.path }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_PASSWORD
