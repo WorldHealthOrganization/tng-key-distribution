@@ -18,7 +18,7 @@ import tng.trustnetwork.keydistribution.testdata.TrustedIssuerTestHelper;
 
 @SpringBootTest
 @TestPropertySource(properties = {"dgc.trustedIssuerDownloader.enabled=true"})
-class TrustedIssuerDownloadServiceImplTest {
+class TrustedIssuerDownloadServiceTest {
 
     @MockBean
     DgcGatewayDownloadConnector dgcGatewayDownloadConnectorMock;
@@ -28,7 +28,7 @@ class TrustedIssuerDownloadServiceImplTest {
 
 
     @Autowired
-    TrustedIssuerDownloadServiceImpl trustedIssuerDownloadService;
+    TrustedIssuerDownloadService trustedIssuerDownloadService;
 
     @Autowired
     TrustedIssuerRepository trustedIssuerRepository;

@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-verification-method-table
+      author: f11h
+      changes:
+        - createTable:
+            tableName: verification_method
+            columns:
+              - column:
+                  autoIncrement: true
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: verification_method_id
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: vm_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: type
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: controller
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: parent_document_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: public_key_jwk_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_did_vm
+            referencedTableName: decentralized_identifier
+            referencedColumnNames: id
+            baseTableName: verification_method
+            baseColumnNames: parent_document_id
+        - addForeignKeyConstraint:
+            constraintName: fk_pk_vm
+            referencedTableName: public_key_jwk
+            referencedColumnNames: id
+            baseTableName: verification_method
+            baseColumnNames: public_key_jwk_id

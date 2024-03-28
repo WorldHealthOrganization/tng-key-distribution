@@ -8,6 +8,10 @@ spring:
     url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
     username: sa
     password: ''
+  jackson:
+    deserialization:
+      read-unknown-enum-values-using-default-value: true
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -77,3 +81,9 @@ dgc:
         alias: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS}
         password: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD}
         path: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH}
+  static-trusted-issuer:
+    - name: WHO Trustlist (DEV)
+      country: WH
+      type: did
+      url: did:web:tng-cdn-dev.who.int:trustlist
+      signature: No-Signature # required because of DB restrictions
