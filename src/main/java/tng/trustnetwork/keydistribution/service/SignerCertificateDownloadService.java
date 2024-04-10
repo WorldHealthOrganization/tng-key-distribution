@@ -26,7 +26,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +38,10 @@ import org.springframework.stereotype.Component;
 public class SignerCertificateDownloadService {
 
     private final DgcGatewayDownloadConnector dgcGatewayConnector;
+
     private final SignerInformationService signerInformationService;
+
+    private final TrustedPartyService trustedPartyService;
 
     /**
      * Download TrustedCertificates from Gateway.
@@ -48,11 +50,14 @@ public class SignerCertificateDownloadService {
     @SchedulerLock(name = "SignerCertificateDownloadService_downloadCertificates", lockAtLeastFor = "PT0S",
         lockAtMostFor = "${dgc.certificatesDownloader.lockLimit}")
     public void downloadCertificates() {
+
         log.info("Certificates download started");
 
         List<TrustListItem> trustedCerts = dgcGatewayConnector.getTrustedCertificates();
-
         signerInformationService.updateTrustedCertsList(trustedCerts);
+
+        List<TrustListItem> trustedCsca = dgcGatewayConnector.getTrustedCscaCertificates();
+        trustedPartyService.updateCscaFromTrustList(trustedCsca);
 
         log.info("Certificates download finished");
     }
