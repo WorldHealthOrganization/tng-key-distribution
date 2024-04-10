@@ -20,6 +20,9 @@
 
 package tng.trustnetwork.keydistribution.config;
 
+import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +32,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ConfigurationProperties("dgc") //TODO separate kds and dgc-lib properties
 public class KdsConfigProperties {
+
+    private List<TrustedIssuer> staticTrustedIssuer = new ArrayList<>();
 
     private final CertificatesDownloader certificatesDownloader = new CertificatesDownloader();
 

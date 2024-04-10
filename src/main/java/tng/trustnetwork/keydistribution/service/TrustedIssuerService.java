@@ -20,6 +20,7 @@
 
 package tng.trustnetwork.keydistribution.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +44,18 @@ public class TrustedIssuerService {
 
     private final TrustedIssuerRepository trustedIssuerRepository;
 
+    private final UniversalResolverService urService;
+
+    private final DecentralizedIdentifierService decentralizedIdentifierService;
+
     /**
      * Get the current etag.
+     *
      * @return the current etag
      */
 
     public String getEtag() {
+
         String etag = infoService.getValueForKey(InfoService.CURRENT_ETAG);
         if (etag == null) {
             etag = "";
@@ -62,6 +69,7 @@ public class TrustedIssuerService {
      * @return List holding the found trusted issuers.
      */
     public List<TrustedIssuerEntity> getAllIssuers(String etag) {
+
         return trustedIssuerRepository.findAllByEtag(etag);
     }
 
@@ -69,17 +77,29 @@ public class TrustedIssuerService {
      * Method to synchronise the issuers in the db with the given List of trusted issuers.
      *
      * @param trustedIssuers defines the list of trusted issuers.
-     *
      */
     @Transactional
     public void updateTrustedIssuersList(List<TrustedIssuer> trustedIssuers) {
+
         String newEtag = UUID.randomUUID().toString();
 
         List<TrustedIssuerEntity> trustedIssuerEntities = new ArrayList<>();
 
-
         for (TrustedIssuer trustedIssuer : trustedIssuers) {
+
             trustedIssuerEntities.add(getTrustedIssuerEntity(newEtag, trustedIssuer));
+
+            if (TrustedIssuer.UrlType.DID == trustedIssuer.getType()) {
+                try {
+                    UniversalResolverService.DidDocumentWithRawResponse didDocument =
+                        urService.universalResolverApiCall(trustedIssuer.getUrl());
+
+                    decentralizedIdentifierService.updateDecentralizedIdentifierList(didDocument.didDocument(),
+                                                                                     didDocument.raw());
+                } catch (JsonProcessingException e) {
+                    log.error("Failed to download/parse DID {}", trustedIssuer.getUrl());
+                }
+            }
         }
 
         trustedIssuerRepository.saveAll(trustedIssuerEntities);
@@ -92,12 +112,14 @@ public class TrustedIssuerService {
     }
 
     private TrustedIssuerEntity getTrustedIssuerEntity(String etag, TrustedIssuer trustedIssuer) {
+
         TrustedIssuerEntity entity = issuerMapper.trustedIssuerToTrustedIssuerEntity(trustedIssuer);
         entity.setEtag(etag);
         return entity;
     }
 
     private void cleanupData(String etag) {
+
         trustedIssuerRepository.deleteAllByEtag(etag);
     }
 

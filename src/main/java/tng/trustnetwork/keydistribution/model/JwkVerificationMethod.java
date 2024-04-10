@@ -7,18 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Proof {
+public class JwkVerificationMethod extends VerificationMethod {
 
-    private String type;
-
-    private String created;
-
-    private String nonce;
-
-    private String proofPurpose;
-
-    private String verificationMethod;
-
-    private String jws;
+    private PublicKeyJwk publicKeyJwk;
 
 }

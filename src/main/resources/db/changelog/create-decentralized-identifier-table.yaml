@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-decentralized-identifier-table
+      author: f11h
+      changes:
+        - createTable:
+            tableName: decentralized_identifier
+            columns:
+              - column:
+                  autoIncrement: true
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: decentralized_identifier_id
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: did_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: raw
+                  type: clob
+

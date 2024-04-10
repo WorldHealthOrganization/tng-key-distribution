@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-trusted-party-table
+      author: f11h
+      changes:
+        - createTable:
+            tableName: trusted_party
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: raw_data
+                  type: varchar(4096)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: country
+                  type: varchar(2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: thumbprint
+                  type: varchar(512)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
