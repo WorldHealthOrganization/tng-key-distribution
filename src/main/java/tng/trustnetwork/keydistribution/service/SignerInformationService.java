@@ -94,7 +94,7 @@ public class SignerInformationService {
 
         for (TrustListItem cert : trustedCerts) {
             if (!alreadyStoredCerts.contains(cert.getKid())) {
-                signerInformationEntities.add(getSingerInformationEntity(cert));
+                signerInformationEntities.add(getSignerInformationEntity(cert));
                 certsToDelete.add(cert.getKid());
             }
         }
@@ -104,7 +104,7 @@ public class SignerInformationService {
         signerInformationRepository.saveAllAndFlush(signerInformationEntities);
     }
 
-    private SignerInformationEntity getSingerInformationEntity(TrustListItem cert) {
+    private SignerInformationEntity getSignerInformationEntity(TrustListItem cert) {
         SignerInformationEntity signerEntity = new SignerInformationEntity();
         signerEntity.setKid(cert.getKid());
         signerEntity.setCreatedAt(cert.getTimestamp());

@@ -13,3 +13,5 @@ databaseChangeLog:
       file: db/changelog/create-public-key-jwk-table.yaml
   - include:
       file: db/changelog/create-verification-method-table.yaml
+  - include:
+      file: db/changelog/add-trusted-party-table.yaml
