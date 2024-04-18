@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import tng.trustnetwork.keydistribution.config.KdsConfigProperties;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 import tng.trustnetwork.keydistribution.mapper.IssuerMapper;
 import tng.trustnetwork.keydistribution.repository.TrustedIssuerRepository;
@@ -47,6 +48,8 @@ public class TrustedIssuerService {
     private final UniversalResolverService urService;
 
     private final DecentralizedIdentifierService decentralizedIdentifierService;
+
+    private final KdsConfigProperties configProperties;
 
     /**
      * Get the current etag.
@@ -74,6 +77,16 @@ public class TrustedIssuerService {
     }
 
     /**
+     * Method to query the db for DID documents.
+     *
+     * @return List holding the found trusted issuers.
+     */
+    public List<TrustedIssuerEntity> getAllDid() {
+
+        return trustedIssuerRepository.findAllByUrlTypeIs(TrustedIssuerEntity.UrlType.DID);
+    }
+
+    /**
      * Method to synchronise the issuers in the db with the given List of trusted issuers.
      *
      * @param trustedIssuers defines the list of trusted issuers.
@@ -89,7 +102,8 @@ public class TrustedIssuerService {
 
             trustedIssuerEntities.add(getTrustedIssuerEntity(newEtag, trustedIssuer));
 
-            if (TrustedIssuer.UrlType.DID == trustedIssuer.getType()) {
+            if (TrustedIssuer.UrlType.DID == trustedIssuer.getType()
+                && configProperties.getTrustedIssuerDownloader().isEnableTrustedIssuerResolving()) {
                 try {
                     UniversalResolverService.DidDocumentWithRawResponse didDocument =
                         urService.universalResolverApiCall(trustedIssuer.getUrl());

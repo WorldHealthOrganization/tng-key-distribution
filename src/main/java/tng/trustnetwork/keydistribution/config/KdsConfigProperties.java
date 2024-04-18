@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,12 @@
 
 package tng.trustnetwork.keydistribution.config;
 
+import eu.europa.ec.dgc.gateway.connector.config.DgcGatewayConnectorConfigProperties;
 import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,11 +36,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("dgc") //TODO separate kds and dgc-lib properties
 public class KdsConfigProperties {
 
-    private List<TrustedIssuer> staticTrustedIssuer = new ArrayList<>();
 
     private final CertificatesDownloader certificatesDownloader = new CertificatesDownloader();
 
     private final TrustedIssuerDownloader trustedIssuerDownloader = new TrustedIssuerDownloader();
+
+    private final DidConfig did = new DidConfig();
 
     private String context = "";
 
@@ -60,6 +64,8 @@ public class KdsConfigProperties {
         private boolean enabled;
         private Integer timeInterval;
         private Integer lockLimit;
+        private List<TrustedIssuer> staticTrustedIssuer = new ArrayList<>();
+        private boolean enableTrustedIssuerResolving = false;
     }
 
     @Getter
@@ -83,6 +89,42 @@ public class KdsConfigProperties {
          * (e.g. 8080)
          */
         private int port;
+    }
+
+    @Getter
+    @Setter
+    public static class DidConfig {
+
+        private Boolean enableDidGeneration;
+
+        private String didId;
+        private String didController;
+
+        private String trustListIdPrefix;
+        private String trustListControllerPrefix;
+
+        private String ldProofVerificationMethod;
+        private String ldProofDomain;
+        private String ldProofNonce;
+
+        private String didSigningProvider;
+        private String didUploadProvider;
+
+        private Map<String, String> contextMapping = new HashMap<>();
+        private Map<String, String> virtualCountries = new HashMap<>();
+
+        private LocalFileConfig localFile = new LocalFileConfig();
+
+        private DgcGatewayConnectorConfigProperties.KeyStoreWithAlias localKeyStore =
+            new DgcGatewayConnectorConfigProperties.KeyStoreWithAlias();
+
+        @Getter
+        @Setter
+        public static class LocalFileConfig {
+            private String fileName;
+            private String directory;
+        }
+
     }
 
 }

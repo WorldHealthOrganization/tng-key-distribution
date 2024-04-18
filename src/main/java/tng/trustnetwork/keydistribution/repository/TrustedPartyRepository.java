@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 
 package tng.trustnetwork.keydistribution.repository;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import tng.trustnetwork.keydistribution.entity.TrustedPartyEntity;
@@ -28,5 +29,7 @@ public interface TrustedPartyRepository extends JpaRepository<TrustedPartyEntity
 
     @Modifying
     void deleteAllByType(TrustedPartyEntity.Type type);
+
+    List<TrustedPartyEntity> findAllByCountryIsAndTypeIs(String country, TrustedPartyEntity.Type type);
 
 }

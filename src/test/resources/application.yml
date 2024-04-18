@@ -15,7 +15,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
   liquibase:
     change-log: classpath:db/changelog.yaml
   h2:
@@ -38,22 +38,23 @@ dgc:
   gateway:
     connector:
       enabled: false
-#      endpoint: https://tng-dev.who.int
-#      proxy:
-#        enabled: false
-#      max-cache-age: 300
-#      tls-trust-store: #CA of TNG Gateway of TLS certificate
-#        alias: tng-tls-server-certificate
-#        password: dgcg-p4ssw0rd
-#        path: certs/tng_tls_server_truststore.p12
-#      tls-key-store: # client cert key pair of participant
-#        alias: clientcredentials
-#        password: dgcg-p4ssw0rd
-#        path: certs/tls_key_store.p12
-#      trust-anchor: # TA pem file of TNG that was used for signing
-#        alias: trustanchor
-#        password: dgcg-p4ssw0rd
-#        path: certs/trustanchor_store.jks
+  did:
+    cron: ""
+    enableDidGeneration: true
+    didUploadProvider: dummy
+    didSigningProvider: dummy
+    ld-proof-verification-method: did:web:dummy.net
+    ld-proof-nonce: n0nc3
+    ld-proof-domain: d0m4in
+    did-id: did:web:abc
+    did-controller: did:web:def
+    trust-list-id-prefix: did:web:abc
+    trust-list-controller-prefix: did:web:abc
+    contextMapping:
+      "[https://www.w3.org/ns/did/v1]": did_v1.json
+      "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
+    virtualCountries:
+      EU: xeu
 springdoc:
   api-docs:
     path: /api/docs

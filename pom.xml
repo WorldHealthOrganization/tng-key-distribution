@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-parent</artifactId>
-        <version>2023.0.0</version>
+        <version>2023.0.1</version>
     </parent>
 
     <groupId>tng.trustnetwork.keydistribution</groupId>
@@ -35,6 +35,7 @@
         <springdoc.version>2.1.0</springdoc.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <shedlock.version>5.12.0</shedlock.version>
+        <bcpkix.version>1.77</bcpkix.version>
         <!-- plugins -->
         <plugin.checkstyle.version>3.3.0</plugin.checkstyle.version>
         <plugin.jacoco.version>0.8.10</plugin.jacoco.version>
@@ -115,6 +116,10 @@
             <id>who-github</id>
             <url>https://maven.pkg.github.com/${github.organization}/*</url>
         </repository>
+        <repository>
+            <id>danubetech-maven-public</id>
+            <url>https://repo.danubetech.com/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <distributionManagement>
@@ -135,12 +140,11 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>6.1.5</version>
+            <version>6.1.6</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-<!--            <version>3.2.0</version>-->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -205,6 +209,22 @@
             <groupId>net.javacrumbs.shedlock</groupId>
             <artifactId>shedlock-spring</artifactId>
             <version>${shedlock.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>${bcpkix.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.weboftrust</groupId>
+            <artifactId>ld-signatures-java</artifactId>
+            <version>1.1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bitcoinj</groupId>
+                    <artifactId>bitcoinj-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
