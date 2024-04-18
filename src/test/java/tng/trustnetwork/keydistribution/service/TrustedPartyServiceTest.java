@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@
 
 package tng.trustnetwork.keydistribution.service;
 
-import java.util.List;
 import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,9 +51,6 @@ class TrustedPartyServiceTest {
 
     @Test
     void testUpdateCsca() {
-
-        // Check DB is empty and create a dummy entity which will be deleted
-        Assertions.assertEquals(0, trustedPartyRepository.count());
 
         trustedPartyRepository.save(TrustedPartyEntity.builder()
             .thumbprint("thumbprint_old")
@@ -92,6 +89,24 @@ class TrustedPartyServiceTest {
         Assertions.assertEquals(trustListItem2.getCountry(), persistedTrustedParties.get(1).getCountry());
         Assertions.assertEquals(trustListItem2.getThumbprint(), persistedTrustedParties.get(1).getThumbprint());
         Assertions.assertEquals(trustListItem2.getRawData(), persistedTrustedParties.get(1).getRawData());
+
+    }
+
+    @Test
+    void testGetCscaByCountry() {
+
+        TrustedPartyEntity tp1 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C1", "t1", TrustedPartyEntity.Type.CSCA));
+        TrustedPartyEntity tp2 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C1", "t2", TrustedPartyEntity.Type.CSCA));
+        TrustedPartyEntity tp3 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C2", "t3", TrustedPartyEntity.Type.CSCA));
+        TrustedPartyEntity tp4 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C2", "t4", TrustedPartyEntity.Type.CSCA));
+
+        trustedPartyRepository.saveAll(List.of(tp1, tp2, tp3, tp4));
+
+        TrustedPartyEntity[] c1tp = trustedPartyService.getCscaByCountry("C1").toArray(new TrustedPartyEntity[2]);
+        TrustedPartyEntity[] c2tp = trustedPartyService.getCscaByCountry("C2").toArray(new TrustedPartyEntity[2]);
+
+        Assertions.assertArrayEquals(c1tp, new TrustedPartyEntity[] { tp1, tp2 });
+        Assertions.assertArrayEquals(c2tp, new TrustedPartyEntity[] { tp3, tp4 });
 
     }
 

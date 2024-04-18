@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,12 @@
 
 package tng.trustnetwork.keydistribution.restapi.controller;
 
-import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
-import tng.trustnetwork.keydistribution.testdata.SignerInformationTestHelper;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Assertions;
@@ -33,11 +37,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
+import tng.trustnetwork.keydistribution.testdata.SignerInformationTestHelper;
 
 @SpringBootTest
 @AutoConfigureMockMvc

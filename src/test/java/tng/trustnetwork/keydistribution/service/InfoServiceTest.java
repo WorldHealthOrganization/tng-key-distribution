@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 
 package tng.trustnetwork.keydistribution.service;
 
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import tng.trustnetwork.keydistribution.entity.InfoEntity;
 import tng.trustnetwork.keydistribution.repository.InfoRepository;
 

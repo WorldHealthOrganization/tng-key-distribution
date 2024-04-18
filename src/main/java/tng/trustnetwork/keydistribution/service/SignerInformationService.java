@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ public class SignerInformationService {
      * @return Optional holding the certificate if found.
      */
     public Optional<SignerInformationEntity> getCertificate(Long resumeToken) {
+
         if (resumeToken == null) {
             return signerInformationRepository.findFirstByIdIsNotNullAndDeletedOrderByIdAsc(false);
         } else {
@@ -74,7 +75,6 @@ public class SignerInformationService {
      * Method to synchronise the certificates in the db with the given List of trusted certificates.
      *
      * @param trustedCerts defines the list of trusted certificates.
-     *
      */
     @Transactional
     public void updateTrustedCertsList(List<TrustListItem> trustedCerts) {
@@ -105,9 +105,10 @@ public class SignerInformationService {
     }
 
     private SignerInformationEntity getSignerInformationEntity(TrustListItem cert) {
+
         SignerInformationEntity signerEntity = new SignerInformationEntity();
         signerEntity.setKid(cert.getKid());
-        signerEntity.setCreatedAt(cert.getTimestamp());
+        signerEntity.setCreatedAt(cert.getTimestamp() == null ? ZonedDateTime.now() : cert.getTimestamp());
         signerEntity.setCountry(cert.getCountry());
         signerEntity.setThumbprint((cert.getThumbprint()));
         signerEntity.setRawData(cert.getRawData());
@@ -117,6 +118,7 @@ public class SignerInformationService {
 
     /**
      * Gets the deleted/updated state of the certificates.
+     *
      * @return state of the certificates represented by their kids
      */
     public DeltaListDto getDeltaList() {
@@ -124,16 +126,18 @@ public class SignerInformationService {
         List<SignerInformationEntity> certs =
             signerInformationRepository.findAllByOrderByIdAsc();
 
-        Map<Boolean,List<String>> partitioned =
+        Map<Boolean, List<String>> partitioned =
             certs.stream().collect(Collectors.partitioningBy(SignerInformationEntity::isDeleted,
-                Collectors.mapping(SignerInformationEntity::getKid, Collectors.toList())));
+                                                             Collectors.mapping(SignerInformationEntity::getKid,
+                                                                                Collectors.toList())));
 
-        return new DeltaListDto(partitioned.get(Boolean.FALSE),partitioned.get(Boolean.TRUE));
+        return new DeltaListDto(partitioned.get(Boolean.FALSE), partitioned.get(Boolean.TRUE));
 
     }
 
     /**
      * Gets the deleted/updated state of the certificates after the given value.
+     *
      * @return state of the certificates represented by their kids
      */
     public DeltaListDto getDeltaList(ZonedDateTime ifModifiedDateTime) {
@@ -141,16 +145,18 @@ public class SignerInformationService {
         List<SignerInformationEntity> certs =
             signerInformationRepository.findAllByUpdatedAtAfterOrderByIdAsc(ifModifiedDateTime);
 
-        Map<Boolean,List<String>> partitioned =
+        Map<Boolean, List<String>> partitioned =
             certs.stream().collect(Collectors.partitioningBy(SignerInformationEntity::isDeleted,
-                Collectors.mapping(SignerInformationEntity::getKid, Collectors.toList())));
+                                                             Collectors.mapping(SignerInformationEntity::getKid,
+                                                                                Collectors.toList())));
 
-        return new DeltaListDto(partitioned.get(Boolean.FALSE),partitioned.get(Boolean.TRUE));
+        return new DeltaListDto(partitioned.get(Boolean.FALSE), partitioned.get(Boolean.TRUE));
 
     }
 
     /**
      * Gets the raw data of the certificates for a given kid list.
+     *
      * @param requestedCertList list of kids
      * @return raw data of certificates
      */
@@ -160,10 +166,41 @@ public class SignerInformationService {
             signerInformationRepository.findAllByKidIn(requestedCertList);
 
         return certs.stream().collect(Collectors.groupingBy(SignerInformationEntity::getCountry,
-            Collectors.mapping(this::map, Collectors.toList())));
+                                                            Collectors.mapping(this::map, Collectors.toList())));
+    }
+
+    /**
+     * Returns a list of 2-Digit Country-Codes which have at least one signing certificates present in DB which is not
+     * marked for deletion.
+     *
+     * @return Distinct list of Country-Codes
+     */
+    public List<String> getCountryList() {
+
+        return signerInformationRepository.getCountryList();
+    }
+
+    /**
+     * Returns a list of all active certificates.
+     *
+     * @return List of SignerInformationEntity
+     */
+    public List<SignerInformationEntity> getActiveCertificates() {
+        return signerInformationRepository.getAllByDeletedIs(false);
+    }
+
+    /**
+     * Returns a list of active certificates for given list of countries.
+     *
+     * @param countries List of Country Codes to filter for.     *
+     * @return List of SignerInformationEntity
+     */
+    public List<SignerInformationEntity> getActiveCertificatesForCountries(List<String> countries) {
+        return signerInformationRepository.getAllByDeletedIsAndCountryIsIn(false, countries);
     }
 
     private CertificatesLookupResponseItemDto map(SignerInformationEntity entity) {
+
         return new CertificatesLookupResponseItemDto(entity.getKid(), entity.getRawData());
     }
 }
