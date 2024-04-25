@@ -172,9 +172,6 @@ public class DidTrustListService {
             trustList.setId(configProperties.getDid().getDidId()
                                 + SEPARATOR_COLON
                                 + getCountryAsLowerCaseAlpha3(countries.get(0)));
-            trustList.setController(configProperties.getDid().getDidController()
-                                        + SEPARATOR_COLON
-                                        + getCountryAsLowerCaseAlpha3(countries.get(0)));
         }
 
         // Add DSC
