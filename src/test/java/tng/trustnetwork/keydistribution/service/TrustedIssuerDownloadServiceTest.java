@@ -26,6 +26,7 @@ import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,6 @@ class TrustedIssuerDownloadServiceTest {
     @MockBean
     DgcGatewayTrustedIssuerDownloadConnector dgcGatewayDownloadConnector;
 
-
     @Autowired
     TrustedIssuerDownloadService trustedIssuerDownloadService;
 
@@ -55,6 +55,11 @@ class TrustedIssuerDownloadServiceTest {
 
     @Autowired
     TrustedIssuerTestHelper trustedIssuerTestHelper;
+
+    @BeforeEach
+    void cleanup() {
+        trustedIssuerRepository.deleteAll();
+    }
 
     @Test
     void downloadEmptyIssuerList() {
