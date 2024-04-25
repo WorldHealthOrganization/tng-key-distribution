@@ -24,11 +24,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: thumbprint
-                  type: varchar(512)
-                  constraints:
-                    nullable: false
-              - column:
                   name: type
                   type: varchar(10)
                   constraints:
