@@ -62,7 +62,6 @@ public class TrustedPartyService {
 
         return TrustedPartyEntity.builder()
                                  .country(trustListItem.getCountry())
-                                 .thumbprint(trustListItem.getThumbprint())
                                  .rawData(trustListItem.getRawData())
                                  .type(TrustedPartyEntity.Type.CSCA)
                                  .build();

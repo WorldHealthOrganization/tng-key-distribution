@@ -53,7 +53,6 @@ class TrustedPartyServiceTest {
     void testUpdateCsca() {
 
         trustedPartyRepository.save(TrustedPartyEntity.builder()
-            .thumbprint("thumbprint_old")
             .country("CO")
             .rawData("raw_data_old")
             .type(TrustedPartyEntity.Type.CSCA)
@@ -61,13 +60,11 @@ class TrustedPartyServiceTest {
 
         // Build Test-Data
         TrustListItem trustListItem1 = new TrustListItem();
-        trustListItem1.setThumbprint("thumb1");
         trustListItem1.setCountry("XX");
         trustListItem1.setSignature("sig1");
         trustListItem1.setRawData("raw1");
 
         TrustListItem trustListItem2 = new TrustListItem();
-        trustListItem2.setThumbprint("thumb2");
         trustListItem2.setCountry("YY");
         trustListItem2.setSignature("sig2");
         trustListItem2.setRawData("raw2");
@@ -82,12 +79,10 @@ class TrustedPartyServiceTest {
 
         Assertions.assertEquals(TrustedPartyEntity.Type.CSCA, persistedTrustedParties.get(0).getType());
         Assertions.assertEquals(trustListItem1.getCountry(), persistedTrustedParties.get(0).getCountry());
-        Assertions.assertEquals(trustListItem1.getThumbprint(), persistedTrustedParties.get(0).getThumbprint());
         Assertions.assertEquals(trustListItem1.getRawData(), persistedTrustedParties.get(0).getRawData());
 
         Assertions.assertEquals(TrustedPartyEntity.Type.CSCA, persistedTrustedParties.get(1).getType());
         Assertions.assertEquals(trustListItem2.getCountry(), persistedTrustedParties.get(1).getCountry());
-        Assertions.assertEquals(trustListItem2.getThumbprint(), persistedTrustedParties.get(1).getThumbprint());
         Assertions.assertEquals(trustListItem2.getRawData(), persistedTrustedParties.get(1).getRawData());
 
     }
@@ -95,10 +90,10 @@ class TrustedPartyServiceTest {
     @Test
     void testGetCscaByCountry() {
 
-        TrustedPartyEntity tp1 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C1", "t1", TrustedPartyEntity.Type.CSCA));
-        TrustedPartyEntity tp2 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C1", "t2", TrustedPartyEntity.Type.CSCA));
-        TrustedPartyEntity tp3 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C2", "t3", TrustedPartyEntity.Type.CSCA));
-        TrustedPartyEntity tp4 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C2", "t4", TrustedPartyEntity.Type.CSCA));
+        TrustedPartyEntity tp1 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C1", TrustedPartyEntity.Type.CSCA));
+        TrustedPartyEntity tp2 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C1", TrustedPartyEntity.Type.CSCA));
+        TrustedPartyEntity tp3 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C2", TrustedPartyEntity.Type.CSCA));
+        TrustedPartyEntity tp4 = trustedPartyRepository.save(new TrustedPartyEntity(null, "", "C2", TrustedPartyEntity.Type.CSCA));
 
         trustedPartyRepository.saveAll(List.of(tp1, tp2, tp3, tp4));
 

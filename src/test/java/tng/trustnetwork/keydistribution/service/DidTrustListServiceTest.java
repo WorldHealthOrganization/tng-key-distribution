@@ -128,7 +128,6 @@ public class DidTrustListServiceTest {
             null,
             Base64.getEncoder().encodeToString(certCscaDe.getEncoded()),
             "DE",
-            certificateUtils.getCertThumbprint(certCscaDe),
             TrustedPartyEntity.Type.CSCA
         ));
 
@@ -136,7 +135,6 @@ public class DidTrustListServiceTest {
             null,
             Base64.getEncoder().encodeToString(certCscaEu.getEncoded()),
             "EU",
-            certificateUtils.getCertThumbprint(certCscaEu),
             TrustedPartyEntity.Type.CSCA
         ));
 

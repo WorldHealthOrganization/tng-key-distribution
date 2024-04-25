@@ -64,12 +64,6 @@ public class TrustedPartyEntity {
     private String country;
 
     /**
-     * The thumbprint of the cert.
-     */
-    @Column(name = "thumbprint")
-    private String thumbprint;
-
-    /**
      * Type of the TrustedParty (CSCA, UPLOAD, Authentication - currently only CSCA are supported).
      */
     @Column(name = "type")
