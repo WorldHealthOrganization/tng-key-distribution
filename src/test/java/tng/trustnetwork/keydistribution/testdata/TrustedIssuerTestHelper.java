@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,15 @@
 
 package tng.trustnetwork.keydistribution.testdata;
 
+import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 import tng.trustnetwork.keydistribution.repository.TrustedIssuerRepository;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -142,5 +141,21 @@ public class TrustedIssuerTestHelper {
         list.add(issuer);
         return list;
     }
+
+    public TrustedIssuerEntity createTrustedIssuer(final String country) {
+        TrustedIssuerEntity trustedIssuer = new TrustedIssuerEntity();
+        trustedIssuer.setUrl("did:trusted:" + country + ":issuer");
+        trustedIssuer.setName("tiName");
+        trustedIssuer.setCountry(country);
+        trustedIssuer.setUrlType(TrustedIssuerEntity.UrlType.DID);
+        trustedIssuer.setSslPublicKey("pubKey");
+        trustedIssuer.setThumbprint("thumbprint");
+        trustedIssuer.setKeyStorageType("JWKS");
+        trustedIssuer.setEtag("etag");
+        trustedIssuer.setSignature("sig");
+
+        return trustedIssuer;
+    }
+
 
 }

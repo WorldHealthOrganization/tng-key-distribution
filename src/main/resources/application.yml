@@ -63,9 +63,16 @@ dgc:
     enabled: true
     timeInterval: 1800000
     lockLimit: 3600000
+    static-trusted-issuer:
+      - name: WHO Trustlist (DEV)
+        country: WH
+        type: did
+        url: did:web:tng-cdn-dev.who.int:trustlist
+        signature: No-Signature # required because of DB restrictions
+    enable-trusted-issuer-resolving: false
   gateway:
     connector:
-      enabled: false
+      enabled: true
       endpoint: ${DGC_GATEWAY_CONNECTOR_ENDPOINT}
       proxy:
         enabled: false
@@ -81,9 +88,26 @@ dgc:
         alias: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS}
         password: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD}
         path: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH}
-  static-trusted-issuer:
-    - name: WHO Trustlist (DEV)
-      country: WH
-      type: did
-      url: did:web:tng-cdn-dev.who.int:trustlist
-      signature: No-Signature # required because of DB restrictions
+      enable-ddcc-support: true
+  did:
+    cron: "0 0 2 * * *"
+    enableDidGeneration: true
+    didUploadProvider: local-file
+    localFile:
+      directory: ./did
+      file-name: did.json
+    didSigningProvider: dummy
+    ld-proof-verification-method: did:web:dummy.net
+    ld-proof-nonce: n0nc3
+    did-id: did:web:abc
+    did-controller: did:web:def
+    trust-list-id-prefix: did:web:abc
+    trust-list-controller-prefix: did:web:abc
+    contextMapping:
+      "[https://www.w3.org/ns/did/v1]": did_v1.json
+      "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
+    virtualCountries:
+      XA: XXA
+      XB: XXB
+      XO: XXO
+      XL: XCL

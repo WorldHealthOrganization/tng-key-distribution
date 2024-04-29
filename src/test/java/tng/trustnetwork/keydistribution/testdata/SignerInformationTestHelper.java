@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ package tng.trustnetwork.keydistribution.testdata;
 
 import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
 import eu.europa.ec.dgc.utils.CertificateUtils;
-import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
-import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.cert.CertificateException;
@@ -33,6 +31,8 @@ import java.time.ZonedDateTime;
 import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
+import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 
 @Service
 @RequiredArgsConstructor

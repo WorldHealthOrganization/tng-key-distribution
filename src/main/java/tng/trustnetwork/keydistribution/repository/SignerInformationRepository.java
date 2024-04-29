@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,4 +59,11 @@ public interface SignerInformationRepository extends JpaRepository<SignerInforma
     Optional<SignerInformationEntity> findFirstByIdIsNotNullAndDeletedOrderByIdAsc(boolean deleted);
 
     Optional<SignerInformationEntity> findFirstByIdGreaterThanAndDeletedOrderByIdAsc(Long resumeToken, boolean deleted);
+
+    @Query("SELECT DISTINCT s.country FROM SignerInformationEntity s WHERE s.deleted = false")
+    List<String> getCountryList();
+
+    List<SignerInformationEntity> getAllByDeletedIs(boolean deleted);
+
+    List<SignerInformationEntity> getAllByDeletedIsAndCountryIsIn(boolean deleted, List<String> countries);
 }

@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,12 +62,6 @@ public class TrustedPartyEntity {
      */
     @Column(name = "country")
     private String country;
-
-    /**
-     * The thumbprint of the cert.
-     */
-    @Column(name = "thumbprint")
-    private String thumbprint;
 
     /**
      * Type of the TrustedParty (CSCA, UPLOAD, Authentication - currently only CSCA are supported).

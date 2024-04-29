@@ -29,3 +29,31 @@ Create a pkcs12 KeyStore from the TLS.pem and TLS.key:
 ```
 openssl pkcs12 -export -out tls_key_store.p12 -inkey TLS.key -in TLS.pem -passout pass:dgcg-p4ssw0rd -name clientcredentials
 ```
+
+# How to setup signing material for DID Signing
+
+KDS is able to provide a DID-Document holding the downloaded keys. The DID-Document will be signed by a private key provided in a KeyStore.
+
+Generate Private Key (Choose another Curve depending your needs)
+
+```
+openssl ecparam -name prime256v1 -genkey -noout -out did-signer.pem
+```
+
+Convert PEM-File to KeyStore
+
+```
+openssl pkcs12 -export -out did-signer.p12 -inkey did-signer.pem -nocerts -passout pass:secure-password -name did-signer
+```
+
+This will result in a KeyStore (P12) containing the previously generated private key stored with alias "did-signer" and secured with password "secure-password"
+
+```yaml
+dgc:
+  did:
+    didUploadProvider: local-file
+    localKeyStore:
+      alias: did-signer
+      password: secure-password
+      path: ./did-signer.p12
+```

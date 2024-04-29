@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,11 +53,15 @@ public class TrustedPartyService {
                  .forEach(trustedPartyRepository::save);
     }
 
+    public List<TrustedPartyEntity> getCscaByCountry(String countryCode) {
+
+        return trustedPartyRepository.findAllByCountryIsAndTypeIs(countryCode, TrustedPartyEntity.Type.CSCA);
+    }
+
     private TrustedPartyEntity getCscaEntity(TrustListItem trustListItem) {
 
         return TrustedPartyEntity.builder()
                                  .country(trustListItem.getCountry())
-                                 .thumbprint(trustListItem.getThumbprint())
                                  .rawData(trustListItem.getRawData())
                                  .type(TrustedPartyEntity.Type.CSCA)
                                  .build();
