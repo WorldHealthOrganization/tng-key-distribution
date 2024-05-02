@@ -142,3 +142,13 @@ gateway:
       alias: <alias of the trust_anchor chert>
       password: <password to open trust_anchor_store>
       path: <full path of the trust_anchor_store>
+did:
+  enableDidGeneration: true
+  cron: "*/10 * * * * *"
+  didUploadProvider: local-file
+  ld_proof_verification_method: did:web:dummy.net
+  ld_proof_nonce: n0nc3
+  did_id: did:web:abc
+  did_controller: did:web:def
+  trust_list_id_prefix: did:web:abc
+  trust_list_controller_prefix: did:web:abc

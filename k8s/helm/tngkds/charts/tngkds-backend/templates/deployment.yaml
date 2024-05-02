@@ -99,6 +99,12 @@ spec:
               value: {{ .Values.gateway.connector.enabled | quote }}
             - name: DGC_GATEWAY_CONNECTOR_ENDPOINT
               value: {{ .Values.gateway.connector.endpoint }}
+          {{- if .Values.did.enableDidGeneration }}
+          {{- range $name, $val := .Values.did }}
+            - name: DGC_{{ $name | upper }}
+              value: {{ $val | quote }}
+          {{- end }}
+          {{- end }}
           volumeMounts:
             - name: secrets-jks
               mountPath: /certs
