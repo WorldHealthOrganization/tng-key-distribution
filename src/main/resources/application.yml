@@ -96,6 +96,10 @@ dgc:
     localFile:
       directory: ./did
       file-name: did.json
+    git:
+      path: <local-working-directory>
+      url: <git-repository-to-be-cloned>
+      pat: <personal-access-token>
     didSigningProvider: dummy
     ld-proof-verification-method: did:web:dummy.net
     ld-proof-nonce: n0nc3
