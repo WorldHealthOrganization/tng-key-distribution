@@ -94,12 +94,13 @@ dgc:
     enableDidGeneration: true
     didUploadProvider: local-file
     localFile:
-      directory: ./did
+      directory: <root-directory-of-trustlist>
       file-name: did.json
     git:
-      path: <local-working-directory>
-      url: <git-repository-to-be-cloned>
-      pat: <personal-access-token>
+      workdir: <root-of-cloned-git-repo>
+      prefix: <prefix-dir-in-git-repo>
+      url: <git-repo-url>
+      pat: <personal-access-token-for-git>
     didSigningProvider: dummy
     ld-proof-verification-method: did:web:dummy.net
     ld-proof-nonce: n0nc3

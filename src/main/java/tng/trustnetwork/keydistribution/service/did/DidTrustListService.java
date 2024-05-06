@@ -28,23 +28,17 @@ import foundation.identity.jsonld.ConfigurableDocumentLoader;
 import foundation.identity.jsonld.JsonLDObject;
 import info.weboftrust.ldsignatures.jsonld.LDSecurityKeywords;
 import info.weboftrust.ldsignatures.signer.JsonWebSignature2020LdSigner;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.PublicKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -59,9 +53,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.bouncycastle.cert.X509CertificateHolder;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -102,6 +93,8 @@ public class DidTrustListService {
     private final CertificateUtils certificateUtils;
 
     private final TrustedIssuerService trustedIssuerService;
+    
+    private final GitProvider gitProvider;
 
     /**
      * Create and upload DID Document holding Uploaded DSC and Trusted Issuer.
@@ -111,21 +104,6 @@ public class DidTrustListService {
     public void job() {
 
         String trustList;
-
-        deleteDirectoryAndContents(configProperties.getDid().getGit().getPath());
-        try {
-            Git.cloneRepository()
-               .setURI(configProperties.getDid().getGit().getUrl())
-               .setDirectory(new File(configProperties.getDid().getGit().getPath()))
-               .setCredentialsProvider(
-                   new UsernamePasswordCredentialsProvider(
-                       "anonymous", configProperties.getDid().getGit().getPat()))
-               .call();
-        } catch (Exception e) {
-            log.error("Failed to clone repository {}: {}",
-                      configProperties.getDid().getGit().getUrl(), e.getMessage());
-        }
-
 
         try {
             trustList = generateTrustList(null);
@@ -165,17 +143,7 @@ public class DidTrustListService {
 
         log.info("Finished DID Export Process");
 
-        try {
-            Git git = Git.open(new File(configProperties.getDid().getGit().getPath()));
-            git.add().addFilepattern(".").call();
-            git.commit().setMessage("Added DID files on " + Instant.now()).call();
-            git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(
-                "anonymous", configProperties.getDid().getGit().getPat())).call();
-            git.close();
-        } catch (GitAPIException | IOException e) {
-            log.error("Error during Git commit & push: {}",e.getMessage());
-        }
-
+        gitProvider.upload(configProperties.getDid().getLocalFile().getDirectory());
     }
 
     private String getCountryAsLowerCaseAlpha3(String country) {
@@ -336,26 +304,6 @@ public class DidTrustListService {
                                   .filter(csca -> csca.getSubjectX500Principal()
                                                       .equals(dsc.getIssuerX500Principal()))
                                   .findFirst();
-    }
-
-    private void deleteDirectoryAndContents(String directoryPath) {
-        Path dir = Paths.get(directoryPath);
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-            for (Path path : stream) {
-                if (Files.isDirectory(path)) {
-                    deleteDirectoryAndContents(path.toString());
-                } else {
-                    Files.delete(path);
-                }
-            }
-        } catch (IOException e) {
-            log.error("Error deleting file {} {}",dir,e.getMessage());
-        }
-        try {
-            Files.delete(dir);
-        } catch (IOException e) {
-            log.error("Error deleting directory {} {}",dir,e.getMessage());
-        }
     }
 
 }

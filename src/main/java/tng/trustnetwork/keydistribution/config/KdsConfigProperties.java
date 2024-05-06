@@ -129,7 +129,8 @@ public class KdsConfigProperties {
         @Getter
         @Setter
         public static class GitConfig {
-            private String path;
+            private String prefix;
+            private String workdir;
             private String pat;
             private String url;
         }
