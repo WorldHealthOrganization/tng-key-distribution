@@ -10,7 +10,7 @@ image:
   repository: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.0.1-d890889"  #"0.0.1-2840d04"
+  tag: "0.0.1-d890889" #"0.0.1-2840d04"
 
 #kubectl -n <k8s-namespace> create secret docker-registry <k8s-docker-registry-secret-name> --docker-server=ghcr.io --docker-username=<github-username> --docker-password=<github-personal-access-token>  --docker-email=<email-address> -o yaml
 #kubectl -n kds create secret docker-registry tng-distribution-pull-secret --docker-server=ghcr.io --docker-username=anonymous --docker-password=<PAT>  --docker-email=anonymous@example.com -o yaml
@@ -20,8 +20,8 @@ fullnameOverride: ""
 
 # Liquibase
 liquibaseImage:
-  repository: ghcr.io/worldhealthorganization/tng-key-distribution/tngkds-liquibase
-  tag: "0.0.1"
+  repository: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution-initcontainer
+  tag: <liquibase-image-tag>
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -34,10 +34,12 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -57,7 +59,8 @@ service:
 ingress:
   enabled: false
   className: ""
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -70,7 +73,8 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -101,12 +105,14 @@ psql:
   port: 5432
   dbName: postgres
   cluster: svc.cluster.local
+  username: <dbusername>
+  password: <dbpassword>
 
 # ConfigMap
-configMap:
-  data:
-    host: localhost
-    dbName: postgres
+# configMap:
+#   data:
+#     host: localhost
+#     dbName: postgres
 
 # Spring
 spring:
@@ -136,3 +142,13 @@ gateway:
       alias: <alias of the trust_anchor chert>
       password: <password to open trust_anchor_store>
       path: <full path of the trust_anchor_store>
+did:
+  enableDidGeneration: true
+  cron: "*/10 * * * * *"
+  didUploadProvider: local-file
+  ld_proof_verification_method: did:web:dummy.net
+  ld_proof_nonce: n0nc3
+  did_id: did:web:abc
+  did_controller: did:web:def
+  trust_list_id_prefix: did:web:abc
+  trust_list_controller_prefix: did:web:abc

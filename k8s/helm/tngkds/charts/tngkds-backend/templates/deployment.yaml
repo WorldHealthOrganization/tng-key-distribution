@@ -4,6 +4,7 @@ metadata:
   name: {{ include "tngkds-backend.fullname" . }}
   labels:
     {{- include "tngkds-backend.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -28,17 +29,15 @@ spec:
             - liquibase update --changeLogFile=db/changelog.yaml;
           env:
             - name: LIQUIBASE_COMMAND_URL
+            {{- if .Values.psql.asPod.enabled }}
               value: "jdbc:postgresql://{{ .Values.psql.serviceName }}.{{ .Release.Namespace }}.{{ .Values.psql.cluster }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
+            {{ else }}
+              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
+            {{ end -}}
             - name: LIQUIBASE_COMMAND_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "tngkds-backend.fullname" . }}-secret
-                  key: pgUser
+              value: {{ .Values.psql.username | quote }}
             - name: LIQUIBASE_COMMAND_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "tngkds-backend.fullname" . }}-secret
-                  key: pgPassword
+              value: {{ .Values.psql.password | quote }}
             - name: LIQUIBASE_SEARCH_PATH
               value: /liquibase
             - name: LIQUIBASE_LOG_LEVEL
@@ -63,7 +62,11 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: {{ .Values.spring.profile }}
             - name: SPRING_DATASOURCE_URL
+            {{- if .Values.psql.asPod.enabled }}
               value: "jdbc:postgresql://{{ .Values.psql.serviceName }}.{{ .Release.Namespace }}.{{ .Values.psql.cluster }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
+            {{ else }}
+              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
+            {{ end -}} 
             - name: SPRING_DATASOURCE_DRIVERCLASSNAME
               value: "org.postgresql.Driver"
             - name: SPRING_DATASOURCE_JNDI_NAME
@@ -71,37 +74,37 @@ spec:
             - name: SPRING_JPA_DATABASEPLATFORM
               value: "org.hibernate.dialect.PostgreSQLDialect"
             - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "tngkds-backend.fullname" . }}-secret
-                  key: pgUser
+              value: {{ .Values.psql.username | quote }}
             - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "tngkds-backend.fullname" . }}-secret
-                  key: pgPassword
+              value: {{ .Values.psql.password | quote }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_PATH
               value: {{ .Values.gateway.connector.tls_trust_store.path }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_PASSWORD
-              value: {{ .Values.gateway.connector.tls_trust_store.password }}
+              value: {{ .Values.gateway.connector.tls_trust_store.password | quote }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_ALIAS
               value: {{ .Values.gateway.connector.tls_trust_store.alias }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_KEY_STORE_PATH
               value: {{ .Values.gateway.connector.tls_key_store.path }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_KEY_STORE_PASSWORD
-              value: {{ .Values.gateway.connector.tls_key_store.password }}
+              value: {{ .Values.gateway.connector.tls_key_store.password | quote }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_KEY_STORE_ALIAS
               value: {{.Values.gateway.connector.tls_key_store.alias }}
             - name: DGC_GATEWAY_CONNECTOR_TRUST_ANCHOR_PATH
               value: {{ .Values.gateway.connector.trust_anchor.path }}
             - name: DGC_GATEWAY_CONNECTOR_TRUST_ANCHOR_PASSWORD
-              value: {{ .Values.gateway.connector.trust_anchor.password }}
+              value: {{ .Values.gateway.connector.trust_anchor.password | quote }}
             - name: DGC_GATEWAY_CONNECTOR_TRUST_ANCHOR_ALIAS
               value: {{ .Values.gateway.connector.trust_anchor.alias }}
             - name: DGC_GATEWAY_CONNECTOR_ENABLED
-              value: {{ .Values.gateway.connector.enabled |quote }}
+              value: {{ .Values.gateway.connector.enabled | quote }}
             - name: DGC_GATEWAY_CONNECTOR_ENDPOINT
               value: {{ .Values.gateway.connector.endpoint }}
+          {{- if .Values.did.enableDidGeneration }}
+          {{- range $name, $val := .Values.did }}
+            - name: DGC_{{ $name | upper }}
+              value: {{ $val | quote }}
+          {{- end }}
+          {{- end }}
           volumeMounts:
             - name: secrets-jks
               mountPath: /certs

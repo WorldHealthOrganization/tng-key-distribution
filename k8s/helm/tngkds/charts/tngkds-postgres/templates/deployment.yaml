@@ -1,3 +1,4 @@
+{{- if .Values.asPod.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,6 +6,7 @@ metadata:
   labels:
     {{- include "tngkds-postgres.labels" . | nindent 4 }}
     tier: database
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
@@ -47,3 +49,4 @@ spec:
         - name: postgres-persistance-storage
           persistentVolumeClaim:
             claimName: {{ include "tngkds-postgres.fullname" . }}-pv-claim
+{{- end }}

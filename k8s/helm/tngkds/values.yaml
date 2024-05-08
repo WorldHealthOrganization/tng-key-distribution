@@ -3,11 +3,44 @@
 # Declare variables to be passed into your templates.
 
 tngkds-postgres:
-  enabled: true
   path: /()(*)
   port: 5432
 
+  asPod:
+    enabled: false # run db as Service or Pod,set in conjunction with tngkds-backend
+
 tngkds-backend:
-  enabled: true
+  image:
+    tag: <kds-image-tag>
+  liquibaseImage:
+    tag: <liquibase-image-tag(initcontainer)>
   path: /()(*)
   port: 8080
+  psql:
+    serviceName: postgresql-d01.postgres.database.azure.com
+    port: 5432
+    dbName: kdsdb
+    cluster: svc.cluster.local # will be used if db is running as Pod
+    username:
+    password:
+    asPod:
+      enabled: false # run db as Service or Pod,set in conjunction with tngkds-postgres
+  gateway:
+    connector:
+      enabled: true
+      endpoint: <tng-gateway-endpoint>
+      proxy:
+        enabled: false
+      max-cache-age: 300
+      tls_trust_store: #CA of TNG Gateway of TLS certificate
+        alias: tng-tls-server-certificate
+        password: <password of tls_truststore>
+        path: /certs/tng_tls_server_truststore.p12
+      tls_key_store: # client cert key pair of participant
+        alias: clientcredentials
+        password: <password of tls_key_store>
+        path: /certs/tls_key_store.p12
+      trust_anchor: # TA pem file of TNG that was used for signing
+        alias: trustanchor
+        password: <password of trustanchor_store>
+        path: /certs/trustanchor_store.jks
