@@ -17,7 +17,7 @@ databaseChangeLog:
                   name: country
                   type: varchar(2)
               - column:
-                  name: thumbprint
+                  name: domain
                   type: varchar(512)
               - column:
                   name: updated_at

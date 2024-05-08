@@ -21,10 +21,10 @@
 package tng.trustnetwork.keydistribution.service;
 
 import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
-import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import eu.europa.ec.dgc.gateway.connector.model.TrustedCertificateTrustListItem;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,7 +60,7 @@ class SignerInformationServiceTest {
 
     @Test
     void updateEmptyRepositoryWithEmptyCertList()  {
-        ArrayList<TrustListItem> trustList = new ArrayList<>();
+        ArrayList<TrustedCertificateTrustListItem> trustList = new ArrayList<>();
 
         signerInformationService.updateTrustedCertsList(trustList);
 
@@ -72,8 +72,8 @@ class SignerInformationServiceTest {
 
     @Test
     void updateEmptyRepositoryWithOneCert()  {
-        ArrayList<TrustListItem> trustList = new ArrayList<>();
-        trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_1_STR));
+        ArrayList<TrustedCertificateTrustListItem> trustList = new ArrayList<>();
+        trustList.add(signerInformationTestHelper.createTrustedCertificateTrustListItem(SignerInformationTestHelper.TEST_CERT_1_STR));
 
         signerInformationService.updateTrustedCertsList(trustList);
 
@@ -90,10 +90,10 @@ class SignerInformationServiceTest {
 
     @Test
     void updateEmptyRepositoryWithCerts()  {
-        ArrayList<TrustListItem> trustList = new ArrayList<>();
-        trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_1_STR));
-        trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_2_STR));
-        trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_3_STR));
+        ArrayList<TrustedCertificateTrustListItem> trustList = new ArrayList<>();
+        trustList.add(signerInformationTestHelper.createTrustedCertificateTrustListItem(SignerInformationTestHelper.TEST_CERT_1_STR));
+        trustList.add(signerInformationTestHelper.createTrustedCertificateTrustListItem(SignerInformationTestHelper.TEST_CERT_2_STR));
+        trustList.add(signerInformationTestHelper.createTrustedCertificateTrustListItem(SignerInformationTestHelper.TEST_CERT_3_STR));
 
         signerInformationService.updateTrustedCertsList(trustList);
 
@@ -115,10 +115,10 @@ class SignerInformationServiceTest {
 
     @Test
     void updateEmptyRepositoryWithSameCertsTwice() {
-        ArrayList<TrustListItem> trustList = new ArrayList<>();
-        trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_1_STR));
-        trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_2_STR));
-        trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_3_STR));
+        ArrayList<TrustedCertificateTrustListItem> trustList = new ArrayList<>();
+        trustList.add(signerInformationTestHelper.createTrustedCertificateTrustListItem(SignerInformationTestHelper.TEST_CERT_1_STR));
+        trustList.add(signerInformationTestHelper.createTrustedCertificateTrustListItem(SignerInformationTestHelper.TEST_CERT_2_STR));
+        trustList.add(signerInformationTestHelper.createTrustedCertificateTrustListItem(SignerInformationTestHelper.TEST_CERT_3_STR));
 
         signerInformationService.updateTrustedCertsList(trustList);
 
@@ -150,9 +150,9 @@ class SignerInformationServiceTest {
         signerInformationTestHelper.insertCertString(SignerInformationTestHelper.TEST_CERT_2_STR);
 
 
-        ArrayList<TrustListItem> trustList = new ArrayList<>();
-        trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_2_STR));
-        trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_3_STR));
+        ArrayList<TrustedCertificateTrustListItem> trustList = new ArrayList<>();
+        trustList.add(signerInformationTestHelper.createTrustedCertificateTrustListItem(SignerInformationTestHelper.TEST_CERT_2_STR));
+        trustList.add(signerInformationTestHelper.createTrustedCertificateTrustListItem(SignerInformationTestHelper.TEST_CERT_3_STR));
 
         signerInformationService.updateTrustedCertsList(trustList);
 
@@ -176,7 +176,7 @@ class SignerInformationServiceTest {
         signerInformationTestHelper.insertCertString(SignerInformationTestHelper.TEST_CERT_2_STR);
         signerInformationTestHelper.insertCertString(SignerInformationTestHelper.TEST_CERT_3_STR);
 
-        ArrayList<TrustListItem> trustList = new ArrayList<>();
+        ArrayList<TrustedCertificateTrustListItem> trustList = new ArrayList<>();
 
         signerInformationService.updateTrustedCertsList(trustList);
 

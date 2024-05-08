@@ -74,10 +74,10 @@ public class SignerInformationEntity {
     private String country;
 
     /**
-     * The thumbprint of the cert.
+     * The domain of the cert.
      */
-    @Column(name = "thumbprint")
-    private String thumbprint;
+    @Column(name = "domain")
+    private String domain;
 
     /**
      * Timestamp of the last record update.

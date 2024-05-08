@@ -22,6 +22,7 @@ package tng.trustnetwork.keydistribution.service;
 
 import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
+import eu.europa.ec.dgc.gateway.connector.model.TrustedCertificateTrustListItem;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class SignerCertificateDownloadService {
 
         log.info("Certificates download started");
 
-        List<TrustListItem> trustedCerts = dgcGatewayConnector.getTrustedCertificates();
+        List<TrustedCertificateTrustListItem> trustedCerts = dgcGatewayConnector.getDdccTrustedCertificates();
         signerInformationService.updateTrustedCertsList(trustedCerts);
 
         List<TrustListItem> trustedCsca = dgcGatewayConnector.getTrustedCscaCertificates();

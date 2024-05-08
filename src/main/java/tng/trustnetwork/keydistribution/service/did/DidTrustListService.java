@@ -196,7 +196,7 @@ public class DidTrustListService {
 
             } else {
                 log.error("Public Key is not RSA or EC Public Key for cert {} of country {}",
-                          signerInformationEntity.getThumbprint(),
+                          signerInformationEntity.getKid(),
                           signerInformationEntity.getCountry());
             }
         }
