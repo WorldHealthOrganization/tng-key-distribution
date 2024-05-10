@@ -236,7 +236,7 @@ public class DidTrustListServiceV2 {
                 if (idBuilder.length() > configProperties.getDid().getDidId().length()) {
                     idBuilder.append(SEPARATOR_COLON);
                 }
-                idBuilder.append(participant);
+                idBuilder.append(getCountryAsLowerCaseAlpha3(participant));
                 if (certificateType != null && !certificateType.isEmpty()) {
                     if (idBuilder.length() > configProperties.getDid().getDidId().length()) {
                         idBuilder.append(SEPARATOR_COLON);
@@ -264,7 +264,7 @@ public class DidTrustListServiceV2 {
             if (path.length() > 0) {
                 path.append("/");
             }
-            path.append(participant);
+            path.append(getCountryAsLowerCaseAlpha3(participant));
         }
         if (certificateType != null) {
             if (path.length() > 0) {
