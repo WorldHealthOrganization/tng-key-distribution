@@ -104,6 +104,8 @@ public class GitUploader implements GitProvider {
             git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(
                 "anonymous", configProperties.getDid().getGit().getPat())).call();
             git.close();
+            log.info("Successfully uploaded DID files to Git repository {}",
+                     configProperties.getDid().getGit().getUrl());
         } catch (GitAPIException | IOException e) {
             log.error("Error during Git commit & push: {}",e.getMessage());
         }
