@@ -93,6 +93,8 @@ public class DidTrustListService {
     private final CertificateUtils certificateUtils;
 
     private final TrustedIssuerService trustedIssuerService;
+    
+    private final GitProvider gitProvider;
 
     /**
      * Create and upload DID Document holding Uploaded DSC and Trusted Issuer.
@@ -102,6 +104,7 @@ public class DidTrustListService {
     public void job() {
 
         String trustList;
+
         try {
             trustList = generateTrustList(null);
         } catch (Exception e) {
@@ -139,6 +142,8 @@ public class DidTrustListService {
         }
 
         log.info("Finished DID Export Process");
+
+        gitProvider.upload(configProperties.getDid().getLocalFile().getDirectory());
     }
 
     private String getCountryAsLowerCaseAlpha3(String country) {
@@ -300,4 +305,5 @@ public class DidTrustListService {
                                                       .equals(dsc.getIssuerX500Principal()))
                                   .findFirst();
     }
+
 }

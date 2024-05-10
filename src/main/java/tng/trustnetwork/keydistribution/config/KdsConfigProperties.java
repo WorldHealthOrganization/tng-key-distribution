@@ -114,10 +114,11 @@ public class KdsConfigProperties {
         private Map<String, String> virtualCountries = new HashMap<>();
 
         private LocalFileConfig localFile = new LocalFileConfig();
+        private GitConfig git = new GitConfig();
 
         private DgcGatewayConnectorConfigProperties.KeyStoreWithAlias localKeyStore =
             new DgcGatewayConnectorConfigProperties.KeyStoreWithAlias();
-
+        
         @Getter
         @Setter
         public static class LocalFileConfig {
@@ -125,6 +126,14 @@ public class KdsConfigProperties {
             private String directory;
         }
 
+        @Getter
+        @Setter
+        public static class GitConfig {
+            private String prefix;
+            private String workdir;
+            private String pat;
+            private String url;
+        }
     }
 
 }
