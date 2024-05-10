@@ -43,6 +43,11 @@ dgc:
     enableDidGeneration: true
     didUploadProvider: dummy
     didSigningProvider: dummy
+    git:
+      workdir: ""
+      prefix: ""
+      url: ""
+      pat: ""
     ld-proof-verification-method: did:web:dummy.net
     ld-proof-nonce: n0nc3
     ld-proof-domain: d0m4in
