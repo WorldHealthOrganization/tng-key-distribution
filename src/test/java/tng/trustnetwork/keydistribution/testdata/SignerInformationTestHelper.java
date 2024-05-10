@@ -21,6 +21,7 @@
 package tng.trustnetwork.keydistribution.testdata;
 
 import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
+import eu.europa.ec.dgc.gateway.connector.model.TrustedCertificateTrustListItem;
 import eu.europa.ec.dgc.utils.CertificateUtils;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -163,6 +164,22 @@ public class SignerInformationTestHelper {
         item.setKid(kid);
         item.setTimestamp(ZonedDateTime.now());
         item.setRawData(certStr);
+
+        return item;
+    }
+
+    public TrustedCertificateTrustListItem createTrustedCertificateTrustListItem(String certStr) {
+        String kid;
+        try {
+            kid = certificateUtils.getCertKid(convertStringToX509Cert(certStr));
+        }catch (CertificateException e) {
+            kid = "kid_"+ ZonedDateTime.now();
+        }
+
+        //TrustListItem item = new TrustListItem();
+        TrustedCertificateTrustListItem item = new TrustedCertificateTrustListItem();
+        item.setKid(kid);
+        item.setCertificate(certStr);
 
         return item;
     }

@@ -24,6 +24,7 @@ import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
 import java.util.ArrayList;
 import java.util.List;
+import eu.europa.ec.dgc.gateway.connector.model.TrustedCertificateTrustListItem;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -62,9 +63,9 @@ class SignerCertificateDownloadServiceTest {
 
     @Test
     void downloadCertificates() {
-        ArrayList<TrustListItem> trustList = new ArrayList<>();
-        trustList.add(signerInformationTestHelper.createTrustListItem(SignerInformationTestHelper.TEST_CERT_1_STR));
-        Mockito.when(dgcGatewayDownloadConnector.getTrustedCertificates()).thenReturn(trustList);
+        ArrayList<TrustedCertificateTrustListItem> trustList = new ArrayList<>();
+        trustList.add(signerInformationTestHelper.createTrustedCertificateTrustListItem(SignerInformationTestHelper.TEST_CERT_1_STR));
+        Mockito.when(dgcGatewayDownloadConnector.getDdccTrustedCertificates()).thenReturn(trustList);
 
         signerCertificateDownloadService.downloadCertificates();
 

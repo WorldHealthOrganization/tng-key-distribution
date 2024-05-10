@@ -20,7 +20,7 @@
 
 package tng.trustnetwork.keydistribution.service;
 
-import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
+import eu.europa.ec.dgc.gateway.connector.model.TrustedCertificateTrustListItem;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,9 +77,10 @@ public class SignerInformationService {
      * @param trustedCerts defines the list of trusted certificates.
      */
     @Transactional
-    public void updateTrustedCertsList(List<TrustListItem> trustedCerts) {
+    public void updateTrustedCertsList(List<TrustedCertificateTrustListItem> trustedCerts) {
 
-        List<String> trustedCertsKids = trustedCerts.stream().map(TrustListItem::getKid).collect(Collectors.toList());
+        List<String> trustedCertsKids = trustedCerts.stream().map(
+            TrustedCertificateTrustListItem::getKid).collect(Collectors.toList());
         List<String> alreadyStoredCerts = getListOfValidKids();
         List<String> certsToDelete = new ArrayList<>();
 
@@ -92,7 +93,7 @@ public class SignerInformationService {
 
         List<SignerInformationEntity> signerInformationEntities = new ArrayList<>();
 
-        for (TrustListItem cert : trustedCerts) {
+        for (TrustedCertificateTrustListItem cert : trustedCerts) {
             if (!alreadyStoredCerts.contains(cert.getKid())) {
                 signerInformationEntities.add(getSignerInformationEntity(cert));
                 certsToDelete.add(cert.getKid());
@@ -104,14 +105,14 @@ public class SignerInformationService {
         signerInformationRepository.saveAllAndFlush(signerInformationEntities);
     }
 
-    private SignerInformationEntity getSignerInformationEntity(TrustListItem cert) {
+    private SignerInformationEntity getSignerInformationEntity(TrustedCertificateTrustListItem cert) {
 
         SignerInformationEntity signerEntity = new SignerInformationEntity();
         signerEntity.setKid(cert.getKid());
-        signerEntity.setCreatedAt(cert.getTimestamp() == null ? ZonedDateTime.now() : cert.getTimestamp());
+        signerEntity.setCreatedAt(ZonedDateTime.now());
         signerEntity.setCountry(cert.getCountry());
-        signerEntity.setThumbprint((cert.getThumbprint()));
-        signerEntity.setRawData(cert.getRawData());
+        signerEntity.setRawData(cert.getCertificate());
+        signerEntity.setDomain(cert.getDomain());
 
         return signerEntity;
     }
