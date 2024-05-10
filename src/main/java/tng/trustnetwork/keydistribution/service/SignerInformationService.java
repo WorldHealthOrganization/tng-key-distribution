@@ -219,4 +219,8 @@ public class SignerInformationService {
     public List<String> getDomainsList() {
         return signerInformationRepository.getDomainsList();
     }
+
+    public List<String> getParticipantsByDomain(String domain) {
+        return signerInformationRepository.getParticipantsByDomain(domain);
+    }
 }

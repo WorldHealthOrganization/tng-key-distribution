@@ -108,17 +108,17 @@ public class DidTrustListServiceV2 {
                 log.error("Failed to process DID-TrustList for domain {} : {}", domain, e.getMessage());
             }
 
-            //TODO: implement get all participants with given domain (see signerInformationService.getCountryList())
-//            for (String participant : signerInformationService.getParticipantsByDomain(domain)) {
-//                String didDocument = null;
-//                try {
-//                    saveDid(generateContainerPathForDid(domain, participant, null), generateTrustList(domain, participant, null));
-//                    saveDid(generateContainerPathForDid(domain, participant, DSC), generateTrustList(domain, participant, DSC));
-//                    saveDid(generateContainerPathForDid(domain, participant, CSCA), generateTrustList(domain, participant, CSCA));
-//                } catch (Exception e) {
-//                    log.error("Failed to process DID-TrustList for domain {} : {}", domain, e.getMessage());
-//                }
-//            }
+
+            for (String participant : signerInformationService.getParticipantsByDomain(domain)) {
+                String didDocument = null;
+                try {
+                    saveDid(generateContainerPathForDid(domain, participant, null), generateTrustList(domain, participant, null));
+                    //saveDid(generateContainerPathForDid(domain, participant, DSC), generateTrustList(domain, participant, DSC));
+                    //saveDid(generateContainerPathForDid(domain, participant, CSCA), generateTrustList(domain, participant, CSCA));
+                } catch (Exception e) {
+                    log.error("Failed to process DID-TrustList for domain {} : {}", domain, e.getMessage());
+                }
+            }
 
         }
 
