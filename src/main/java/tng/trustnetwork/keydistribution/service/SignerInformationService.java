@@ -204,4 +204,19 @@ public class SignerInformationService {
 
         return new CertificatesLookupResponseItemDto(entity.getKid(), entity.getRawData());
     }
+
+
+    public List<SignerInformationEntity> getActiveCertificatesForFilter(String domain, String participant){
+        if (domain != null && participant != null){
+            return signerInformationRepository.getAllByDeletedIsAndDomainIsAndCountryIs(false, domain, participant);
+        }else if (domain != null){
+            return signerInformationRepository.getAllByDeletedIsAndDomainIs(false, domain);
+        }else{
+            return getActiveCertificates();
+        }
+    }
+
+    public List<String> getDomainsList() {
+        return signerInformationRepository.getDomainsList();
+    }
 }

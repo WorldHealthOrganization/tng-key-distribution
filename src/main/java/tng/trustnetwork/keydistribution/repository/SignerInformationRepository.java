@@ -66,4 +66,14 @@ public interface SignerInformationRepository extends JpaRepository<SignerInforma
     List<SignerInformationEntity> getAllByDeletedIs(boolean deleted);
 
     List<SignerInformationEntity> getAllByDeletedIsAndCountryIsIn(boolean deleted, List<String> countries);
+
+    @Query("SELECT DISTINCT s.domain FROM SignerInformationEntity s WHERE s.deleted = false")
+    List<String> getDomainsList();
+
+
+    List<SignerInformationEntity> getAllByDeletedIsAndDomainIs(boolean deleted, String domain);
+
+    List<SignerInformationEntity> getAllByDeletedIsAndDomainIsAndCountryIs(boolean deleted, String domain, String country);
+
+
 }
