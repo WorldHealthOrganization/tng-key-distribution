@@ -72,7 +72,8 @@ public class SignerInformationService {
     }
 
     /**
-     * Method to synchronise the certificates in the db with the given List of trusted certificates.
+     * Method to synchronise the certificates in the db with the given List
+     * of trusted certificates.
      *
      * @param trustedCerts defines the list of trusted certificates.
      */
@@ -187,6 +188,7 @@ public class SignerInformationService {
      * @return List of SignerInformationEntity
      */
     public List<SignerInformationEntity> getActiveCertificates() {
+
         return signerInformationRepository.getAllByDeletedIs(false);
     }
 
@@ -197,6 +199,7 @@ public class SignerInformationService {
      * @return List of SignerInformationEntity
      */
     public List<SignerInformationEntity> getActiveCertificatesForCountries(List<String> countries) {
+
         return signerInformationRepository.getAllByDeletedIsAndCountryIsIn(false, countries);
     }
 
@@ -205,22 +208,42 @@ public class SignerInformationService {
         return new CertificatesLookupResponseItemDto(entity.getKid(), entity.getRawData());
     }
 
+    /**
+     * Returns signer information that are active filtered by domain and participant.
+     *
+     * @param domain      a domain name used as filter
+     * @param participant a participant aka country code, used as filter
+     * @return active signer information
+     */
+    public List<SignerInformationEntity> getActiveCertificatesForFilter(String domain, String participant) {
 
-    public List<SignerInformationEntity> getActiveCertificatesForFilter(String domain, String participant){
-        if (domain != null && participant != null){
+        if (domain != null && participant != null) {
             return signerInformationRepository.getAllByDeletedIsAndDomainIsAndCountryIs(false, domain, participant);
-        }else if (domain != null){
+        } else if (domain != null) {
             return signerInformationRepository.getAllByDeletedIsAndDomainIs(false, domain);
-        }else{
+        } else {
             return getActiveCertificates();
         }
     }
 
+    /**
+     * Returns a list of domains for which certificates are imported.
+     *
+     * @return list of domains
+     */
     public List<String> getDomainsList() {
+
         return signerInformationRepository.getDomainsList();
     }
 
+    /**
+     * Returns a list of participants filtered by domain.
+     *
+     * @param domain a domain name used as filter
+     * @return list of participants
+     */
     public List<String> getParticipantsByDomain(String domain) {
+
         return signerInformationRepository.getParticipantsByDomain(domain);
     }
 }

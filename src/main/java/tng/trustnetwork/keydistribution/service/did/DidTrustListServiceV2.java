@@ -28,6 +28,27 @@ import foundation.identity.jsonld.ConfigurableDocumentLoader;
 import foundation.identity.jsonld.JsonLDObject;
 import info.weboftrust.ldsignatures.jsonld.LDSecurityKeywords;
 import info.weboftrust.ldsignatures.signer.JsonWebSignature2020LdSigner;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.security.PublicKey;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.security.interfaces.ECPublicKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -42,18 +63,6 @@ import tng.trustnetwork.keydistribution.service.TrustedIssuerService;
 import tng.trustnetwork.keydistribution.service.TrustedPartyService;
 import tng.trustnetwork.keydistribution.service.did.entity.DidTrustList;
 import tng.trustnetwork.keydistribution.service.did.entity.DidTrustListEntry;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.security.PublicKey;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.security.interfaces.ECPublicKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.*;
 
 @Slf4j
 @Service
@@ -87,7 +96,7 @@ public class DidTrustListServiceV2 {
     private final CertificateUtils certificateUtils;
 
     private final TrustedIssuerService trustedIssuerService;
-    
+
     private final GitProvider gitProvider;
 
     /**
@@ -112,9 +121,12 @@ public class DidTrustListServiceV2 {
             for (String participant : signerInformationService.getParticipantsByDomain(domain)) {
                 String didDocument = null;
                 try {
-                    saveDid(generateContainerPathForDid(domain, participant, null), generateTrustList(domain, participant, null));
-                    //saveDid(generateContainerPathForDid(domain, participant, DSC), generateTrustList(domain, participant, DSC));
-                    //saveDid(generateContainerPathForDid(domain, participant, CSCA), generateTrustList(domain, participant, CSCA));
+                    saveDid(generateContainerPathForDid(domain, participant, null),
+                            generateTrustList(domain, participant, null));
+                    //saveDid(generateContainerPathForDid(domain, participant, DSC),
+                    // generateTrustList(domain, participant, DSC));
+                    //saveDid(generateContainerPathForDid(domain, participant, CSCA),
+                    // generateTrustList(domain, participant, CSCA));
                 } catch (Exception e) {
                     log.error("Failed to process DID-TrustList for domain {} : {}", domain, e.getMessage());
                 }
@@ -124,13 +136,13 @@ public class DidTrustListServiceV2 {
 
         log.info("Finished DID Export Process");
 
-        //gitProvider.upload(configProperties.getDid().getLocalFile().getDirectory());
+        gitProvider.upload(configProperties.getDid().getLocalFile().getDirectory());
 
     }
 
 
+    private void saveDid(String containerPath, String didDocument) {
 
-    private void saveDid(String containerPath, String didDocument){
         try {
             didUploader.uploadDid(containerPath, didDocument.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
@@ -214,13 +226,10 @@ public class DidTrustListServiceV2 {
     }
 
 
-
-
-
     private List<SignerInformationEntity> getSignerInformationEntities(String domain, String participant) {
+
         return signerInformationService.getActiveCertificatesForFilter(domain, participant);
     }
-
 
 
     private String generateDidId(String domain, String participant, String certificateType, String kid) {
@@ -256,6 +265,7 @@ public class DidTrustListServiceV2 {
     }
 
     private String generateContainerPathForDid(String domain, String participant, String certificateType) {
+
         StringBuilder path = new StringBuilder();
         if (domain != null) {
             path.append(domain);
@@ -278,7 +288,6 @@ public class DidTrustListServiceV2 {
     //writeDidLocal(Path, DidDoc)
 
 
-
     private String getCountryAsLowerCaseAlpha3(String country) {
 
         if (country == null || country.length() != 2 && country.length() != 3) {
@@ -297,7 +306,6 @@ public class DidTrustListServiceV2 {
             }
         });
     }
-
 
 
     private X509Certificate parseCertificate(String raw) {
@@ -331,14 +339,11 @@ public class DidTrustListServiceV2 {
 
         DidTrustListEntry trustListEntry = new DidTrustListEntry();
         trustListEntry.setType("JsonWebKey2020");
-        trustListEntry.setId(configProperties.getDid().getTrustListIdPrefix()
-                                 + SEPARATOR_COLON
-                                 + getCountryAsLowerCaseAlpha3(signerInformationEntity.getCountry())
+        trustListEntry.setId(trustList.getId()
                                  + SEPARATOR_FRAGMENT
                                  + URLEncoder.encode(signerInformationEntity.getKid(), StandardCharsets.UTF_8));
-        trustListEntry.setController(configProperties.getDid().getTrustListControllerPrefix()
-                                         + SEPARATOR_COLON
-                                         + getCountryAsLowerCaseAlpha3(signerInformationEntity.getCountry()));
+        trustListEntry.setController(trustList.getController());
+
         trustListEntry.setPublicKeyJwk(publicKeyJwk);
 
         trustList.getVerificationMethod().add(trustListEntry);
@@ -354,7 +359,8 @@ public class DidTrustListServiceV2 {
 
         return trustedPartyService.getCscaByCountry(country)
                                   .stream()
-                                  .map(csca -> parseCertificate(csca.getRawData()))//TODO: CSCA for filter: domain, participant
+                                  .map(csca -> parseCertificate(
+                                      csca.getRawData()))//TODO: CSCA for filter: domain, participant
                                   .filter(Objects::nonNull)
                                   .filter(csca -> csca.getSubjectX500Principal()
                                                       .equals(dsc.getIssuerX500Principal()))
