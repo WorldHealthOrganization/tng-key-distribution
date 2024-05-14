@@ -160,7 +160,7 @@ public class DidTrustListService {
             domain -> countries.forEach(
                 country -> didSpecifications.add(new DidSpecification(
                     List.of(domain, getCountryAsLowerCaseAlpha3(country)),
-                    () -> signerInformationService.getCertificatesByCountryDomain(domain, country),
+                    () -> signerInformationService.getCertificatesByCountryDomain(country, domain),
                     trustedIssuerService::getAllDid)
                 )));
 
