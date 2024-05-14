@@ -32,10 +32,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- dependencies -->
         <owasp.version>8.3.1</owasp.version>
-        <springdoc.version>2.1.0</springdoc.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <shedlock.version>5.12.0</shedlock.version>
-        <bcpkix.version>1.77</bcpkix.version>
+        <bcpkix.version>1.78.1</bcpkix.version>
         <!-- plugins -->
         <plugin.checkstyle.version>3.3.0</plugin.checkstyle.version>
         <plugin.jacoco.version>0.8.10</plugin.jacoco.version>
@@ -153,6 +152,17 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-web</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>6.1.6</version>
         </dependency>
 
         <!-- Persistence Dependencies -->
