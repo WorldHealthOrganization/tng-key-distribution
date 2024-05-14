@@ -62,12 +62,17 @@ public class LocalFileDidUploader implements DidUploader {
             ).toFile();
         }
 
-        log.info("Storing {} bytes to {}", content.length, targetFile.getAbsolutePath());
-
         if (targetFile.exists() && !targetFile.delete()) {
             log.error("Failed to delete existing file.");
             return;
         }
+
+        if (content == null) {
+            log.info("Requested to store file with null content - only deleting existing file");
+            return;
+        }
+
+        log.info("Storing {} bytes to {}", content.length, targetFile.getAbsolutePath());
 
         if (targetFile.getParentFile().mkdirs()) {
             log.info("Created required directory {}", targetFile.getParentFile().getAbsolutePath());

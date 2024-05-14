@@ -33,7 +33,7 @@ import tng.trustnetwork.keydistribution.config.KdsConfigProperties;
 @SpringBootApplication
 @EnableConfigurationProperties(KdsConfigProperties.class)
 @EnableFeignClients
-public class KeyDistributionServiceApplication extends SpringBootServletInitializer {
+public class KeyDistributionServiceApplication {
 
     /**
      * The main Method.

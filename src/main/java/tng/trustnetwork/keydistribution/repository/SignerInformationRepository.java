@@ -20,64 +20,36 @@
 
 package tng.trustnetwork.keydistribution.repository;
 
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
 
 public interface SignerInformationRepository extends JpaRepository<SignerInformationEntity, Long> {
 
-    Optional<SignerInformationEntity> findFirstByIdIsNotNullOrderByIdAsc();
+    List<SignerInformationEntity> getByCountryIsIn(List<String> country);
 
-    Optional<SignerInformationEntity> findFirstByIdGreaterThanOrderByIdAsc(Long id);
+    List<SignerInformationEntity> getByCountryIs(String country);
 
-    List<SignerInformationEntity> findAllByOrderByIdAsc();
+    List<SignerInformationEntity> getByDomainIs(String domain);
 
-    @Modifying
-    @Query("UPDATE SignerInformationEntity s SET s.deleted = true WHERE s.kid not in :kids")
-    void setDeletedByKidsNotIn(@Param("kids") List<String> kids);
+    List<SignerInformationEntity> getByDomainIsAndCountryIs(String domain, String country);
 
-    @Modifying
-    @Query("UPDATE SignerInformationEntity s SET s.deleted = true")
-    void setAllDeleted();
+    List<SignerInformationEntity> getByCountryIsAndGroupIs(String country, String group);
 
-    void deleteByKidNotIn(List<String> kids);
+    List<SignerInformationEntity> getByDomainIsAndCountryIsAndGroupIs(String domain, String country, String group);
 
 
-    List<SignerInformationEntity> findAllByDeletedOrderByIdAsc(boolean deleted);
-
-    void deleteByKidIn(List<String> kids);
-
-    List<SignerInformationEntity> findAllByUpdatedAtAfterOrderByIdAsc(ZonedDateTime ifModifiedDateTime);
-
-    List<SignerInformationEntity> findAllByKidIn(List<String> kids);
-
-    Optional<SignerInformationEntity> findFirstByIdIsNotNullAndDeletedOrderByIdAsc(boolean deleted);
-
-    Optional<SignerInformationEntity> findFirstByIdGreaterThanAndDeletedOrderByIdAsc(Long resumeToken, boolean deleted);
-
-    @Query("SELECT DISTINCT s.country FROM SignerInformationEntity s WHERE s.deleted = false")
+    @Query("SELECT DISTINCT s.country FROM SignerInformationEntity s")
     List<String> getCountryList();
 
-    List<SignerInformationEntity> getAllByDeletedIs(boolean deleted);
-
-    List<SignerInformationEntity> getAllByDeletedIsAndCountryIsIn(boolean deleted, List<String> countries);
-
-    @Query("SELECT DISTINCT s.domain FROM SignerInformationEntity s WHERE s.deleted = false")
+    @Query("SELECT DISTINCT s.domain FROM SignerInformationEntity s")
     List<String> getDomainsList();
 
+    @Query("SELECT DISTINCT s.group FROM SignerInformationEntity s")
+    List<String> getGroupList();
 
-    List<SignerInformationEntity> getAllByDeletedIsAndDomainIs(boolean deleted, String domain);
-
-    List<SignerInformationEntity> getAllByDeletedIsAndDomainIsAndCountryIs(boolean deleted,
-                                                                           String domain,
-                                                                           String country);
-
-
-    @Query("SELECT DISTINCT s.country FROM SignerInformationEntity s WHERE s.deleted = false AND s.domain = :domain")
+    @Query("SELECT DISTINCT s.country FROM SignerInformationEntity s WHERE s.domain = :domain")
     List<String> getParticipantsByDomain(@Param("domain") String domain);
 }

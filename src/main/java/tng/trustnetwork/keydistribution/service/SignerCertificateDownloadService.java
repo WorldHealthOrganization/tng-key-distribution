@@ -42,8 +42,6 @@ public class SignerCertificateDownloadService {
 
     private final SignerInformationService signerInformationService;
 
-    private final TrustedPartyService trustedPartyService;
-
     /**
      * Download TrustedCertificates from Gateway.
      */
@@ -56,9 +54,6 @@ public class SignerCertificateDownloadService {
 
         List<TrustedCertificateTrustListItem> trustedCerts = dgcGatewayConnector.getDdccTrustedCertificates();
         signerInformationService.updateTrustedCertsList(trustedCerts);
-
-        List<TrustListItem> trustedCsca = dgcGatewayConnector.getTrustedCscaCertificates();
-        trustedPartyService.updateCscaFromTrustList(trustedCsca);
 
         log.info("Certificates download finished");
     }

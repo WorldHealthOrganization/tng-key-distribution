@@ -1,5 +1,3 @@
-server:
-  port: 8080
 spring:
   application:
     name: tng-key-distribution
@@ -42,12 +40,6 @@ management:
 info:
   name: ${spring.application.name}
   profiles: ${spring.profiles.active}
-springdoc:
-  api-docs:
-    path: /api/docs
-    enabled: true
-  swagger-ui:
-    path: /swagger
 universal:
   resolver: "https://dev.uniresolver.io/1.0/identifiers"
 dgc:

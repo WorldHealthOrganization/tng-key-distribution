@@ -1,10 +1,11 @@
 databaseChangeLog:
+  - objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
   - changeSet:
-      id: create-trusted-party-table
-      author: f11h
+      id: shedlock-create
+      author: admin
       changes:
         - createTable:
-            tableName: trusted_party
+            tableName: shedlock
             columns:
               - column:
                   name: id
@@ -12,19 +13,26 @@ databaseChangeLog:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
+                    primaryKeyName: pk_shedlock
                     nullable: false
               - column:
-                  name: raw_data
-                  type: varchar(4096)
+                  name: name
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: lock_until
+                  type: datetime
                   constraints:
                     nullable: false
               - column:
-                  name: country
-                  type: varchar(2)
+                  name: locked_at
+                  type: datetime
                   constraints:
                     nullable: false
               - column:
-                  name: type
-                  type: varchar(10)
+                  name: locked_by
+                  type: varchar(255)
                   constraints:
                     nullable: false

@@ -43,8 +43,6 @@ public class KdsConfigProperties {
 
     private final DidConfig did = new DidConfig();
 
-    private String context = "";
-
     /**
      * Http-Proxy Configuration.
      */

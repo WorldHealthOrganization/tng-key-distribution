@@ -22,19 +22,13 @@ package tng.trustnetwork.keydistribution.service;
 
 import eu.europa.ec.dgc.gateway.connector.model.TrustedCertificateTrustListItem;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
-import tng.trustnetwork.keydistribution.restapi.dto.CertificatesLookupResponseItemDto;
-import tng.trustnetwork.keydistribution.restapi.dto.DeltaListDto;
 
 @Slf4j
 @Component
@@ -44,66 +38,18 @@ public class SignerInformationService {
     private final SignerInformationRepository signerInformationRepository;
 
     /**
-     * Method to query the db for a certificate with a resume token.
-     *
-     * @param resumeToken defines which certificate should be returned.
-     * @return Optional holding the certificate if found.
-     */
-    public Optional<SignerInformationEntity> getCertificate(Long resumeToken) {
-
-        if (resumeToken == null) {
-            return signerInformationRepository.findFirstByIdIsNotNullAndDeletedOrderByIdAsc(false);
-        } else {
-            return signerInformationRepository.findFirstByIdGreaterThanAndDeletedOrderByIdAsc(resumeToken, false);
-        }
-    }
-
-    /**
-     * Method to query the db for a list of kid from all certificates.
-     *
-     * @return A list of kids of all certificates found. If no certificate was found an empty list is returned.
-     */
-    public List<String> getListOfValidKids() {
-
-        List<SignerInformationEntity> certsList = signerInformationRepository.findAllByDeletedOrderByIdAsc(false);
-
-        return certsList.stream().map(SignerInformationEntity::getKid).collect(Collectors.toList());
-
-    }
-
-    /**
-     * Method to synchronise the certificates in the db with the given List
-     * of trusted certificates.
+     * Update stored certificates with given list of new certificates.
      *
      * @param trustedCerts defines the list of trusted certificates.
      */
     @Transactional
     public void updateTrustedCertsList(List<TrustedCertificateTrustListItem> trustedCerts) {
 
-        List<String> trustedCertsKids = trustedCerts.stream().map(
-            TrustedCertificateTrustListItem::getKid).collect(Collectors.toList());
-        List<String> alreadyStoredCerts = getListOfValidKids();
-        List<String> certsToDelete = new ArrayList<>();
+        signerInformationRepository.deleteAll();
 
-        if (trustedCertsKids.isEmpty()) {
-            signerInformationRepository.setAllDeleted();
-            return;
-        } else {
-            signerInformationRepository.setDeletedByKidsNotIn(trustedCertsKids);
-        }
-
-        List<SignerInformationEntity> signerInformationEntities = new ArrayList<>();
-
-        for (TrustedCertificateTrustListItem cert : trustedCerts) {
-            if (!alreadyStoredCerts.contains(cert.getKid())) {
-                signerInformationEntities.add(getSignerInformationEntity(cert));
-                certsToDelete.add(cert.getKid());
-            }
-        }
-
-        //Delete all certificates that got updated, so that they get a new id.
-        signerInformationRepository.deleteByKidIn(certsToDelete);
-        signerInformationRepository.saveAllAndFlush(signerInformationEntities);
+        trustedCerts.stream()
+                    .map(this::getSignerInformationEntity)
+                    .forEach(signerInformationRepository::save);
     }
 
     private SignerInformationEntity getSignerInformationEntity(TrustedCertificateTrustListItem cert) {
@@ -114,61 +60,9 @@ public class SignerInformationService {
         signerEntity.setCountry(cert.getCountry());
         signerEntity.setRawData(cert.getCertificate());
         signerEntity.setDomain(cert.getDomain());
+        signerEntity.setGroup(cert.getGroup());
 
         return signerEntity;
-    }
-
-    /**
-     * Gets the deleted/updated state of the certificates.
-     *
-     * @return state of the certificates represented by their kids
-     */
-    public DeltaListDto getDeltaList() {
-
-        List<SignerInformationEntity> certs =
-            signerInformationRepository.findAllByOrderByIdAsc();
-
-        Map<Boolean, List<String>> partitioned =
-            certs.stream().collect(Collectors.partitioningBy(SignerInformationEntity::isDeleted,
-                                                             Collectors.mapping(SignerInformationEntity::getKid,
-                                                                                Collectors.toList())));
-
-        return new DeltaListDto(partitioned.get(Boolean.FALSE), partitioned.get(Boolean.TRUE));
-
-    }
-
-    /**
-     * Gets the deleted/updated state of the certificates after the given value.
-     *
-     * @return state of the certificates represented by their kids
-     */
-    public DeltaListDto getDeltaList(ZonedDateTime ifModifiedDateTime) {
-
-        List<SignerInformationEntity> certs =
-            signerInformationRepository.findAllByUpdatedAtAfterOrderByIdAsc(ifModifiedDateTime);
-
-        Map<Boolean, List<String>> partitioned =
-            certs.stream().collect(Collectors.partitioningBy(SignerInformationEntity::isDeleted,
-                                                             Collectors.mapping(SignerInformationEntity::getKid,
-                                                                                Collectors.toList())));
-
-        return new DeltaListDto(partitioned.get(Boolean.FALSE), partitioned.get(Boolean.TRUE));
-
-    }
-
-    /**
-     * Gets the raw data of the certificates for a given kid list.
-     *
-     * @param requestedCertList list of kids
-     * @return raw data of certificates
-     */
-    public Map<String, List<CertificatesLookupResponseItemDto>> getCertificatesData(List<String> requestedCertList) {
-
-        List<SignerInformationEntity> certs =
-            signerInformationRepository.findAllByKidIn(requestedCertList);
-
-        return certs.stream().collect(Collectors.groupingBy(SignerInformationEntity::getCountry,
-                                                            Collectors.mapping(this::map, Collectors.toList())));
     }
 
     /**
@@ -182,14 +76,19 @@ public class SignerInformationService {
         return signerInformationRepository.getCountryList();
     }
 
+    public List<String> getGroupList() {
+
+        return signerInformationRepository.getGroupList();
+    }
+
     /**
      * Returns a list of all active certificates.
      *
      * @return List of SignerInformationEntity
      */
-    public List<SignerInformationEntity> getActiveCertificates() {
+    public List<SignerInformationEntity> getAllCertificates() {
 
-        return signerInformationRepository.getAllByDeletedIs(false);
+        return signerInformationRepository.findAll();
     }
 
     /**
@@ -198,14 +97,9 @@ public class SignerInformationService {
      * @param countries List of Country Codes to filter for.     *
      * @return List of SignerInformationEntity
      */
-    public List<SignerInformationEntity> getActiveCertificatesForCountries(List<String> countries) {
+    public List<SignerInformationEntity> getCertificatesForCountries(List<String> countries) {
 
-        return signerInformationRepository.getAllByDeletedIsAndCountryIsIn(false, countries);
-    }
-
-    private CertificatesLookupResponseItemDto map(SignerInformationEntity entity) {
-
-        return new CertificatesLookupResponseItemDto(entity.getKid(), entity.getRawData());
+        return signerInformationRepository.getByCountryIsIn(countries);
     }
 
     /**
@@ -215,15 +109,49 @@ public class SignerInformationService {
      * @param participant a participant aka country code, used as filter
      * @return active signer information
      */
-    public List<SignerInformationEntity> getActiveCertificatesForFilter(String domain, String participant) {
+    public List<SignerInformationEntity> getCertificatesForFilter(String domain, String participant) {
 
         if (domain != null && participant != null) {
-            return signerInformationRepository.getAllByDeletedIsAndDomainIsAndCountryIs(false, domain, participant);
+            return signerInformationRepository.getByDomainIsAndCountryIs(domain, participant);
         } else if (domain != null) {
-            return signerInformationRepository.getAllByDeletedIsAndDomainIs(false, domain);
+            return signerInformationRepository.getByDomainIs(domain);
         } else {
-            return getActiveCertificates();
+            return getAllCertificates();
         }
+    }
+
+    /**
+     * Returns signer information that are active filtered by domain, participant and group.
+     *
+     * @param domain      a domain name used as filter
+     * @param participant a participant aka country code, used as filter
+     * @param group       group name, used as filter
+     * @return active signer information
+     */
+    public List<SignerInformationEntity> getCertificatesByDomainParticipantGroup(
+        String domain, String participant, String group) {
+
+        return signerInformationRepository.getByDomainIsAndCountryIsAndGroupIs(domain, participant, group);
+    }
+
+    public List<SignerInformationEntity> getCertificatesByCountry(String country) {
+
+        return signerInformationRepository.getByCountryIs(country);
+    }
+
+    public List<SignerInformationEntity> getCertificatesByCountryDomain(String country, String domain) {
+
+        return signerInformationRepository.getByDomainIsAndCountryIs(domain, country);
+    }
+
+    public List<SignerInformationEntity> getCertificatesByDomain(String domain) {
+
+        return signerInformationRepository.getByDomainIs(domain);
+    }
+
+    public List<SignerInformationEntity> getCertificatesByGroupCountry(String group, String country) {
+
+        return signerInformationRepository.getByCountryIsAndGroupIs(country, group);
     }
 
     /**
