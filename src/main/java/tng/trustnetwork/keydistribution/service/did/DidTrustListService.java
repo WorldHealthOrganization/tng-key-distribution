@@ -185,7 +185,7 @@ public class DidTrustListService {
             .put(specification, this.generateTrustList(specification)));
 
         didDocuments.forEach((specification, document) -> {
-            saveDid(String.join("\\", specification.getPath()), document);
+            saveDid(String.join("/", specification.getPath()), document);
         });
 
         log.info("Finished DID Export Process: {} documents", didDocuments.size());
