@@ -256,7 +256,7 @@
                     <configLocation>./codestyle/checkstyle.xml</configLocation>
                     <excludes>./target/**/*</excludes>
                     <consoleOutput>true</consoleOutput>
-                    <failsOnError>false</failsOnError>
+                    <failsOnError>true</failsOnError>
                     <violationSeverity>warning</violationSeverity>
                     <failOnViolation>true</failOnViolation>
                     <linkXRef>false</linkXRef>
