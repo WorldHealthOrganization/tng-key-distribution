@@ -97,6 +97,7 @@ public class DidTrustListService {
     private final GitProvider gitProvider;
 
     private final DocumentLoader documentLoader;
+    private final KdsConfigProperties kdsConfigProperties;
 
     @RequiredArgsConstructor
     @Getter
@@ -132,8 +133,6 @@ public class DidTrustListService {
         List<String> domains = signerInformationService.getDomainsList();
         List<String> countries = signerInformationService.getCountryList();
 
-        // TODO: Add manual mapping for groups (e.g. CSCA -> CSA)
-        // TODO: Add deny list for groups (AUTHENTICATION, UPLOAD should not be contained)
         //CHECKSTYLE:OFF
         List<String> groups = signerInformationService.getGroupList();
         //CHECKSTYLE:ON
@@ -176,7 +175,7 @@ public class DidTrustListService {
             domain -> countries.forEach(
                 country -> groups.forEach(
                     group -> didSpecifications.add(new DidSpecification(
-                        List.of(domain, getParticipantCode(country), group),
+                        List.of(domain, getParticipantCode(country), getMappedGroupName(group)),
                         () -> signerInformationService.getCertificatesByDomainParticipantGroup(domain, country, group),
                         trustedIssuerService::getAllDid)))));
 
@@ -206,7 +205,7 @@ public class DidTrustListService {
 
     private String generateTrustList(DidSpecification specification) {
 
-        List<SignerInformationEntity> signerInformationEntities = specification.getCertSupplier().get();
+        List<SignerInformationEntity> signerInformationEntities = filterEntities(specification.getCertSupplier().get());
         List<TrustedIssuerEntity> trustedIssuerEntities = specification.getIssuerSupplier().get();
 
         if (signerInformationEntities.isEmpty() || trustedIssuerEntities.isEmpty()) {
@@ -333,6 +332,19 @@ public class DidTrustListService {
         trustListEntry.setPublicKeyJwk(publicKeyJwk);
 
         trustList.getVerificationMethod().add(trustListEntry);
+    }
+
+
+    private List<SignerInformationEntity> filterEntities(List<SignerInformationEntity> entities) {
+        return entities.stream()
+                       .filter(entity -> kdsConfigProperties.getDid().getGroupDenyList().stream()
+                                                            .noneMatch(e -> entity.getGroup().equalsIgnoreCase(e)))
+                       .toList();
+    }
+
+    private String getMappedGroupName(String groupName) {
+        return kdsConfigProperties.getDid().getGroupNameMapping()
+                           .computeIfAbsent(groupName, g -> g);
     }
 
     /**

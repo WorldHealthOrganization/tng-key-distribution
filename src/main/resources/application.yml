@@ -108,3 +108,8 @@ dgc:
       XB: XXB
       XO: XXO
       XL: XCL
+    group-deny-list:
+      - AUTHENTICATION
+      - UPLOAD
+    group-name-mapping:
+      CSCA: CSA

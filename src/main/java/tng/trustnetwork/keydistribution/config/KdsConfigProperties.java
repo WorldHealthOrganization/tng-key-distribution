@@ -116,6 +116,9 @@ public class KdsConfigProperties {
 
         private DgcGatewayConnectorConfigProperties.KeyStoreWithAlias localKeyStore =
             new DgcGatewayConnectorConfigProperties.KeyStoreWithAlias();
+
+        private List<String> groupDenyList = new ArrayList<>();
+        private Map<String, String> groupNameMapping = new HashMap<>();
         
         @Getter
         @Setter

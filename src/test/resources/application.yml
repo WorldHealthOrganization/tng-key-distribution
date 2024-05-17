@@ -57,7 +57,10 @@ dgc:
       "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
     virtualCountries:
       EU: XEU
-    
+    group-deny-list:
+      - UPLOAD
+    group-name-mapping:
+      CSCA: CSA
 universal:
   resolver: "https://dev.uniresolver.io/1.0/identifiers"   
 
