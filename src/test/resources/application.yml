@@ -56,7 +56,7 @@ dgc:
       "[https://www.w3.org/ns/did/v1]": did_v1.json
       "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
     virtualCountries:
-      EU: xeu
+      EU: XEU
     
 universal:
   resolver: "https://dev.uniresolver.io/1.0/identifiers"   

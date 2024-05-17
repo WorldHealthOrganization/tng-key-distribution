@@ -159,7 +159,7 @@ public class DidTrustListService {
         domains.forEach(
             domain -> countries.forEach(
                 country -> didSpecifications.add(new DidSpecification(
-                    List.of(domain, getCountryAsLowerCaseAlpha3(country)),
+                    List.of(domain, getParticipantCode(country)),
                     () -> signerInformationService.getCertificatesByCountryDomain(country, domain),
                     trustedIssuerService::getAllDid)
                 )));
@@ -167,7 +167,7 @@ public class DidTrustListService {
         // Add all Domain independent and country specific DID
         countries.forEach(
             country -> didSpecifications.add(new DidSpecification(
-                List.of(WILDCARD_CHAR, getCountryAsLowerCaseAlpha3(country)),
+                List.of(WILDCARD_CHAR, getParticipantCode(country)),
                 () -> signerInformationService.getCertificatesByCountry(country),
                 trustedIssuerService::getAllDid)));
 
@@ -176,7 +176,7 @@ public class DidTrustListService {
             domain -> countries.forEach(
                 country -> groups.forEach(
                     group -> didSpecifications.add(new DidSpecification(
-                        List.of(domain, getCountryAsLowerCaseAlpha3(country), group),
+                        List.of(domain, getParticipantCode(country), group),
                         () -> signerInformationService.getCertificatesByDomainParticipantGroup(domain, country, group),
                         trustedIssuerService::getAllDid)))));
 
@@ -276,21 +276,21 @@ public class DidTrustListService {
         }
     }
 
-    private String getCountryAsLowerCaseAlpha3(String country) {
+    private String getParticipantCode(String country) {
 
         if (country == null || country.length() != 2 && country.length() != 3) {
             return null;
         } else if (country.length() == 3) {
-            return country;
+            return country.toUpperCase();
         }
 
         return configProperties.getDid().getVirtualCountries().computeIfAbsent(country, (c) -> {
             try {
-                return new Locale("en", c).getISO3Country().toLowerCase();
+                return new Locale("en", c).getISO3Country().toUpperCase();
             } catch (MissingResourceException e) {
                 log.error("Country Code to alpha 3 conversion issue for country {} : {}",
                           c, e.getMessage());
-                return c;
+                return c.toUpperCase();
             }
         });
     }
