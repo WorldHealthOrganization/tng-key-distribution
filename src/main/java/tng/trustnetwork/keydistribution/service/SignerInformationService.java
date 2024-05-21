@@ -66,8 +66,7 @@ public class SignerInformationService {
     }
 
     /**
-     * Returns a list of 2-Digit Country-Codes which have at least one signing certificates present in DB which is not
-     * marked for deletion.
+     * Returns a list of 2-Digit Country-Codes which have at least one signing certificates present in DB.
      *
      * @return Distinct list of Country-Codes
      */
@@ -76,82 +75,14 @@ public class SignerInformationService {
         return signerInformationRepository.getCountryList();
     }
 
+    /**
+     * Returns a list of groups for which certificates are imported.
+     *
+     * @return list of groups
+     */
     public List<String> getGroupList() {
 
         return signerInformationRepository.getGroupList();
-    }
-
-    /**
-     * Returns a list of all active certificates.
-     *
-     * @return List of SignerInformationEntity
-     */
-    public List<SignerInformationEntity> getAllCertificates() {
-
-        return signerInformationRepository.findAll();
-    }
-
-    /**
-     * Returns a list of active certificates for given list of countries.
-     *
-     * @param countries List of Country Codes to filter for.     *
-     * @return List of SignerInformationEntity
-     */
-    public List<SignerInformationEntity> getCertificatesForCountries(List<String> countries) {
-
-        return signerInformationRepository.getByCountryIsIn(countries);
-    }
-
-    /**
-     * Returns signer information that are active filtered by domain and participant.
-     *
-     * @param domain      a domain name used as filter
-     * @param participant a participant aka country code, used as filter
-     * @return active signer information
-     */
-    public List<SignerInformationEntity> getCertificatesForFilter(String domain, String participant) {
-
-        if (domain != null && participant != null) {
-            return signerInformationRepository.getByDomainIsAndCountryIs(domain, participant);
-        } else if (domain != null) {
-            return signerInformationRepository.getByDomainIs(domain);
-        } else {
-            return getAllCertificates();
-        }
-    }
-
-    /**
-     * Returns signer information that are active filtered by domain, participant and group.
-     *
-     * @param domain      a domain name used as filter
-     * @param participant a participant aka country code, used as filter
-     * @param group       group name, used as filter
-     * @return active signer information
-     */
-    public List<SignerInformationEntity> getCertificatesByDomainParticipantGroup(
-        String domain, String participant, String group) {
-
-        return signerInformationRepository.getByDomainIsAndCountryIsAndGroupIs(domain, participant, group);
-    }
-
-    public List<SignerInformationEntity> getCertificatesByCountry(String country) {
-
-        return signerInformationRepository.getByCountryIs(country);
-    }
-
-    public List<SignerInformationEntity> getCertificatesByCountryDomain(String country, String domain) {
-
-        return signerInformationRepository.getByDomainIsAndCountryIs(domain, country);
-    }
-
-    public List<SignerInformationEntity> getCertificatesByDomain(String domain) {
-
-        return signerInformationRepository.getByDomainIs(domain);
-    }
-
-    public List<SignerInformationEntity> getCertificatesByGroupCountry(String group, String country) {
-
-        return signerInformationRepository.getByCountryIsAndGroupIs(country, group);
     }
 
     /**
@@ -165,13 +96,95 @@ public class SignerInformationService {
     }
 
     /**
-     * Returns a list of participants filtered by domain.
+     * Returns a list of all certificates.
      *
-     * @param domain a domain name used as filter
-     * @return list of participants
+     * @return List of SignerInformationEntity
      */
-    public List<String> getParticipantsByDomain(String domain) {
+    public List<SignerInformationEntity> getAllCertificates() {
 
-        return signerInformationRepository.getParticipantsByDomain(domain);
+        return signerInformationRepository.findAll();
+    }
+
+    /**
+     * Returns signer information that are active filtered by domain, participant and group.
+     *
+     * @param domain      a domain name used as filter
+     * @param participant a participant aka country code, used as filter
+     * @param group       group name, used as filter
+     * @return matching SignerInformationEntities
+     */
+    public List<SignerInformationEntity> getCertificatesByDomainParticipantGroup(
+        String domain, String participant, String group) {
+
+        return signerInformationRepository.getByDomainIsAndCountryIsAndGroupIs(domain, participant, group);
+    }
+
+    /**
+     * Returns signer information that are filtered by participant.
+     *
+     * @param country a participant aka country code, used as filter
+     * @return matching SignerInformationEntities
+     */
+    public List<SignerInformationEntity> getCertificatesByCountry(String country) {
+
+        return signerInformationRepository.getByCountryIs(country);
+    }
+
+    /**
+     * Returns signer information that are filtered by domain and participant.
+     *
+     * @param domain      a domain name used as filter
+     * @param country     a participant aka country code, used as filter
+     * @return matching SignerInformationEntities
+     */
+    public List<SignerInformationEntity> getCertificatesByCountryDomain(String country, String domain) {
+
+        return signerInformationRepository.getByDomainIsAndCountryIs(domain, country);
+    }
+
+    /**
+     * Returns signer information that are filtered by domain.
+     *
+     * @param domain      a domain name used as filter
+     * @return matching SignerInformationEntities
+     */
+    public List<SignerInformationEntity> getCertificatesByDomain(String domain) {
+
+        return signerInformationRepository.getByDomainIs(domain);
+    }
+
+    /**
+     * Returns signer information that are filtered by participant and group.
+     *
+     * @param group       group name, used as filter
+     * @param country a participant aka country code, used as filter
+     * @return matching SignerInformationEntities
+     */
+    public List<SignerInformationEntity> getCertificatesByGroupCountry(String group, String country) {
+
+        return signerInformationRepository.getByCountryIsAndGroupIs(country, group);
+    }
+
+    /**
+     * Returns signer information that are filtered by domain and group.
+     *
+     * @param domain      a domain name used as filter
+     * @param group       group name, used as filter
+     * @return matching SignerInformationEntities
+     */
+    public List<SignerInformationEntity> getCertificatesByDomainGroup(String domain, String group) {
+
+        return signerInformationRepository.getByDomainIsAndGroupIs(domain, group);
+    }
+
+    /**
+     * Returns signer information that are filtered by group.
+     *
+     * @param group       group name, used as filter
+     * @return matching SignerInformationEntities
+     */
+    public List<SignerInformationEntity> getCertificatesByGroup(String group) {
+
+        return signerInformationRepository.getByGroupIs(group);
     }
 }

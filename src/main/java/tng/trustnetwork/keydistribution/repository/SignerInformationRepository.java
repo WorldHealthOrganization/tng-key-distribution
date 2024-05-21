@@ -23,12 +23,9 @@ package tng.trustnetwork.keydistribution.repository;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
 
 public interface SignerInformationRepository extends JpaRepository<SignerInformationEntity, Long> {
-
-    List<SignerInformationEntity> getByCountryIsIn(List<String> country);
 
     List<SignerInformationEntity> getByCountryIs(String country);
 
@@ -37,6 +34,10 @@ public interface SignerInformationRepository extends JpaRepository<SignerInforma
     List<SignerInformationEntity> getByDomainIsAndCountryIs(String domain, String country);
 
     List<SignerInformationEntity> getByCountryIsAndGroupIs(String country, String group);
+
+    List<SignerInformationEntity> getByDomainIsAndGroupIs(String domain, String group);
+
+    List<SignerInformationEntity> getByGroupIs(String group);
 
     List<SignerInformationEntity> getByDomainIsAndCountryIsAndGroupIs(String domain, String country, String group);
 
@@ -49,7 +50,4 @@ public interface SignerInformationRepository extends JpaRepository<SignerInforma
 
     @Query("SELECT DISTINCT s.group FROM SignerInformationEntity s")
     List<String> getGroupList();
-
-    @Query("SELECT DISTINCT s.country FROM SignerInformationEntity s WHERE s.domain = :domain")
-    List<String> getParticipantsByDomain(@Param("domain") String domain);
 }

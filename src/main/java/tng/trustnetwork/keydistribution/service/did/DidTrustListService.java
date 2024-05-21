@@ -137,10 +137,6 @@ public class DidTrustListService {
         List<String> groups = signerInformationService.getGroupList();
         //CHECKSTYLE:ON
 
-        // TODO: Add tng-cdn.who.int/trustlist/-/<PARTICIPANT_CODE>/<USAGE>
-        //  (matches all domains for a specific participant and usage code)
-        // TODO: Add tng-cdn.who.int/trustlist/<DOMAIN>/-/<USAGE> (matches all participants for a specific domain)
-
         // Add overall DID
         didSpecifications.add(new DidSpecification(
             Collections.emptyList(),
@@ -178,6 +174,29 @@ public class DidTrustListService {
                         List.of(domain, getParticipantCode(country), getMappedGroupName(group)),
                         () -> signerInformationService.getCertificatesByDomainParticipantGroup(domain, country, group),
                         trustedIssuerService::getAllDid)))));
+
+        // Add all country and group specific did
+        countries.forEach(
+            country -> groups.forEach(
+                group -> didSpecifications.add(new DidSpecification(
+                    List.of(WILDCARD_CHAR, getParticipantCode(country), getMappedGroupName(group)),
+                    () -> signerInformationService.getCertificatesByGroupCountry(group, country),
+                    trustedIssuerService::getAllDid))));
+
+        // Add all domain and group specific did
+        domains.forEach(
+            domain -> groups.forEach(
+                group -> didSpecifications.add(new DidSpecification(
+                    List.of(domain, WILDCARD_CHAR, getMappedGroupName(group)),
+                    () -> signerInformationService.getCertificatesByDomainGroup(domain, group),
+                    trustedIssuerService::getAllDid))));
+
+        // Add all group specific did
+        groups.forEach(
+            group -> didSpecifications.add(new DidSpecification(
+            List.of(WILDCARD_CHAR, WILDCARD_CHAR, getMappedGroupName(group)),
+                () -> signerInformationService.getCertificatesByGroup(group),
+                trustedIssuerService::getAllDid)));
 
         Map<DidSpecification, String> didDocuments = new HashMap<>();
         didSpecifications.forEach(specification -> didDocuments
