@@ -103,7 +103,6 @@ public class KdsConfigProperties {
 
         private String ldProofVerificationMethod;
         private String ldProofDomain;
-        private String ldProofNonce;
 
         private String didSigningProvider;
         private String didUploadProvider;

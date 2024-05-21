@@ -46,7 +46,6 @@ dgc:
       url: ""
       pat: ""
     ld-proof-verification-method: did:web:dummy.net
-    ld-proof-nonce: n0nc3
     ld-proof-domain: d0m4in
     did-id: did:web:abc
     did-controller: did:web:def

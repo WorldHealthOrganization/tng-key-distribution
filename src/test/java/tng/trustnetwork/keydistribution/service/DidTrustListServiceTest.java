@@ -323,7 +323,7 @@ public class DidTrustListServiceTest {
         Assertions.assertTrue(
             Instant.now().toEpochMilli() - parsed.getProof().getCreated().toInstant().toEpochMilli() < 10000);
         Assertions.assertEquals("d0m4in", parsed.getProof().getDomain());
-        Assertions.assertEquals("n0nc3", parsed.getProof().getNonce());
+        Assertions.assertEquals(32, parsed.getProof().getNonce().length());
         Assertions.assertEquals("assertionMethod", parsed.getProof().getProofPurpose());
         Assertions.assertEquals("did:web:dummy.net", parsed.getProof().getVerificationMethod());
         Assertions.assertNotNull(parsed.getProof().getJws());

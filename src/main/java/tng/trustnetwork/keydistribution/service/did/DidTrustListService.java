@@ -260,8 +260,7 @@ public class DidTrustListService {
         signer.setProofPurpose(LDSecurityKeywords.JSONLD_TERM_ASSERTIONMETHOD);
         signer.setVerificationMethod(URI.create(configProperties.getDid().getLdProofVerificationMethod()));
         signer.setDomain(configProperties.getDid().getLdProofDomain());
-        // TODO: Calculate random Nonce and add to document
-        signer.setNonce(configProperties.getDid().getLdProofNonce());
+        signer.setNonce(generateNonce());
 
 
         try {
@@ -336,6 +335,7 @@ public class DidTrustListService {
 
 
     private List<SignerInformationEntity> filterEntities(List<SignerInformationEntity> entities) {
+
         return entities.stream()
                        .filter(entity -> kdsConfigProperties.getDid().getGroupDenyList().stream()
                                                             .noneMatch(e -> entity.getGroup().equalsIgnoreCase(e)))
@@ -343,8 +343,9 @@ public class DidTrustListService {
     }
 
     private String getMappedGroupName(String groupName) {
+
         return kdsConfigProperties.getDid().getGroupNameMapping()
-                           .computeIfAbsent(groupName, g -> g);
+                                  .computeIfAbsent(groupName, g -> g);
     }
 
     /**
@@ -356,6 +357,19 @@ public class DidTrustListService {
     private Optional<X509Certificate> searchCsca(X509Certificate dsc, String country) {
 
         return Optional.empty();
+    }
+
+    private String generateNonce() {
+
+        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+        final int nonceLength = 32;
+        StringBuilder nonce = new StringBuilder();
+
+        while (nonce.length() < nonceLength) {
+            nonce.append(chars.charAt((int) (Math.random() * chars.length())));
+        }
+
+        return nonce.toString();
     }
 
 }

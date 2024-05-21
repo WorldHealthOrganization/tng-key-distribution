@@ -95,7 +95,6 @@ dgc:
       pat: <personal-access-token-for-git>
     didSigningProvider: dummy
     ld-proof-verification-method: did:web:dummy.net
-    ld-proof-nonce: n0nc3
     did-id: did:web:abc
     did-controller: did:web:def
     trust-list-id-prefix: did:web:abc
