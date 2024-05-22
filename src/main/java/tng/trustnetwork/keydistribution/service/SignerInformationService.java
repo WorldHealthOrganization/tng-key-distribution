@@ -21,8 +21,11 @@
 package tng.trustnetwork.keydistribution.service;
 
 import eu.europa.ec.dgc.gateway.connector.model.TrustedCertificateTrustListItem;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.time.ZonedDateTime;
 import java.util.List;
+import eu.europa.ec.dgc.utils.CertificateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -36,6 +39,8 @@ import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 public class SignerInformationService {
 
     private final SignerInformationRepository signerInformationRepository;
+    private final CertificateUtils certificateUtils;
+    private final KdsCertUtils kdsCertUtils;
 
     /**
      * Update stored certificates with given list of new certificates.
@@ -61,6 +66,14 @@ public class SignerInformationService {
         signerEntity.setRawData(cert.getCertificate());
         signerEntity.setDomain(cert.getDomain());
         signerEntity.setGroup(cert.getGroup());
+
+        try {
+            X509Certificate parsedCertificate = kdsCertUtils.parseCertificate(cert.getCertificate());
+            byte[] subjectBytes = parsedCertificate.getSubjectX500Principal().getEncoded();
+            signerEntity.setSubjectHash(certificateUtils.calculateHash(subjectBytes));
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Failed to calculate Hash for certificate {}", cert.getKid());
+        }
 
         return signerEntity;
     }
@@ -186,5 +199,19 @@ public class SignerInformationService {
     public List<SignerInformationEntity> getCertificatesByGroup(String group) {
 
         return signerInformationRepository.getByGroupIs(group);
+    }
+
+    /**
+     * Returns signer information that are filtered by subjectHash, country, and domain.
+     *
+     * @param subjectHash SHA256 hash of certificate subject to filter
+     * @param country CountryCode/Participant code to filter
+     * @param domain Domain value to filter for
+     * @return matching SignerInformationEntities
+     */
+    public List<SignerInformationEntity> getCertificatesBySubjectHashCountryDomain(String subjectHash, String country,
+                                                                                   String domain) {
+
+        return signerInformationRepository.getBySubjectHashIsAndCountryIsAndDomainIs(subjectHash, country, domain);
     }
 }

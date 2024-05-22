@@ -85,4 +85,10 @@ public class SignerInformationEntity {
     @Column(name = "groupx")
     private String group;
 
+    /**
+     * SHA-256 Hash-Value of Certificate Subject (hex).
+     */
+    @Column(name = "subject_hash")
+    private String subjectHash;
+
 }

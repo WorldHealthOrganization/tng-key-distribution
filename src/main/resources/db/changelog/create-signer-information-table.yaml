@@ -38,3 +38,6 @@ databaseChangeLog:
               - column:
                   name: groupx
                   type: varchar(50)
+              - column:
+                  name: subject_hash
+                  type: varchar(64)

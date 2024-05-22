@@ -35,14 +35,12 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,19 +48,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.Optional;
 import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tng.trustnetwork.keydistribution.config.KdsConfigProperties;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
+import tng.trustnetwork.keydistribution.service.KdsCertUtils;
 import tng.trustnetwork.keydistribution.service.SignerInformationService;
 import tng.trustnetwork.keydistribution.service.TrustedIssuerService;
 import tng.trustnetwork.keydistribution.service.did.entity.DidTrustList;
@@ -97,7 +94,10 @@ public class DidTrustListService {
     private final GitProvider gitProvider;
 
     private final DocumentLoader documentLoader;
+
     private final KdsConfigProperties kdsConfigProperties;
+
+    private final KdsCertUtils kdsCertUtils;
 
     @RequiredArgsConstructor
     @Getter
@@ -200,11 +200,20 @@ public class DidTrustListService {
 
         Map<DidSpecification, String> didDocuments = new HashMap<>();
         didSpecifications.forEach(specification -> didDocuments
-            .put(specification, this.generateTrustList(specification)));
+            .put(specification, this.generateTrustList(specification, false)));
 
-        didDocuments.forEach((specification, document) -> {
-            saveDid(String.join("/", specification.getPath()), document);
-        });
+        Map<DidSpecification, String> didRefDocuments = new HashMap<>();
+        didSpecifications.forEach(specification -> didRefDocuments
+            .put(specification, this.generateTrustList(specification, true)));
+
+        didDocuments.forEach((specification, document) ->
+                                 saveDid(String.join("/", specification.getPath()), document));
+
+        /*didRefDocuments.forEach((specification, document) -> {
+            ArrayList<String> path = new ArrayList<>(specification.getPath());
+            path.add(0, "ref");
+            saveDid(String.join("/", path), document);
+        });*/
 
         log.info("Finished DID Export Process: {} documents", didDocuments.size());
 
@@ -222,7 +231,7 @@ public class DidTrustListService {
         }
     }
 
-    private String generateTrustList(DidSpecification specification) {
+    private String generateTrustList(DidSpecification specification, boolean onlyReferences) {
 
         List<SignerInformationEntity> signerInformationEntities = filterEntities(specification.getCertSupplier().get());
         List<TrustedIssuerEntity> trustedIssuerEntities = specification.getIssuerSupplier().get();
@@ -242,38 +251,44 @@ public class DidTrustListService {
 
         for (SignerInformationEntity signerInformationEntity : signerInformationEntities) {
 
-            X509Certificate parsedCertificate = parseCertificate(signerInformationEntity.getRawData());
-            if (parsedCertificate == null) {
-                log.error("Could not parse cert {} of country {}",
-                          signerInformationEntity.getKid(),
-                          signerInformationEntity.getCountry());
-                return null;
-            }
-
-            PublicKey publicKey = parsedCertificate.getPublicKey();
-            DidTrustListEntry.PublicKeyJwk publicKeyJwk = null;
-            if (publicKey instanceof RSAPublicKey rsaPublicKey) {
-                publicKeyJwk = new DidTrustListEntry.RsaPublicKeyJwk(
-                    rsaPublicKey, List.of(signerInformationEntity.getRawData()));
-
-            } else if (publicKey instanceof ECPublicKey ecPublicKey) {
-                publicKeyJwk = new DidTrustListEntry.EcPublicKeyJwk(
-                    ecPublicKey, List.of(signerInformationEntity.getRawData()));
+            if (onlyReferences) {
+                trustList.getVerificationMethod().add(specification.getEntryId(
+                    URLEncoder.encode(signerInformationEntity.getKid(), StandardCharsets.UTF_8)));
 
             } else {
-                log.error("Public Key is not RSA or EC Public Key for cert {} of country {}",
-                          signerInformationEntity.getKid(),
-                          signerInformationEntity.getCountry());
-            }
+                X509Certificate parsedCertificate = kdsCertUtils.parseCertificate(signerInformationEntity.getRawData());
+                if (parsedCertificate == null) {
+                    log.error("Could not parse cert {} of country {}",
+                              signerInformationEntity.getKid(),
+                              signerInformationEntity.getCountry());
+                    return null;
+                }
 
-            addTrustListEntry(trustList, specification, signerInformationEntity, publicKeyJwk, parsedCertificate);
+                PublicKey publicKey = parsedCertificate.getPublicKey();
+                DidTrustListEntry.PublicKeyJwk publicKeyJwk = null;
+                if (publicKey instanceof RSAPublicKey rsaPublicKey) {
+                    publicKeyJwk = new DidTrustListEntry.RsaPublicKeyJwk(
+                        rsaPublicKey, List.of(signerInformationEntity.getRawData()));
+
+                } else if (publicKey instanceof ECPublicKey ecPublicKey) {
+                    publicKeyJwk = new DidTrustListEntry.EcPublicKeyJwk(
+                        ecPublicKey, List.of(signerInformationEntity.getRawData()));
+
+                } else {
+                    log.error("Public Key is not RSA or EC Public Key for cert {} of country {}",
+                              signerInformationEntity.getKid(),
+                              signerInformationEntity.getCountry());
+                }
+
+                addTrustListEntry(trustList, specification, signerInformationEntity, publicKeyJwk);
+            }
         }
 
         // Add Trusted Issuer (DID References)
         // TODO: Add filtering for TrustedIssuers
         trustedIssuerEntities.forEach(did -> trustList.getVerificationMethod().add(did.getUrl()));
 
-        // Create LD-Proof Document
+        // Sign Document
         JsonWebSignature2020LdSigner signer = new JsonWebSignature2020LdSigner(byteSigner);
         signer.setCreated(new Date());
         signer.setProofPurpose(LDSecurityKeywords.JSONLD_TERM_ASSERTIONMETHOD);
@@ -312,35 +327,15 @@ public class DidTrustListService {
         });
     }
 
-    private X509Certificate parseCertificate(String raw) {
-
-        try {
-            byte[] rawDataBytes = Base64.getDecoder().decode(raw);
-            X509CertificateHolder certificateHolder = new X509CertificateHolder(rawDataBytes);
-            return certificateUtils.convertCertificate(certificateHolder);
-        } catch (CertificateException | IOException e) {
-            return null;
-        }
-    }
-
     private void addTrustListEntry(DidTrustList trustList,
                                    DidSpecification specification,
                                    SignerInformationEntity signerInformationEntity,
-                                   DidTrustListEntry.PublicKeyJwk publicKeyJwk,
-                                   X509Certificate dsc) {
+                                   DidTrustListEntry.PublicKeyJwk publicKeyJwk) {
 
-        // TODO: Add Logic to resolve issuer-relationships within our cached trustlist.
-        Optional<X509Certificate> issuer = searchCsca(dsc, signerInformationEntity.getCountry());
+        List<SignerInformationEntity> issuers = new ArrayList<>();
+        searchIssuer(issuers, signerInformationEntity);
 
-        if (issuer.isPresent()) {
-            try {
-                String encodedCsca = Base64.getEncoder().encodeToString(issuer.get().getEncoded());
-                publicKeyJwk.getEncodedX509Certificates()
-                            .add(encodedCsca);
-            } catch (CertificateEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        issuers.forEach(issuer -> publicKeyJwk.getEncodedX509Certificates().add(issuer.getRawData()));
 
         DidTrustListEntry trustListEntry = new DidTrustListEntry();
         trustListEntry.setType("JsonWebKey2020");
@@ -368,14 +363,42 @@ public class DidTrustListService {
     }
 
     /**
-     * Search for CSCA for DSC.
+     * Recursively resolve certificate chains based on current database.
+     * Resolving is done country-code and domain aware.
      *
-     * @param dsc DSC to search CSCA for.
-     * @return Optional holding the CSCA if found.
+     * @param issuers List of SignerInformationEntity will be filled with found certs. Provide an empty List for initial call.
+     * @param cert SignerInformationEntity to search issuers for.
      */
-    private Optional<X509Certificate> searchCsca(X509Certificate dsc, String country) {
+    private void searchIssuer(List<SignerInformationEntity> issuers, SignerInformationEntity cert) {
 
-        return Optional.empty();
+        try {
+            X509Certificate parsedCertificate = kdsCertUtils.parseCertificate(cert.getRawData());
+            String issuerSubjectHash = certificateUtils.calculateHash(parsedCertificate.getIssuerX500Principal().getEncoded());
+
+            List<SignerInformationEntity> possibleIssuers = signerInformationService
+                .getCertificatesBySubjectHashCountryDomain(issuerSubjectHash, cert.getCountry(), cert.getDomain());
+
+            possibleIssuers.forEach(possibleIssuer -> {
+                X509Certificate parsedPossibleIssuer = kdsCertUtils.parseCertificate(possibleIssuer.getRawData());
+
+                if (parsedPossibleIssuer.equals(parsedCertificate)) {
+                    // Self-signed Certificate detected --> Stopping Cert Chain resolving
+                    return;
+                }
+
+                try {
+                    parsedCertificate.verify(parsedPossibleIssuer.getPublicKey());
+                    // Signature check passed --> Adding issuer to chain
+                    issuers.add(possibleIssuer);
+                    // Also try to resolve issuer cert
+                    searchIssuer(issuers, possibleIssuer);
+
+                } catch (Exception ignored) {
+                    // Signature Check failed -> Do not add this issuer to chain
+                }
+            });
+        } catch (NoSuchAlgorithmException ignored) {
+        }
     }
 
     private String generateNonce() {
