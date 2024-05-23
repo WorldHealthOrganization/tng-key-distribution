@@ -115,4 +115,4 @@ dgc:
       - AUTHENTICATION
       - UPLOAD
     group-name-mapping:
-      CSCA: CSA
+      CSCA: SCA
