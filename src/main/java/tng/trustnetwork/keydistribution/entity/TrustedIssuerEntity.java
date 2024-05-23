@@ -51,12 +51,6 @@ public class TrustedIssuerEntity {
     private Long id;
 
     /**
-     * The revoked hash.
-     */
-    @Column(name = "etag", nullable = false, length = 36)
-    private String etag;
-
-    /**
      * Timestamp of the Record.
      */
     @Column(name = "created_at", nullable = false)

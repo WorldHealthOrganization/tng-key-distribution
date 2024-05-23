@@ -21,6 +21,7 @@
 package tng.trustnetwork.keydistribution.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import eu.europa.ec.dgc.gateway.connector.mapper.TrustedIssuerMapper;
 import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +40,6 @@ import tng.trustnetwork.keydistribution.repository.TrustedIssuerRepository;
 @RequiredArgsConstructor
 public class TrustedIssuerService {
 
-    private final InfoService infoService;
-
     private final IssuerMapper issuerMapper;
 
     private final TrustedIssuerRepository trustedIssuerRepository;
@@ -50,31 +49,6 @@ public class TrustedIssuerService {
     private final DecentralizedIdentifierService decentralizedIdentifierService;
 
     private final KdsConfigProperties configProperties;
-
-    /**
-     * Get the current etag.
-     *
-     * @return the current etag
-     */
-
-    public String getEtag() {
-
-        String etag = infoService.getValueForKey(InfoService.CURRENT_ETAG);
-        if (etag == null) {
-            etag = "";
-        }
-        return etag;
-    }
-
-    /**
-     * Method to query the db for all trusted issuers.
-     *
-     * @return List holding the found trusted issuers.
-     */
-    public List<TrustedIssuerEntity> getAllIssuers(String etag) {
-
-        return trustedIssuerRepository.findAllByEtag(etag);
-    }
 
     /**
      * Method to query the db for DID documents.
@@ -94,47 +68,33 @@ public class TrustedIssuerService {
     @Transactional
     public void updateTrustedIssuersList(List<TrustedIssuer> trustedIssuers) {
 
-        String newEtag = UUID.randomUUID().toString();
+        trustedIssuerRepository.deleteAll();
 
-        List<TrustedIssuerEntity> trustedIssuerEntities = new ArrayList<>();
 
         for (TrustedIssuer trustedIssuer : trustedIssuers) {
 
-            trustedIssuerEntities.add(getTrustedIssuerEntity(newEtag, trustedIssuer));
+            trustedIssuerRepository.save(issuerMapper.trustedIssuerToTrustedIssuerEntity(trustedIssuer));
 
-            if (TrustedIssuer.UrlType.DID == trustedIssuer.getType()
-                && configProperties.getTrustedIssuerDownloader().isEnableTrustedIssuerResolving()) {
-                try {
-                    UniversalResolverService.DidDocumentWithRawResponse didDocument =
-                        urService.universalResolverApiCall(trustedIssuer.getUrl());
-
-                    decentralizedIdentifierService.updateDecentralizedIdentifierList(didDocument.didDocument(),
-                                                                                     didDocument.raw());
-                } catch (JsonProcessingException e) {
-                    log.error("Failed to download/parse DID {}", trustedIssuer.getUrl());
-                }
+            if (trustedIssuer.getType() == TrustedIssuer.UrlType.DID) {
+                resolveDid(trustedIssuer);
             }
         }
-
-        trustedIssuerRepository.saveAll(trustedIssuerEntities);
-
-        String oldEtag = getEtag();
-        infoService.setValueForKey(InfoService.CURRENT_ETAG, newEtag);
-
-        cleanupData(oldEtag);
-
     }
 
-    private TrustedIssuerEntity getTrustedIssuerEntity(String etag, TrustedIssuer trustedIssuer) {
+    private void resolveDid(TrustedIssuer trustedIssuer) {
 
-        TrustedIssuerEntity entity = issuerMapper.trustedIssuerToTrustedIssuerEntity(trustedIssuer);
-        entity.setEtag(etag);
-        return entity;
+        if (!configProperties.getTrustedIssuerDownloader().isEnableTrustedIssuerResolving()) {
+            return;
+        }
+
+        try {
+            UniversalResolverService.DidDocumentWithRawResponse didDocument =
+                urService.universalResolverApiCall(trustedIssuer.getUrl());
+
+            decentralizedIdentifierService.updateDecentralizedIdentifierList(didDocument.didDocument(),
+                                                                             didDocument.raw());
+        } catch (JsonProcessingException e) {
+            log.error("Failed to download/parse DID {}", trustedIssuer.getUrl());
+        }
     }
-
-    private void cleanupData(String etag) {
-
-        trustedIssuerRepository.deleteAllByEtag(etag);
-    }
-
 }

@@ -52,13 +52,13 @@ class SignerCertificateDownloadServiceTest {
 
     @Test
     void downloadEmptyCertificatesList() {
-        ArrayList<TrustListItem> trustList = new ArrayList<>();
-        Mockito.when(dgcGatewayDownloadConnector.getTrustedCertificates()).thenReturn(trustList);
+        ArrayList<TrustedCertificateTrustListItem> trustList = new ArrayList<>();
+        Mockito.when(dgcGatewayDownloadConnector.getDdccTrustedCertificates()).thenReturn(trustList);
 
         signerCertificateDownloadService.downloadCertificates();
 
-        List<SignerInformationEntity> repositoryItems = signerInformationRepository.findAllByDeletedOrderByIdAsc(false);
-        Assertions.assertEquals(0, repositoryItems.size());
+        List<SignerInformationEntity> repositoryItems = signerInformationRepository.findAll();
+        Assertions.assertTrue(repositoryItems.isEmpty());
     }
 
     @Test

@@ -24,7 +24,6 @@ import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import tng.trustnetwork.keydistribution.dto.TrustedIssuerDto;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 
 @Mapper(componentModel = "spring")
@@ -32,18 +31,9 @@ public interface IssuerMapper {
 
     @Mapping(source = "type", target = "urlType")
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "etag", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     TrustedIssuerEntity trustedIssuerToTrustedIssuerEntity(TrustedIssuer trustedIssuer);
 
-
     List<TrustedIssuerEntity> trustedIssuerToTrustedIssuerEntity(List<TrustedIssuer> trustedIssuer);
-
-    @Mapping(source = "urlType", target = "type")
-    @Mapping(source = "createdAt", target = "timestamp")
-    TrustedIssuerDto trustedIssuerEntityToTrustedIssuerDto(TrustedIssuerEntity trustedIssuerEntity);
-
-    @Mapping(source = "createdAt", target = "timestamp")
-    List<TrustedIssuerDto> trustedIssuerEntityToTrustedIssuerDto(List<TrustedIssuerEntity> trustedIssuerEntities);
 
 }

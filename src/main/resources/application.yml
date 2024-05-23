@@ -42,12 +42,6 @@ management:
 info:
   name: ${spring.application.name}
   profiles: ${spring.profiles.active}
-springdoc:
-  api-docs:
-    path: /api/docs
-    enabled: true
-  swagger-ui:
-    path: /swagger
 universal:
   resolver: "https://dev.uniresolver.io/1.0/identifiers"
 dgc:
@@ -103,8 +97,9 @@ dgc:
       pat: <personal-access-token-for-git>
     didSigningProvider: dummy
     ld-proof-verification-method: did:web:dummy.net
-    ld-proof-nonce: n0nc3
     did-id: did:web:abc
+    trust-list-path: trustlist
+    trust-list-ref-path: trustlist-ref
     did-controller: did:web:def
     trust-list-id-prefix: did:web:abc
     trust-list-controller-prefix: did:web:abc
@@ -116,3 +111,8 @@ dgc:
       XB: XXB
       XO: XXO
       XL: XCL
+    group-deny-list:
+      - AUTHENTICATION
+      - UPLOAD
+    group-name-mapping:
+      CSCA: CSA

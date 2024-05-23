@@ -26,9 +26,5 @@ import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 
 public interface TrustedIssuerRepository extends JpaRepository<TrustedIssuerEntity, Long> {
 
-    void deleteAllByEtag(String etag);
-
-    List<TrustedIssuerEntity> findAllByEtag(String etag);
-
     List<TrustedIssuerEntity> findAllByUrlTypeIs(TrustedIssuerEntity.UrlType urlType);
 }

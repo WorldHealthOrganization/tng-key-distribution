@@ -20,47 +20,49 @@
 
 package tng.trustnetwork.keydistribution.service.did;
 
-import com.apicatalog.jsonld.document.JsonDocument;
+import static tng.trustnetwork.keydistribution.service.did.KdsDidContextDocumentLoaderConfig.DID_CONTEXTS;
+
+import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.danubetech.keyformats.crypto.ByteSigner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.dgc.utils.CertificateUtils;
-import foundation.identity.jsonld.ConfigurableDocumentLoader;
+import foundation.identity.jsonld.JsonLDException;
 import foundation.identity.jsonld.JsonLDObject;
 import info.weboftrust.ldsignatures.jsonld.LDSecurityKeywords;
 import info.weboftrust.ldsignatures.signer.JsonWebSignature2020LdSigner;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
-import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.function.Supplier;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tng.trustnetwork.keydistribution.config.KdsConfigProperties;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
+import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
+import tng.trustnetwork.keydistribution.service.KdsCertUtils;
 import tng.trustnetwork.keydistribution.service.SignerInformationService;
 import tng.trustnetwork.keydistribution.service.TrustedIssuerService;
-import tng.trustnetwork.keydistribution.service.TrustedPartyService;
 import tng.trustnetwork.keydistribution.service.did.entity.DidTrustList;
 import tng.trustnetwork.keydistribution.service.did.entity.DidTrustListEntry;
 
@@ -70,15 +72,11 @@ import tng.trustnetwork.keydistribution.service.did.entity.DidTrustListEntry;
 @ConditionalOnProperty("dgc.did.enableDidGeneration")
 public class DidTrustListService {
 
-    private static final String SEPARATOR_COLON = ":";
+    private static final String WILDCARD_CHAR = "-";
 
-    private static final String SEPARATOR_FRAGMENT = "#";
+    private static final String SEPARATOR_DID_PATH = ":";
 
-    private static final List<String> DID_CONTEXTS = List.of(
-        "https://www.w3.org/ns/did/v1",
-        "https://w3id.org/security/suites/jws-2020/v1");
-
-    private final TrustedPartyService trustedPartyService;
+    private static final String SEPARATOR_DID_ID = "#";
 
     private final SignerInformationService signerInformationService;
 
@@ -93,8 +91,58 @@ public class DidTrustListService {
     private final CertificateUtils certificateUtils;
 
     private final TrustedIssuerService trustedIssuerService;
-    
+
     private final GitProvider gitProvider;
+
+    private final DocumentLoader documentLoader;
+
+    private final KdsConfigProperties kdsConfigProperties;
+
+    private final KdsCertUtils kdsCertUtils;
+
+    @RequiredArgsConstructor
+    @Getter
+    private class DidSpecification {
+
+        @Getter(AccessLevel.PRIVATE)
+        private final List<String> path;
+
+        private final Supplier<List<SignerInformationEntity>> certSupplier;
+
+        private final Supplier<List<TrustedIssuerEntity>> issuerSupplier;
+
+        public List<String> getPath(boolean ref) {
+            ArrayList<String> path = new ArrayList<>(this.path);
+            path.add(0, getListPathElement(ref));
+            return path;
+        }
+
+        public String getDocumentId(boolean ref) {
+            //Example: did:web:tng-cdn-dev.who.int:trustlist:v.2.0.0:DDCC:XXA:DSC
+            return configProperties.getDid().getDidId()
+                + SEPARATOR_DID_PATH + getListPathElement(ref)
+                + (path.isEmpty() ? "" : SEPARATOR_DID_PATH
+                + String.join(SEPARATOR_DID_PATH, path));
+        }
+
+        public String getEntryId(String kid) {
+            //Example: did:web:tng-cdn-dev.who.int:trustlist:v.2.0.0:DDCC:XXA:DSC#kidkidkid
+            return getDocumentId(false) + SEPARATOR_DID_ID + kid;
+        }
+
+        private String getListPathElement(boolean ref) {
+            if (ref && configProperties.getDid().getTrustListRefPath() != null
+                    && !configProperties.getDid().getTrustListRefPath().isEmpty()) {
+                return configProperties.getDid().getTrustListRefPath();
+
+            } else if (!ref && configProperties.getDid().getTrustListPath() != null
+                && !configProperties.getDid().getTrustListPath().isEmpty()) {
+                return configProperties.getDid().getTrustListPath();
+            } else {
+                return "";
+            }
+        }
+    }
 
     /**
      * Create and upload DID Document holding Uploaded DSC and Trusted Issuer.
@@ -103,207 +151,289 @@ public class DidTrustListService {
     @SchedulerLock(name = "didTrustListGenerator")
     public void job() {
 
-        String trustList;
-
-        try {
-            trustList = generateTrustList(null);
-        } catch (Exception e) {
-            log.error("Failed to generate DID-TrustList: {}", e.getMessage());
-            return;
-        }
-
-        try {
-            didUploader.uploadDid(trustList.getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            log.error("Failed to Upload DID-TrustList: {}", e.getMessage());
-            return;
-        }
-
+        List<DidSpecification> didSpecifications = new ArrayList<>();
+        List<String> domains = signerInformationService.getDomainsList();
         List<String> countries = signerInformationService.getCountryList();
 
-        for (String country : countries) {
-            String countryTrustList;
+        //CHECKSTYLE:OFF
+        List<String> groups = signerInformationService.getGroupList();
+        //CHECKSTYLE:ON
 
-            String countryAsSubcontainer = getCountryAsLowerCaseAlpha3(country);
-            if (countryAsSubcontainer != null) {
-                try {
-                    countryTrustList = generateTrustList(List.of(country));
-                } catch (Exception e) {
-                    log.error("Failed to generate DID-TrustList for country {} : {}", country, e.getMessage());
-                    continue;
-                }
+        // Add overall DID
+        didSpecifications.add(new DidSpecification(
+            Collections.emptyList(),
+            signerInformationService::getAllCertificates,
+            trustedIssuerService::getAllDid));
 
-                try {
-                    didUploader.uploadDid(countryAsSubcontainer, countryTrustList.getBytes(StandardCharsets.UTF_8));
-                } catch (Exception e) {
-                    log.error("Failed to Upload DID-TrustList for country {} : {}", country, e.getMessage());
-                }
-            }
-        }
+        // Add all Domain DID
+        domains.forEach(
+            domain -> didSpecifications.add(new DidSpecification(
+                List.of(domain),
+                () -> signerInformationService.getCertificatesByDomain(domain),
+                trustedIssuerService::getAllDid)));
 
-        log.info("Finished DID Export Process");
+        // Add all Country and Domain specific DID
+        domains.forEach(
+            domain -> countries.forEach(
+                country -> didSpecifications.add(new DidSpecification(
+                    List.of(domain, getParticipantCode(country)),
+                    () -> signerInformationService.getCertificatesByCountryDomain(country, domain),
+                    trustedIssuerService::getAllDid)
+                )));
+
+        // Add all Domain independent and country specific DID
+        countries.forEach(
+            country -> didSpecifications.add(new DidSpecification(
+                List.of(WILDCARD_CHAR, getParticipantCode(country)),
+                () -> signerInformationService.getCertificatesByCountry(country),
+                trustedIssuerService::getAllDid)));
+
+        // Add all domain, country and group specific did
+        domains.forEach(
+            domain -> countries.forEach(
+                country -> groups.forEach(
+                    group -> didSpecifications.add(new DidSpecification(
+                        List.of(domain, getParticipantCode(country), getMappedGroupName(group)),
+                        () -> signerInformationService.getCertificatesByDomainParticipantGroup(domain, country, group),
+                        trustedIssuerService::getAllDid)))));
+
+        // Add all country and group specific did
+        countries.forEach(
+            country -> groups.forEach(
+                group -> didSpecifications.add(new DidSpecification(
+                    List.of(WILDCARD_CHAR, getParticipantCode(country), getMappedGroupName(group)),
+                    () -> signerInformationService.getCertificatesByGroupCountry(group, country),
+                    trustedIssuerService::getAllDid))));
+
+        // Add all domain and group specific did
+        domains.forEach(
+            domain -> groups.forEach(
+                group -> didSpecifications.add(new DidSpecification(
+                    List.of(domain, WILDCARD_CHAR, getMappedGroupName(group)),
+                    () -> signerInformationService.getCertificatesByDomainGroup(domain, group),
+                    trustedIssuerService::getAllDid))));
+
+        // Add all group specific did
+        groups.forEach(
+            group -> didSpecifications.add(new DidSpecification(
+            List.of(WILDCARD_CHAR, WILDCARD_CHAR, getMappedGroupName(group)),
+                () -> signerInformationService.getCertificatesByGroup(group),
+                trustedIssuerService::getAllDid)));
+
+        Map<DidSpecification, String> didDocuments = new HashMap<>();
+        didSpecifications.forEach(specification -> didDocuments
+            .put(specification, this.generateTrustList(specification, false)));
+
+        Map<DidSpecification, String> didRefDocuments = new HashMap<>();
+        didSpecifications.forEach(specification -> didRefDocuments
+            .put(specification, this.generateTrustList(specification, true)));
+
+        didDocuments.forEach((specification, document) ->
+                                 saveDid(String.join("/", specification.getPath(false)), document));
+
+        didRefDocuments.forEach((specification, document) ->
+                                    saveDid(String.join("/", specification.getPath(true)), document));
+
+        log.info("Finished DID Export Process: {} documents", didDocuments.size());
 
         gitProvider.upload(configProperties.getDid().getLocalFile().getDirectory());
+
     }
 
-    private String getCountryAsLowerCaseAlpha3(String country) {
+    private void saveDid(String containerPath, String didDocument) {
 
-        if (country == null || country.length() != 2 && country.length() != 3) {
-            return null;
-        } else if (country.length() == 3) {
-            return country;
+        try {
+            didUploader.uploadDid(containerPath,
+                                  didDocument == null ? null : didDocument.getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            log.error("Failed to Upload DID-TrustList: {}", e.getMessage());
         }
-
-        return configProperties.getDid().getVirtualCountries().computeIfAbsent(country, (c) -> {
-            try {
-                return new Locale("en", c).getISO3Country().toLowerCase();
-            } catch (MissingResourceException e) {
-                log.error("Country Code to alpha 3 conversion issue for country {} : {}",
-                          c, e.getMessage());
-                return c;
-            }
-        });
     }
 
-    private String generateTrustList(List<String> countries) throws Exception {
+    private String generateTrustList(DidSpecification specification, boolean onlyReferences) {
+
+        List<SignerInformationEntity> signerInformationEntities = filterEntities(specification.getCertSupplier().get());
+        List<TrustedIssuerEntity> trustedIssuerEntities = specification.getIssuerSupplier().get();
+
+        if (signerInformationEntities.isEmpty() || trustedIssuerEntities.isEmpty()) {
+            log.info("Empty DID for path {}", specification.getPath());
+            return null;
+        }
 
         DidTrustList trustList = new DidTrustList();
         trustList.setContext(DID_CONTEXTS);
-        trustList.setId(configProperties.getDid().getDidId());
-        trustList.setController(configProperties.getDid().getDidController());
+        trustList.setId(specification.getDocumentId(onlyReferences));
+        trustList.setController(specification.getDocumentId(onlyReferences));
         trustList.setVerificationMethod(new ArrayList<>());
 
-        if (countries != null && !countries.isEmpty()) {
-            trustList.setId(configProperties.getDid().getDidId()
-                                + SEPARATOR_COLON
-                                + getCountryAsLowerCaseAlpha3(countries.get(0)));
-        }
-
-        // Add DSC
-        List<SignerInformationEntity> signerInformationEntities = countries == null
-            ? signerInformationService.getActiveCertificates()
-            : signerInformationService.getActiveCertificatesForCountries(countries);
+        // Add Certificates
 
         for (SignerInformationEntity signerInformationEntity : signerInformationEntities) {
 
-            X509Certificate parsedCertificate = parseCertificate(signerInformationEntity.getRawData());
-            PublicKey publicKey = parsedCertificate.getPublicKey();
-
-            if (publicKey instanceof RSAPublicKey rsaPublicKey) {
-                addTrustListEntry(trustList, signerInformationEntity,
-                                  new DidTrustListEntry.RsaPublicKeyJwk(
-                                      rsaPublicKey, List.of(signerInformationEntity.getRawData())), parsedCertificate);
-
-            } else if (publicKey instanceof ECPublicKey ecPublicKey) {
-                addTrustListEntry(trustList, signerInformationEntity,
-                                  new DidTrustListEntry.EcPublicKeyJwk(
-                                      ecPublicKey, List.of(signerInformationEntity.getRawData())), parsedCertificate);
+            if (onlyReferences) {
+                trustList.getVerificationMethod().add(specification.getEntryId(
+                    URLEncoder.encode(signerInformationEntity.getKid(), StandardCharsets.UTF_8)));
 
             } else {
-                log.error("Public Key is not RSA or EC Public Key for cert {} of country {}",
-                          signerInformationEntity.getKid(),
-                          signerInformationEntity.getCountry());
+                X509Certificate parsedCertificate = kdsCertUtils.parseCertificate(signerInformationEntity.getRawData());
+                if (parsedCertificate == null) {
+                    log.error("Could not parse cert {} of country {}",
+                              signerInformationEntity.getKid(),
+                              signerInformationEntity.getCountry());
+                    return null;
+                }
+
+                PublicKey publicKey = parsedCertificate.getPublicKey();
+                DidTrustListEntry.PublicKeyJwk publicKeyJwk = null;
+                if (publicKey instanceof RSAPublicKey rsaPublicKey) {
+                    publicKeyJwk = new DidTrustListEntry.RsaPublicKeyJwk(
+                        rsaPublicKey, List.of(signerInformationEntity.getRawData()));
+
+                } else if (publicKey instanceof ECPublicKey ecPublicKey) {
+                    publicKeyJwk = new DidTrustListEntry.EcPublicKeyJwk(
+                        ecPublicKey, List.of(signerInformationEntity.getRawData()));
+
+                } else {
+                    log.error("Public Key is not RSA or EC Public Key for cert {} of country {}",
+                              signerInformationEntity.getKid(),
+                              signerInformationEntity.getCountry());
+                }
+
+                addTrustListEntry(trustList, specification, signerInformationEntity, publicKeyJwk);
             }
         }
 
-        // Add DID References
-        trustedIssuerService.getAllDid()
-                            .forEach(did -> trustList.getVerificationMethod().add(did.getUrl()));
+        // Add Trusted Issuer (DID References)
+        // TODO: Add filtering for TrustedIssuers
+        trustedIssuerEntities.forEach(did -> trustList.getVerificationMethod().add(did.getUrl()));
 
-        // Create LD-Proof Document
+        // Sign Document
         JsonWebSignature2020LdSigner signer = new JsonWebSignature2020LdSigner(byteSigner);
         signer.setCreated(new Date());
         signer.setProofPurpose(LDSecurityKeywords.JSONLD_TERM_ASSERTIONMETHOD);
         signer.setVerificationMethod(URI.create(configProperties.getDid().getLdProofVerificationMethod()));
         signer.setDomain(configProperties.getDid().getLdProofDomain());
-        signer.setNonce(configProperties.getDid().getLdProofNonce());
+        signer.setNonce(generateNonce());
 
-        // Load DID-Contexts
-        Map<URI, JsonDocument> contextMap = new HashMap<>();
-        for (String didContext : DID_CONTEXTS) {
-            String didContextFile = configProperties.getDid().getContextMapping().get(didContext);
-
-            if (didContextFile == null) {
-                log.error("Failed to load DID-Context Document for {}: No Mapping to local JSON-File.", didContext);
-            }
-
-            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(
-                "did_contexts/" + didContextFile)) {
-                if (inputStream != null) {
-                    contextMap.put(URI.create(didContext), JsonDocument.of(inputStream));
-                }
-            } catch (Exception e) {
-                log.error("Failed to load DID-Context Document {}: {}", didContextFile, e.getMessage());
-                throw e;
-            }
-        }
-        JsonLDObject jsonLdObject = JsonLDObject.fromJson(objectMapper.writeValueAsString(trustList));
-        jsonLdObject.setDocumentLoader(new ConfigurableDocumentLoader(contextMap));
-
-        signer.sign(jsonLdObject);
-
-        return jsonLdObject.toJson();
-    }
-
-    private X509Certificate parseCertificate(String raw) {
 
         try {
-            byte[] rawDataBytes = Base64.getDecoder().decode(raw);
-            X509CertificateHolder certificateHolder = new X509CertificateHolder(rawDataBytes);
-            return certificateUtils.convertCertificate(certificateHolder);
-        } catch (CertificateException | IOException e) {
+            JsonLDObject jsonLdObject = JsonLDObject.fromJson(objectMapper.writeValueAsString(trustList));
+            jsonLdObject.setDocumentLoader(documentLoader);
+            signer.sign(jsonLdObject);
+            return jsonLdObject.toJson();
+        } catch (IOException | GeneralSecurityException | JsonLDException e) {
+            log.error("Failed to sign DID-TrustList: {}", e.getMessage());
             return null;
         }
     }
 
-    private void addTrustListEntry(DidTrustList trustList,
-                                   SignerInformationEntity signerInformationEntity,
-                                   DidTrustListEntry.PublicKeyJwk publicKeyJwk,
-                                   X509Certificate dsc) {
+    private String getParticipantCode(String country) {
 
-        Optional<X509Certificate> csca = searchCsca(dsc, signerInformationEntity.getCountry());
-
-        if (csca.isPresent()) {
-
-            try {
-                String encodedCsca = Base64.getEncoder().encodeToString(csca.get().getEncoded());
-                publicKeyJwk.getEncodedX509Certificates()
-                            .add(encodedCsca);
-            } catch (CertificateEncodingException e) {
-                throw new RuntimeException(e);
-            }
+        if (country == null || country.length() != 2 && country.length() != 3) {
+            return null;
+        } else if (country.length() == 3) {
+            return country.toUpperCase();
         }
+
+        return configProperties.getDid().getVirtualCountries().computeIfAbsent(country, (c) -> {
+            try {
+                return new Locale("en", c).getISO3Country().toUpperCase();
+            } catch (MissingResourceException e) {
+                log.error("Country Code to alpha 3 conversion issue for country {} : {}",
+                          c, e.getMessage());
+                return c.toUpperCase();
+            }
+        });
+    }
+
+    private void addTrustListEntry(DidTrustList trustList,
+                                   DidSpecification specification,
+                                   SignerInformationEntity signerInformationEntity,
+                                   DidTrustListEntry.PublicKeyJwk publicKeyJwk) {
+
+        List<SignerInformationEntity> issuers = new ArrayList<>();
+        searchIssuer(issuers, signerInformationEntity);
+
+        issuers.forEach(issuer -> publicKeyJwk.getEncodedX509Certificates().add(issuer.getRawData()));
 
         DidTrustListEntry trustListEntry = new DidTrustListEntry();
         trustListEntry.setType("JsonWebKey2020");
-        trustListEntry.setId(configProperties.getDid().getTrustListIdPrefix()
-                                 + SEPARATOR_COLON
-                                 + getCountryAsLowerCaseAlpha3(signerInformationEntity.getCountry())
-                                 + SEPARATOR_FRAGMENT
-                                 + URLEncoder.encode(signerInformationEntity.getKid(), StandardCharsets.UTF_8));
-        trustListEntry.setController(configProperties.getDid().getTrustListControllerPrefix()
-                                         + SEPARATOR_COLON
-                                         + getCountryAsLowerCaseAlpha3(signerInformationEntity.getCountry()));
+        trustListEntry.setId(specification.getEntryId(
+            URLEncoder.encode(signerInformationEntity.getKid(), StandardCharsets.UTF_8)));
+        trustListEntry.setController(specification.getDocumentId(false));
         trustListEntry.setPublicKeyJwk(publicKeyJwk);
 
         trustList.getVerificationMethod().add(trustListEntry);
     }
 
-    /**
-     * Search for CSCA for DSC.
-     *
-     * @param dsc DSC to search CSCA for.
-     * @return Optional holding the CSCA if found.
-     */
-    private Optional<X509Certificate> searchCsca(X509Certificate dsc, String country) {
 
-        return trustedPartyService.getCscaByCountry(country)
-                                  .stream()
-                                  .map(csca -> parseCertificate(csca.getRawData()))
-                                  .filter(Objects::nonNull)
-                                  .filter(csca -> csca.getSubjectX500Principal()
-                                                      .equals(dsc.getIssuerX500Principal()))
-                                  .findFirst();
+    private List<SignerInformationEntity> filterEntities(List<SignerInformationEntity> entities) {
+
+        return entities.stream()
+                       .filter(entity -> kdsConfigProperties.getDid().getGroupDenyList().stream()
+                                                            .noneMatch(e -> entity.getGroup().equalsIgnoreCase(e)))
+                       .toList();
+    }
+
+    private String getMappedGroupName(String groupName) {
+
+        return kdsConfigProperties.getDid().getGroupNameMapping()
+                                  .computeIfAbsent(groupName, g -> g);
+    }
+
+    /**
+     * Recursively resolve certificate chains based on current database.
+     * Resolving is done country-code and domain aware.
+     *
+     * @param issuers List of SignerInformationEntity will be filled with found certs.
+     *                Provide an empty List for initial call.
+     * @param cert SignerInformationEntity to search issuers for.
+     */
+    private void searchIssuer(List<SignerInformationEntity> issuers, SignerInformationEntity cert) {
+
+        try {
+            X509Certificate parsedCertificate = kdsCertUtils.parseCertificate(cert.getRawData());
+            String issuerSubjectHash = certificateUtils.calculateHash(parsedCertificate.getIssuerX500Principal()
+                                                                                       .getEncoded());
+
+            List<SignerInformationEntity> possibleIssuers = signerInformationService
+                .getCertificatesBySubjectHashCountryDomain(issuerSubjectHash, cert.getCountry(), cert.getDomain());
+
+            possibleIssuers.forEach(possibleIssuer -> {
+                X509Certificate parsedPossibleIssuer = kdsCertUtils.parseCertificate(possibleIssuer.getRawData());
+
+                if (parsedPossibleIssuer.equals(parsedCertificate)) {
+                    // Self-signed Certificate detected --> Stopping Cert Chain resolving
+                    return;
+                }
+
+                try {
+                    parsedCertificate.verify(parsedPossibleIssuer.getPublicKey());
+                    // Signature check passed --> Adding issuer to chain
+                    issuers.add(possibleIssuer);
+                    // Also try to resolve issuer cert
+                    searchIssuer(issuers, possibleIssuer);
+
+                } catch (Exception ignored) {
+                    // Signature Check failed -> Do not add this issuer to chain
+                }
+            });
+        } catch (NoSuchAlgorithmException ignored) {
+            log.error("Failed to calculate Hash for Certificate Subject");
+        }
+    }
+
+    private String generateNonce() {
+
+        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+        final int nonceLength = 32;
+        StringBuilder nonce = new StringBuilder();
+
+        while (nonce.length() < nonceLength) {
+            nonce.append(chars.charAt((int) (Math.random() * chars.length())));
+        }
+
+        return nonce.toString();
     }
 
 }

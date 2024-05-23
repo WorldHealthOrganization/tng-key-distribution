@@ -43,8 +43,6 @@ public class KdsConfigProperties {
 
     private final DidConfig did = new DidConfig();
 
-    private String context = "";
-
     /**
      * Http-Proxy Configuration.
      */
@@ -100,12 +98,14 @@ public class KdsConfigProperties {
         private String didId;
         private String didController;
 
+        private String trustListPath;
+        private String trustListRefPath;
+
         private String trustListIdPrefix;
         private String trustListControllerPrefix;
 
         private String ldProofVerificationMethod;
         private String ldProofDomain;
-        private String ldProofNonce;
 
         private String didSigningProvider;
         private String didUploadProvider;
@@ -118,6 +118,9 @@ public class KdsConfigProperties {
 
         private DgcGatewayConnectorConfigProperties.KeyStoreWithAlias localKeyStore =
             new DgcGatewayConnectorConfigProperties.KeyStoreWithAlias();
+
+        private List<String> groupDenyList = new ArrayList<>();
+        private Map<String, String> groupNameMapping = new HashMap<>();
         
         @Getter
         @Setter
