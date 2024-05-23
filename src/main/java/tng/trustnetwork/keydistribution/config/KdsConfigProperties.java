@@ -98,6 +98,9 @@ public class KdsConfigProperties {
         private String didId;
         private String didController;
 
+        private String trustListPath;
+        private String trustListRefPath;
+
         private String trustListIdPrefix;
         private String trustListControllerPrefix;
 

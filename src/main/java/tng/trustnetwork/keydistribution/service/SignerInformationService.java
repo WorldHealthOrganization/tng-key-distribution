@@ -21,11 +21,11 @@
 package tng.trustnetwork.keydistribution.service;
 
 import eu.europa.ec.dgc.gateway.connector.model.TrustedCertificateTrustListItem;
+import eu.europa.ec.dgc.utils.CertificateUtils;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.time.ZonedDateTime;
 import java.util.List;
-import eu.europa.ec.dgc.utils.CertificateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

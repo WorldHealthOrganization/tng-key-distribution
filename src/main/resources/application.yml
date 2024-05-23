@@ -98,6 +98,8 @@ dgc:
     didSigningProvider: dummy
     ld-proof-verification-method: did:web:dummy.net
     did-id: did:web:abc
+    trust-list-path: trustlist
+    trust-list-ref-path: trustlist-ref
     did-controller: did:web:def
     trust-list-id-prefix: did:web:abc
     trust-list-controller-prefix: did:web:abc

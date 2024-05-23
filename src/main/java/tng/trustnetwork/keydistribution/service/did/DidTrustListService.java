@@ -49,6 +49,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.function.Supplier;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -103,22 +104,43 @@ public class DidTrustListService {
     @Getter
     private class DidSpecification {
 
+        @Getter(AccessLevel.PRIVATE)
         private final List<String> path;
 
         private final Supplier<List<SignerInformationEntity>> certSupplier;
 
         private final Supplier<List<TrustedIssuerEntity>> issuerSupplier;
 
-        public String getDocumentId() {
+        public List<String> getPath(boolean ref) {
+            ArrayList<String> path = new ArrayList<>(this.path);
+            path.add(0, getListPathElement(ref));
+            return path;
+        }
+
+        public String getDocumentId(boolean ref) {
             //Example: did:web:tng-cdn-dev.who.int:trustlist:v.2.0.0:DDCC:XXA:DSC
             return configProperties.getDid().getDidId()
+                + SEPARATOR_DID_PATH + getListPathElement(ref)
                 + (path.isEmpty() ? "" : SEPARATOR_DID_PATH
                 + String.join(SEPARATOR_DID_PATH, path));
         }
 
         public String getEntryId(String kid) {
             //Example: did:web:tng-cdn-dev.who.int:trustlist:v.2.0.0:DDCC:XXA:DSC#kidkidkid
-            return getDocumentId() + SEPARATOR_DID_ID + kid;
+            return getDocumentId(false) + SEPARATOR_DID_ID + kid;
+        }
+
+        private String getListPathElement(boolean ref) {
+            if (ref && configProperties.getDid().getTrustListRefPath() != null
+                    && !configProperties.getDid().getTrustListRefPath().isEmpty()) {
+                return configProperties.getDid().getTrustListRefPath();
+
+            } else if (!ref && configProperties.getDid().getTrustListPath() != null
+                && !configProperties.getDid().getTrustListPath().isEmpty()) {
+                return configProperties.getDid().getTrustListPath();
+            } else {
+                return "";
+            }
         }
     }
 
@@ -207,13 +229,10 @@ public class DidTrustListService {
             .put(specification, this.generateTrustList(specification, true)));
 
         didDocuments.forEach((specification, document) ->
-                                 saveDid(String.join("/", specification.getPath()), document));
+                                 saveDid(String.join("/", specification.getPath(false)), document));
 
-        /*didRefDocuments.forEach((specification, document) -> {
-            ArrayList<String> path = new ArrayList<>(specification.getPath());
-            path.add(0, "ref");
-            saveDid(String.join("/", path), document);
-        });*/
+        didRefDocuments.forEach((specification, document) ->
+                                    saveDid(String.join("/", specification.getPath(true)), document));
 
         log.info("Finished DID Export Process: {} documents", didDocuments.size());
 
@@ -243,8 +262,8 @@ public class DidTrustListService {
 
         DidTrustList trustList = new DidTrustList();
         trustList.setContext(DID_CONTEXTS);
-        trustList.setId(specification.getDocumentId());
-        trustList.setController(specification.getDocumentId());
+        trustList.setId(specification.getDocumentId(onlyReferences));
+        trustList.setController(specification.getDocumentId(onlyReferences));
         trustList.setVerificationMethod(new ArrayList<>());
 
         // Add Certificates
@@ -341,7 +360,7 @@ public class DidTrustListService {
         trustListEntry.setType("JsonWebKey2020");
         trustListEntry.setId(specification.getEntryId(
             URLEncoder.encode(signerInformationEntity.getKid(), StandardCharsets.UTF_8)));
-        trustListEntry.setController(specification.getDocumentId());
+        trustListEntry.setController(specification.getDocumentId(false));
         trustListEntry.setPublicKeyJwk(publicKeyJwk);
 
         trustList.getVerificationMethod().add(trustListEntry);
@@ -366,14 +385,16 @@ public class DidTrustListService {
      * Recursively resolve certificate chains based on current database.
      * Resolving is done country-code and domain aware.
      *
-     * @param issuers List of SignerInformationEntity will be filled with found certs. Provide an empty List for initial call.
+     * @param issuers List of SignerInformationEntity will be filled with found certs.
+     *                Provide an empty List for initial call.
      * @param cert SignerInformationEntity to search issuers for.
      */
     private void searchIssuer(List<SignerInformationEntity> issuers, SignerInformationEntity cert) {
 
         try {
             X509Certificate parsedCertificate = kdsCertUtils.parseCertificate(cert.getRawData());
-            String issuerSubjectHash = certificateUtils.calculateHash(parsedCertificate.getIssuerX500Principal().getEncoded());
+            String issuerSubjectHash = certificateUtils.calculateHash(parsedCertificate.getIssuerX500Principal()
+                                                                                       .getEncoded());
 
             List<SignerInformationEntity> possibleIssuers = signerInformationService
                 .getCertificatesBySubjectHashCountryDomain(issuerSubjectHash, cert.getCountry(), cert.getDomain());
@@ -398,6 +419,7 @@ public class DidTrustListService {
                 }
             });
         } catch (NoSuchAlgorithmException ignored) {
+            log.error("Failed to calculate Hash for Certificate Subject");
         }
     }
 

@@ -207,9 +207,9 @@ public class DidTrustListServiceTest {
 
         didTrustListService.job();
 
-        Assertions.assertEquals(24, uploadArgumentCaptor.getAllValues().size());
+        Assertions.assertEquals(48, uploadArgumentCaptor.getAllValues().size());
 
-        int expectedNullDid = 6;
+        int expectedNullDid = 12;
 
         for (byte[] uploadedDid : uploadArgumentCaptor.getAllValues()) {
 
@@ -225,158 +225,160 @@ public class DidTrustListServiceTest {
             checkJsonDocument(parsed);
 
             switch (parsed.getId()) {
-                case "did:web:abc":
-                    Assertions.assertEquals("did:web:abc", parsed.getController());
+                case "did:web:abc:trustlist":
+                    Assertions.assertEquals("did:web:abc:trustlist", parsed.getController());
                     Assertions.assertEquals(7, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
-                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
-                                             certCscaDeKid, certCscaDe, null, "did:web:abc");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
-                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
-                                             certCscaEuKid, certCscaEu, null, "did:web:abc");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
+                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
+                                             certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
+                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
+                                             certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist");
                     break;
-                case "did:web:abc:DCC:XEU:DSC":
-                    Assertions.assertEquals("did:web:abc:DCC:XEU:DSC", parsed.getController());
+                case "did:web:abc:trustlist:DCC:XEU:DSC":
+                    Assertions.assertEquals("did:web:abc:trustlist:DCC:XEU:DSC", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:XEU:DSC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
-                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:DCC:XEU:DSC");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU:DSC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
+                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC:XEU:DSC");
                     break;
-                case "did:web:abc:DCC":
-                    Assertions.assertEquals("did:web:abc:DCC", parsed.getController());
+                case "did:web:abc:trustlist:DCC":
+                    Assertions.assertEquals("did:web:abc:trustlist:DCC", parsed.getController());
                     Assertions.assertEquals(7, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
-                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:DCC");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
-                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:DCC");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
+                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
+                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC");
                     break;
-                case "did:web:abc:-:XEU":
-                    Assertions.assertEquals("did:web:abc:-:XEU", parsed.getController());
+                case "did:web:abc:trustlist:-:XEU":
+                    Assertions.assertEquals("did:web:abc:trustlist:-:XEU", parsed.getController());
                     Assertions.assertEquals(5, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:XEU#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
-                                             certCscaEuKid, certCscaEu, null, "did:web:abc:-:XEU");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:XEU#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
-                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:-:XEU");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
+                                             certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:-:XEU");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
+                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:-:XEU");
                     break;
-                case "did:web:abc:-:DEU":
-                    Assertions.assertEquals("did:web:abc:-:DEU", parsed.getController());
+                case "did:web:abc:trustlist:-:DEU":
+                    Assertions.assertEquals("did:web:abc:trustlist:-:DEU", parsed.getController());
                     Assertions.assertEquals(5, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:DEU#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
-                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:-:DEU");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:DEU#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
-                                             certCscaDeKid, certCscaDe, null, "did:web:abc:-:DEU");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
+                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:-:DEU");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
+                                             certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:-:DEU");
                     break;
-                case "did:web:abc:DCC:XEU:CSA":
-                    Assertions.assertEquals("did:web:abc:DCC:XEU:CSA", parsed.getController());
+                case "did:web:abc:trustlist:DCC:XEU:CSA":
+                    Assertions.assertEquals("did:web:abc:trustlist:DCC:XEU:CSA", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:XEU:CSA#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
-                                             certCscaEuKid, certCscaEu, null, "did:web:abc:DCC:XEU:CSA");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU:CSA#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
+                                             certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:DCC:XEU:CSA");
                     break;
-                case "did:web:abc:DCC:DEU:DSC":
-                    Assertions.assertEquals("did:web:abc:DCC:DEU:DSC", parsed.getController());
+                case "did:web:abc:trustlist:DCC:DEU:DSC":
+                    Assertions.assertEquals("did:web:abc:trustlist:DCC:DEU:DSC", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:DEU:DSC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
-                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:DCC:DEU:DSC");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU:DSC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
+                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC:DEU:DSC");
                     break;
-                case "did:web:abc:DCC:DEU:CSA":
-                    Assertions.assertEquals("did:web:abc:DCC:DEU:CSA", parsed.getController());
+                case "did:web:abc:trustlist:DCC:DEU:CSA":
+                    Assertions.assertEquals("did:web:abc:trustlist:DCC:DEU:CSA", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:DEU:CSA#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
-                                             certCscaDeKid, certCscaDe, null, "did:web:abc:DCC:DEU:CSA");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU:CSA#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
+                                             certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:DCC:DEU:CSA");
                     break;
-                case "did:web:abc:DCC:DEU":
-                    Assertions.assertEquals("did:web:abc:DCC:DEU", parsed.getController());
+                case "did:web:abc:trustlist:DCC:DEU":
+                    Assertions.assertEquals("did:web:abc:trustlist:DCC:DEU", parsed.getController());
                     Assertions.assertEquals(5, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:DEU#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
-                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:DCC:DEU");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:DEU#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
-                                             certCscaDeKid, certCscaDe, null, "did:web:abc:DCC:DEU");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
+                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC:DEU");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
+                                             certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:DCC:DEU");
                     break;
-                case "did:web:abc:DCC:XEU":
-                    Assertions.assertEquals("did:web:abc:DCC:XEU", parsed.getController());
+                case "did:web:abc:trustlist:DCC:XEU":
+                    Assertions.assertEquals("did:web:abc:trustlist:DCC:XEU", parsed.getController());
                     Assertions.assertEquals(5, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:XEU#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
-                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:DCC:XEU");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:XEU#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
-                                             certCscaEuKid, certCscaEu, null, "did:web:abc:DCC:XEU");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
+                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC:XEU");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
+                                             certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:DCC:XEU");
                     break;
-                case "did:web:abc:-:XEU:DSC":
-                    Assertions.assertEquals("did:web:abc:-:XEU:DSC", parsed.getController());
+                case "did:web:abc:trustlist:-:XEU:DSC":
+                    Assertions.assertEquals("did:web:abc:trustlist:-:XEU:DSC", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:XEU:DSC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
-                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:-:XEU:DSC");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU:DSC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
+                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:-:XEU:DSC");
                     break;
-                case "did:web:abc:-:DEU:DSC":
-                    Assertions.assertEquals("did:web:abc:-:DEU:DSC", parsed.getController());
+                case "did:web:abc:trustlist:-:DEU:DSC":
+                    Assertions.assertEquals("did:web:abc:trustlist:-:DEU:DSC", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:DEU:DSC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
-                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:-:DEU:DSC");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU:DSC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
+                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:-:DEU:DSC");
                     break;
-                case "did:web:abc:-:DEU:CSA":
-                    Assertions.assertEquals("did:web:abc:-:DEU:CSA", parsed.getController());
+                case "did:web:abc:trustlist:-:DEU:CSA":
+                    Assertions.assertEquals("did:web:abc:trustlist:-:DEU:CSA", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:DEU:CSA#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
-                                             certCscaDeKid, certCscaDe, null, "did:web:abc:-:DEU:CSA");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU:CSA#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
+                                             certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:-:DEU:CSA");
                     break;
-                case "did:web:abc:-:-:CSA":
-                    Assertions.assertEquals("did:web:abc:-:-:CSA", parsed.getController());
+                case "did:web:abc:trustlist:-:-:CSA":
+                    Assertions.assertEquals("did:web:abc:trustlist:-:-:CSA", parsed.getController());
                     Assertions.assertEquals(5, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:-:CSA#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
-                                             certCscaEuKid, certCscaEu, null, "did:web:abc:-:-:CSA");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:-:CSA#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
-                                             certCscaDeKid, certCscaDe, null, "did:web:abc:-:-:CSA");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:CSA#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
+                                             certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:-:-:CSA");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:CSA#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
+                                             certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:-:-:CSA");
                     break;
-                case "did:web:abc:-:-:DSC":
-                    Assertions.assertEquals("did:web:abc:-:-:DSC", parsed.getController());
+                case "did:web:abc:trustlist:-:-:DSC":
+                    Assertions.assertEquals("did:web:abc:trustlist:-:-:DSC", parsed.getController());
                     Assertions.assertEquals(5, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:-:DSC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
-                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:-:-:DSC");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:-:DSC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
-                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:-:-:DSC");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:DSC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
+                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:-:-:DSC");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:DSC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
+                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:-:-:DSC");
                     break;
-                case "did:web:abc:-:XEU:CSA":
-                    Assertions.assertEquals("did:web:abc:-:XEU:CSA", parsed.getController());
+                case "did:web:abc:trustlist:-:XEU:CSA":
+                    Assertions.assertEquals("did:web:abc:trustlist:-:XEU:CSA", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:-:XEU:CSA#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
-                                             certCscaEuKid, certCscaEu, null, "did:web:abc:-:XEU:CSA");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU:CSA#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
+                                             certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:-:XEU:CSA");
                     break;
-                case "did:web:abc:DCC:-:DSC":
-                    Assertions.assertEquals("did:web:abc:DCC:-:DSC", parsed.getController());
+                case "did:web:abc:trustlist:DCC:-:DSC":
+                    Assertions.assertEquals("did:web:abc:trustlist:DCC:-:DSC", parsed.getController());
                     Assertions.assertEquals(5, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:-:DSC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
-                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:DCC:-:DSC");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:-:DSC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
-                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:DCC:-:DSC");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:DSC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
+                                             certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC:-:DSC");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:DSC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
+                                             certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC:-:DSC");
                     break;
-                case "did:web:abc:DCC:-:CSA":
-                    Assertions.assertEquals("did:web:abc:DCC:-:CSA", parsed.getController());
+                case "did:web:abc:trustlist:DCC:-:CSA":
+                    Assertions.assertEquals("did:web:abc:trustlist:DCC:-:CSA", parsed.getController());
                     Assertions.assertEquals(5, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:-:CSA#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
-                                             certCscaDeKid, certCscaDe, null, "did:web:abc:DCC:-:CSA");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:DCC:-:CSA#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
-                                             certCscaEuKid, certCscaEu, null, "did:web:abc:DCC:-:CSA");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:CSA#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
+                                             certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:DCC:-:CSA");
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:CSA#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
+                                             certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:DCC:-:CSA");
                     break;
                 default:
+                    if (!parsed.getId().contains("trustlist-ref")) {
                         Assertions.fail("Unexpected Document in DID Collection! (" +  parsed.getId() + ")");
+                    }
             }
         }
     }
