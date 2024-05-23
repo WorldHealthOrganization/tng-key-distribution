@@ -60,7 +60,6 @@ jobs:
         run: |-
           gh release upload ${APP_VERSION} \
           --clobber \
-          ./target/openapi.json#openapi-${APP_VERSION}.json \
           ./target/generated-resources/licenses.xml#licenses-${APP_VERSION}.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
