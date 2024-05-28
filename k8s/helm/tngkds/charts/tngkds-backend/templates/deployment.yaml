@@ -21,27 +21,6 @@ spec:
       labels:
         {{- include "tngkds-backend.labels" . | nindent 8 }}
     spec:
-      initContainers:
-        - name: liquibase
-          image: "{{ .Values.liquibaseImage.repository }}:{{ .Values.liquibaseImage.tag }}"
-          command: ["/bin/sh", "-c"]
-          args:
-            - liquibase update --changeLogFile=db/changelog.yaml;
-          env:
-            - name: LIQUIBASE_COMMAND_URL
-            {{- if .Values.psql.asPod.enabled }}
-              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}.{{ .Release.Namespace }}.{{ .Values.psql.cluster }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
-            {{ else }}
-              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
-            {{ end -}}
-            - name: LIQUIBASE_COMMAND_USERNAME
-              value: {{ .Values.psql.username | quote }}
-            - name: LIQUIBASE_COMMAND_PASSWORD
-              value: {{ .Values.psql.password | quote }}
-            - name: LIQUIBASE_SEARCH_PATH
-              value: /liquibase
-            - name: LIQUIBASE_LOG_LEVEL
-              value: ERROR
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}
       containers:
@@ -62,21 +41,17 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: {{ .Values.spring.profile }}
             - name: SPRING_DATASOURCE_URL
-            {{- if .Values.psql.asPod.enabled }}
-              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}.{{ .Release.Namespace }}.{{ .Values.psql.cluster }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
-            {{ else }}
-              value: "jdbc:postgresql://{{ .Values.psql.serviceName }}:{{ .Values.psql.port }}/{{ .Values.psql.dbName }}"
-            {{ end -}} 
+              value: {{ .Values.db.url | quote }}
             - name: SPRING_DATASOURCE_DRIVERCLASSNAME
-              value: "org.postgresql.Driver"
+              value: {{ .Values.db.driverclass | quote }}
             - name: SPRING_DATASOURCE_JNDI_NAME
               value: "false"
             - name: SPRING_JPA_DATABASEPLATFORM
-              value: "org.hibernate.dialect.PostgreSQLDialect"
+              value: {{ .Values.db.plattform | quote }}
             - name: SPRING_DATASOURCE_USERNAME
-              value: {{ .Values.psql.username | quote }}
+              value: {{ .Values.db.username | quote }}
             - name: SPRING_DATASOURCE_PASSWORD
-              value: {{ .Values.psql.password | quote }}
+              value: {{ .Values.db.password | quote }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_PATH
               value: {{ .Values.gateway.connector.tls_trust_store.path }}
             - name: DGC_GATEWAY_CONNECTOR_TLS_TRUST_STORE_PASSWORD
@@ -100,10 +75,48 @@ spec:
             - name: DGC_GATEWAY_CONNECTOR_ENDPOINT
               value: {{ .Values.gateway.connector.endpoint }}
           {{- if .Values.did.enableDidGeneration }}
-          {{- range $name, $val := .Values.did }}
-            - name: DGC_{{ $name | upper }}
-              value: {{ $val | quote }}
-          {{- end }}
+            - name: DGC_DID_CRON
+              value: "{{ .Values.did.cron }}"
+            - name: DGC_DID_DIDUPLOADPROVIDER
+              value: "{{ .Values.did.didUploadProvider }}"
+            - name: DGC_DID_LOCALFILE_DIRECTORY
+              value: "{{ .Values.did.localFile.directory }}"
+            - name: DGC_DID_LOCALFILE_FILENAME
+              value: "{{ index .Values.did.localFile.filename }}"
+            - name: DGC_DID_GIT_WORKDIR
+              value: "{{ .Values.did.git.workdir }}"
+            - name: DGC_DID_GIT_PREFIX
+              value: "{{ .Values.did.git.prefix }}"
+            - name: DGC_DID_GIT_URL
+              value: "{{ .Values.did.git.url }}"
+            - name: DGC_DID_GIT_PAT
+              value: "{{ .Values.did.git.pat }}"
+            - name: DGC_DID_DIDSIGNINGPROVIDER
+              value: "{{ .Values.did.didSigningProvider }}"
+            - name: DGC_DID_LDPROOFVERIFICATIONMETHOD
+              value: "{{ index .Values.did "ld-proof-verification-method" }}"
+            - name: DGC_DID_DIDID
+              value: "{{ index .Values.did "did-id" }}"
+            - name: DGC_DID_TRUSTLISTPATH
+              value: "{{ index .Values.did "trust-list-path" }}"
+            - name: DGC_DID_TRUSTLISTREFPATH
+              value: "{{ index .Values.did "trust-list-ref-path" }}"
+            - name: DGC_DID_DIDCONTROLLER
+              value: "{{ index .Values.did "did-controller" }}"
+            - name: DGC_DID_TRUSTLISTIDPREFIX
+              value: "{{ index .Values.did "trust-list-id-prefix" }}"
+            - name: DGC_DID_TRUSTLISTCONTROLLEPREFIX
+              value: "{{ index .Values.did "trust-list-controller-prefix" }}"
+           {{- range $key, $value := .Values.did.virtualCountries }}
+            - name: DGC_DID_VIRTUALCOUNTRIES_{{ $key | toString | upper }}
+              value: "{{ $value }}"
+           {{- end }}
+            - name: DGC_DID_GROUPDENYLIST
+              value: "{{ join "," (index .Values.did "group-deny-list") }}"
+           {{- range $key, $value := index .Values.did "group-name-mapping" }}
+            - name: DGC_DID_GROUPNAMEMAPPING_{{ $key | toString | upper }}
+              value: "{{ $value }}"
+           {{- end }}
           {{- end }}
           volumeMounts:
             - name: secrets-jks

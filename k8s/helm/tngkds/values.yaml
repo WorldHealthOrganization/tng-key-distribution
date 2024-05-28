@@ -16,15 +16,12 @@ tngkds-backend:
     tag: <liquibase-image-tag(initcontainer)>
   path: /()(*)
   port: 8080
-  psql:
-    serviceName: postgresql-d01.postgres.database.azure.com
-    port: 5432
-    dbName: kdsdb
-    cluster: svc.cluster.local # will be used if db is running as Pod
-    username:
-    password:
-    asPod:
-      enabled: false # run db as Service or Pod,set in conjunction with tngkds-postgres
+  db:
+    driverclass: org.h2.Driver
+    plattform: org.hibernate.dialect.H2Dialect
+    url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
+    username: sa
+    password: ''
   gateway:
     connector:
       enabled: true
