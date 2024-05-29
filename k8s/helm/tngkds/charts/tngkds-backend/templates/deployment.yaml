@@ -82,7 +82,7 @@ spec:
             - name: DGC_DID_LOCALFILE_DIRECTORY
               value: "{{ .Values.did.localFile.directory }}"
             - name: DGC_DID_LOCALFILE_FILENAME
-              value: "{{ index .Values.did.localFile.filename }}"
+              value: "{{ .Values.did.localFile.filename }}"
             - name: DGC_DID_GIT_WORKDIR
               value: "{{ .Values.did.git.workdir }}"
             - name: DGC_DID_GIT_PREFIX
