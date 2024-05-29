@@ -146,10 +146,10 @@ did:
   enableDidGeneration: true
   didUploadProvider: local-file
   localFile:
-    directory: ./kdsgitworkdir/tng-cdn-dev/v2.0.0
+    directory: /tmp/kdsgitworkdir/tng-cdn-dev/v2.0.0
     file-name: did.json
   git:
-    workdir: ./kdsgituploader # oon clonind will checkout e.g. tng-cdn-dev
+    workdir: /tmp/kdsgituploader # oon clonind will checkout e.g. tng-cdn-dev
     prefix: v2.0.0 #for copy action into git workdir from local file exporter path
     url: https://github.com/WorldHealthOrganization/tng-cdn-dev
     pat: <git did pat by secret> #TODO: set by secret
