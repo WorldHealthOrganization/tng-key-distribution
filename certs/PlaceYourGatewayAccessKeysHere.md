@@ -51,7 +51,7 @@ This will result in a KeyStore (P12) containing the previously generated private
 ```yaml
 dgc:
   did:
-    didUploadProvider: local-file
+    didSigningProvider: local-keystore
     localKeyStore:
       alias: did-signer
       password: secure-password
