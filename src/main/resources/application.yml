@@ -63,6 +63,7 @@ dgc:
         type: did
         url: did:web:tng-cdn-dev.who.int:trustlist
         signature: No-Signature # required because of DB restrictions
+        domain: DCC
     enable-trusted-issuer-resolving: false
   gateway:
     connector:
@@ -111,6 +112,7 @@ dgc:
       XB: XXB
       XO: XXO
       XL: XCL
+      WH: WHO
     group-deny-list:
       - AUTHENTICATION
       - UPLOAD

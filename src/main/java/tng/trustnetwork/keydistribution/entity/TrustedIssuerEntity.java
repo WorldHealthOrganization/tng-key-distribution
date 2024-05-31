@@ -106,6 +106,12 @@ public class TrustedIssuerEntity {
     @Column(name = "signature", nullable = false, length = 6000)
     String signature;
 
+    /**
+     * The domain of the trustedIssuer.
+     */
+    @Column(name = "domain")
+    private String domain;
+
     public enum UrlType {
         HTTP,
         DID

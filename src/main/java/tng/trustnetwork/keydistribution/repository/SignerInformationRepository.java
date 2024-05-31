@@ -44,10 +44,12 @@ public interface SignerInformationRepository extends JpaRepository<SignerInforma
     List<SignerInformationEntity> getBySubjectHashIsAndCountryIsAndDomainIs(
         String subjectHash, String country, String domain);
 
-    @Query("SELECT DISTINCT s.country FROM SignerInformationEntity s")
+    @Query("SELECT DISTINCT s.country FROM SignerInformationEntity s"
+        + " UNION SELECT DISTINCT t.country FROM TrustedIssuerEntity t")
     List<String> getCountryList();
 
-    @Query("SELECT DISTINCT s.domain FROM SignerInformationEntity s")
+    @Query("SELECT DISTINCT s.domain FROM SignerInformationEntity s"
+        + " UNION SELECT DISTINCT t.domain FROM TrustedIssuerEntity t")
     List<String> getDomainsList();
 
     @Query("SELECT DISTINCT s.group FROM SignerInformationEntity s")
