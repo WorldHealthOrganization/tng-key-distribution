@@ -8,12 +8,17 @@ spring:
     url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
     username: sa
     password: ''
+  jackson:
+    deserialization:
+      read-unknown-enum-values-using-default-value: true
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: validate
   liquibase:
-    change-log: classpath:db/changelog.xml
+    enabled: true
+    change-log: classpath:db/changelog.yaml
   h2:
     console:
       enabled: true
@@ -37,12 +42,6 @@ management:
 info:
   name: ${spring.application.name}
   profiles: ${spring.profiles.active}
-springdoc:
-  api-docs:
-    path: /api/docs
-    enabled: true
-  swagger-ui:
-    path: /swagger
 universal:
   resolver: "https://dev.uniresolver.io/1.0/identifiers"
 dgc:
@@ -58,21 +57,62 @@ dgc:
     enabled: true
     timeInterval: 1800000
     lockLimit: 3600000
+    static-trusted-issuer:
+      - name: WHO Trustlist (DEV)
+        country: WH
+        type: did
+        url: did:web:tng-cdn-dev.who.int:trustlist
+        signature: No-Signature # required because of DB restrictions
+    enable-trusted-issuer-resolving: false
   gateway:
     connector:
-      enabled: false
-#      endpoint: ${DGC_GATEWAY_CONNECTOR_ENDPOINT}
-#      proxy:
-#        enabled: false
-#      max-cache-age: 300
-#      tls-trust-store:
-#        password: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD}
-#        path: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH}
-#      tls-key-store:
-#        alias: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_ALIAS}
-#        password: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD}
-#        path: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH}
-#      trust-anchor:
-#        alias: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS}
-#        password: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD}
-#        path: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH}
+      enabled: true
+      endpoint: ${DGC_GATEWAY_CONNECTOR_ENDPOINT}
+      proxy:
+        enabled: false
+      max-cache-age: 300
+      tls-trust-store:
+        password: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD}
+        path: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH}
+      tls-key-store:
+        alias: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_ALIAS}
+        password: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD}
+        path: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH}
+      trust-anchor:
+        alias: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS}
+        password: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD}
+        path: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH}
+      enable-ddcc-support: true
+  did:
+    cron: "0 0 2 * * *"
+    enableDidGeneration: true
+    didUploadProvider: local-file
+    localFile:
+      directory: <root-directory-of-trustlist>
+      file-name: did.json
+    git:
+      workdir: <root-of-cloned-git-repo>
+      prefix: <prefix-dir-in-git-repo>
+      url: <git-repo-url>
+      pat: <personal-access-token-for-git>
+    didSigningProvider: dummy
+    ld-proof-verification-method: did:web:dummy.net
+    did-id: did:web:abc
+    trust-list-path: trustlist
+    trust-list-ref-path: trustlist-ref
+    did-controller: did:web:def
+    trust-list-id-prefix: did:web:abc
+    trust-list-controller-prefix: did:web:abc
+    contextMapping:
+      "[https://www.w3.org/ns/did/v1]": did_v1.json
+      "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
+    virtualCountries:
+      XA: XXA
+      XB: XXB
+      XO: XXO
+      XL: XCL
+    group-deny-list:
+      - AUTHENTICATION
+      - UPLOAD
+    group-name-mapping:
+      CSCA: SCA

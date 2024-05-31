@@ -88,12 +88,13 @@ tolerations: []
 
 affinity: {}
 
-# Postgres
-psql:
-  serviceName: postgres
-  port: 5432
-  dbName: postgres
-  cluster: svc.cluster.local
+# H2
+db:
+  driverclass: org.h2.Driver
+  plattform: org.hibernate.dialect.H2Dialect
+  url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
+  username: sa
+  password: ''
 
 # ConfigMap
 configMap:

@@ -1,12 +1,16 @@
-### How to populate the keystores and truststores, trustanchor files in k8s cluster  
+### How to populate the keystores and truststores, trustanchor files in k8s cluster
+
 A general approach how to secrets are mounted volumes can be found in the official [documentation](https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/#create-a-pod-that-has-access-to-the-secret-data-through-a-volume)  
-1.) generate the keystore, truststore trust_anchor  as described in [PlaceYourGatewayAccessKeysHere.md](PlaceYourGatewayAccessKeysHere.md)  
-2.) combine the resulting files in a single secret with  
+1.) generate the keystore, truststore trust_anchor as described in [PlaceYourGatewayAccessKeysHere.md](PlaceYourGatewayAccessKeysHere.md)  
+2.) combine the resulting files in a single secret with
+
 ```(bash)
-kubectl create secret generic mtls_secret --dry-run=client -o yaml --from-file=tls_key_store.p12 --from-file=tng_tls_server_truststore.p12 --from-file=trustanchor_store.jks > mtls_secret.yaml
-kubectl create secret generic <secret-name> --dry-run=client -o yaml --from-file=<file1.p12> --from-file=<file2>.p12 --from-file=<file3.jks> > combined_tls_secret.yaml
+kubectl create secret generic mtls-secret --dry-run=client --namespace=kds -o yaml --from-file=tls_key_store.p12 --from-file=tng_tls_server_truststore.p12 --from-file=trustanchor_store.jks > mtls_secret.yaml
+kubectl create secret generic <secret-name> --dry-run=client --namespace=<namespace-of-the-secret> -o yaml --from-file=<file1.p12> --from-file=<file2>.p12 --from-file=<file3.jks> > combined_tls_secret.yaml
 ```
+
 this will result in a yaml file containing the base64 encoded file contents of that three files
+
 ```(json)
 apiVersion: v1
 data:
@@ -16,16 +20,20 @@ data:
 kind: Secret
 metadata:
   creationTimestamp: null
-  name: mtls_secret
+  name: mtls-secret
 ```
+
 This file then can be temporarily included in your helm charts or directly applied to your cluster with
+
 ```(shell)
-kubectl apply -f mtls_secret.yaml # will apply the secret to current context
-```  
+kubectl apply -f mtls-secret.yaml # will apply the secret to current context
+```
+
 **Note that your secrets with keystores/truststores contain sensible data. Keep them in save place**
 
-In the deployment of your helm chart include the the secret as volumes in the template spec
-````(helm)
+In the deployment of your helm chart include the secret as volumes in the template spec
+
+```(helm)
 spec:
   template:
     spec:
@@ -40,12 +48,14 @@ spec:
                 path: trustanchor_store.jks
               - key: tng_tls_server_truststore.p12
                 path: tng_tls_server_truststore.p12
-````
+```
+
 The items array is optional as long as the keynames reflect the filenames and all keys in the secret
 shall be mapped to files
 
 The according volume mounts are defined in the container section
-````(helm)
+
+```(helm)
 spec:
   templates:
     spec:
@@ -54,5 +64,5 @@ spec:
           - name: secrets-jks
             mountPath: /certs
             readOnly: true
-````
+```
 

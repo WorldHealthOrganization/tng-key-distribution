@@ -10,13 +10,18 @@ image:
   repository: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.0.1-d890889"  #"0.0.1-2840d04"
+  tag: "0.0.1-d890889" #"0.0.1-2840d04"
 
 #kubectl -n <k8s-namespace> create secret docker-registry <k8s-docker-registry-secret-name> --docker-server=ghcr.io --docker-username=<github-username> --docker-password=<github-personal-access-token>  --docker-email=<email-address> -o yaml
 #kubectl -n kds create secret docker-registry tng-distribution-pull-secret --docker-server=ghcr.io --docker-username=anonymous --docker-password=<PAT>  --docker-email=anonymous@example.com -o yaml
 imagePullSecrets: tng-distribution-pull-secret
 nameOverride: ""
 fullnameOverride: ""
+
+# Liquibase
+liquibaseImage:
+  repository: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution-initcontainer
+  tag: <liquibase-image-tag>
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -29,10 +34,12 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -52,7 +59,8 @@ service:
 ingress:
   enabled: false
   className: ""
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -65,7 +73,8 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -90,18 +99,19 @@ tolerations: []
 
 affinity: {}
 
-# Postgres
-psql:
-  serviceName: postgres
-  port: 5432
-  dbName: postgres
-  cluster: svc.cluster.local
+# H2
+db:
+  driverclass: org.h2.Driver
+  plattform: org.hibernate.dialect.H2Dialect
+  url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
+  username: sa
+  password: ''
 
 # ConfigMap
-configMap:
-  data:
-    host: localhost
-    dbName: postgres
+# configMap:
+#   data:
+#     host: localhost
+#     dbName: postgres
 
 # Spring
 spring:
@@ -111,7 +121,7 @@ spring:
 server:
   port: 8080
 
-
+# Smart TN Gateway
 gateway:
   connector:
     enabled: true
@@ -131,3 +141,36 @@ gateway:
       alias: <alias of the trust_anchor chert>
       password: <password to open trust_anchor_store>
       path: <full path of the trust_anchor_store>
+did:
+  cron: "*/10 * * * * *"
+  enableDidGeneration: true
+  didUploadProvider: local-file
+  localFile:
+    directory: /tmp/kdsgitworkdir/tng-cdn-dev/v2.0.0
+    file-name: did.json
+  git:
+    workdir: /tmp/kdsgituploader # oon clonind will checkout e.g. tng-cdn-dev
+    prefix: v2.0.0 #for copy action into git workdir from local file exporter path
+    url: https://github.com/WorldHealthOrganization/tng-cdn-dev
+    pat: <git did pat by secret> #TODO: set by secret
+  didSigningProvider: dummy
+  ld-proof-verification-method: did:web:dummy.net
+  did-id: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2.0.0
+  trust-list-path: trustlist
+  trust-list-ref-path: trustlist-ref
+  did-controller: did:web:def
+  trust-list-id-prefix: did:web:abc
+  trust-list-controller-prefix: did:web:abc
+  contextMapping:
+    "[https://www.w3.org/ns/did/v1]": did_v1.json
+    "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
+  virtualCountries:
+    XA: XXA
+    XB: XXB
+    XO: XXO
+    XL: XCL
+    EU: XEU
+  group-deny-list:
+    - UPLOAD
+  group-name-mapping:
+    CSCA: SCA

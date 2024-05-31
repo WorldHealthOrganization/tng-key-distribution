@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2022 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 
-public interface TrustedIssuerRepository extends JpaRepository<TrustedIssuerEntity, String> {
+public interface TrustedIssuerRepository extends JpaRepository<TrustedIssuerEntity, Long> {
 
-    void deleteAllByEtag(String etag);
-
-    List<TrustedIssuerEntity> findAllByEtag(String etag);
+    List<TrustedIssuerEntity> findAllByUrlTypeIs(TrustedIssuerEntity.UrlType urlType);
 }

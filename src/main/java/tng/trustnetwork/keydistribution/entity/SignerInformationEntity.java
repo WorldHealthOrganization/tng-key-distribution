@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public class SignerInformationEntity {
      * Base64 encoded certificate raw data.
      */
     @Column(name = "raw_data", nullable = false, length = 4096)
-    String rawData;
+    private String rawData;
 
     /**
      * The country code of the cert.
@@ -74,23 +74,21 @@ public class SignerInformationEntity {
     private String country;
 
     /**
-     * The thumbprint of the cert.
+     * The domain of the cert.
      */
-    @Column(name = "thumbprint")
-    private String thumbprint;
+    @Column(name = "domain")
+    private String domain;
 
     /**
-     * Timestamp of the last record update.
+     * The group of the cert.
      */
-    @Column(name = "updated_at", nullable = false)
-    private ZonedDateTime updatedAt = ZonedDateTime.now();
+    @Column(name = "groupx")
+    private String group;
 
     /**
-     * Marks the record as deleted.
+     * SHA-256 Hash-Value of Certificate Subject (hex).
      */
-    @Column(name = "deleted")
-    private boolean deleted = false;
-
-
+    @Column(name = "subject_hash")
+    private String subjectHash;
 
 }

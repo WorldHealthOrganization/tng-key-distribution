@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-trusted-issuer-table
+      author: admin
+      changes:
+        - createTable:
+            tableName: trusted_issuer
+            columns:
+              - column:
+                  autoIncrement: true
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_trusted_issuer
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: country
+                  type: varchar(2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: url
+                  type: varchar(1024)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(512)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: url_type
+                  type: varchar(25)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: thumbprint
+                  type: varchar(64)
+              - column:
+                  name: ssl_public_key
+                  type: varchar(2048)
+              - column:
+                  name: key_storage_type
+                  type: varchar(128)
+              - column:
+                  name: signature
+                  type: varchar(6000)
+                  constraints:
+                    nullable: false

@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,41 @@
 
 package tng.trustnetwork.keydistribution.service;
 
-public interface SignerCertificateDownloadService {
+import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
+import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
+import eu.europa.ec.dgc.gateway.connector.model.TrustedCertificateTrustListItem;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+/**
+ * A service to download the signer certificates from the digital green certificate gateway.
+ */
+@Slf4j
+@RequiredArgsConstructor
+@Component
+public class SignerCertificateDownloadService {
+
+    private final DgcGatewayDownloadConnector dgcGatewayConnector;
+
+    private final SignerInformationService signerInformationService;
 
     /**
-     * Synchronises the signer certificates with the gateway.
+     * Download TrustedCertificates from Gateway.
      */
-    void downloadCertificates();
+    @Scheduled(fixedDelayString = "${dgc.certificatesDownloader.timeInterval}")
+    @SchedulerLock(name = "SignerCertificateDownloadService_downloadCertificates", lockAtLeastFor = "PT0S",
+        lockAtMostFor = "${dgc.certificatesDownloader.lockLimit}")
+    public void downloadCertificates() {
+
+        log.info("Certificates download started");
+
+        List<TrustedCertificateTrustListItem> trustedCerts = dgcGatewayConnector.getDdccTrustedCertificates();
+        signerInformationService.updateTrustedCertsList(trustedCerts);
+
+        log.info("Certificates download finished");
+    }
 }

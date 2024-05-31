@@ -2,7 +2,7 @@
  * ---license-start
  * WorldHealthOrganization / tng-key-distribution
  * ---
- * Copyright (C) 2021 T-Systems International GmbH and all other contributors
+ * Copyright (C) 2021 - 2024 T-Systems International GmbH and all other contributors
  * ---
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,43 +20,36 @@
 
 package tng.trustnetwork.keydistribution.repository;
 
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
 
 public interface SignerInformationRepository extends JpaRepository<SignerInformationEntity, Long> {
 
-    Optional<SignerInformationEntity> findFirstByIdIsNotNullOrderByIdAsc();
+    List<SignerInformationEntity> getByCountryIs(String country);
 
-    Optional<SignerInformationEntity> findFirstByIdGreaterThanOrderByIdAsc(Long id);
+    List<SignerInformationEntity> getByDomainIs(String domain);
 
-    List<SignerInformationEntity> findAllByOrderByIdAsc();
+    List<SignerInformationEntity> getByDomainIsAndCountryIs(String domain, String country);
 
-    @Modifying
-    @Query("UPDATE SignerInformationEntity s SET s.deleted = true WHERE s.kid not in :kids")
-    void setDeletedByKidsNotIn(@Param("kids") List<String> kids);
+    List<SignerInformationEntity> getByCountryIsAndGroupIs(String country, String group);
 
-    @Modifying
-    @Query("UPDATE SignerInformationEntity s SET s.deleted = true")
-    void setAllDeleted();
+    List<SignerInformationEntity> getByDomainIsAndGroupIs(String domain, String group);
 
-    void deleteByKidNotIn(List<String> kids);
+    List<SignerInformationEntity> getByGroupIs(String group);
 
+    List<SignerInformationEntity> getByDomainIsAndCountryIsAndGroupIs(String domain, String country, String group);
 
-    List<SignerInformationEntity> findAllByDeletedOrderByIdAsc(boolean deleted);
+    List<SignerInformationEntity> getBySubjectHashIsAndCountryIsAndDomainIs(
+        String subjectHash, String country, String domain);
 
-    void deleteByKidIn(List<String> kids);
+    @Query("SELECT DISTINCT s.country FROM SignerInformationEntity s")
+    List<String> getCountryList();
 
-    List<SignerInformationEntity> findAllByUpdatedAtAfterOrderByIdAsc(ZonedDateTime ifModifiedDateTime);
+    @Query("SELECT DISTINCT s.domain FROM SignerInformationEntity s")
+    List<String> getDomainsList();
 
-    List<SignerInformationEntity> findAllByKidIn(List<String> kids);
-
-    Optional<SignerInformationEntity> findFirstByIdIsNotNullAndDeletedOrderByIdAsc(boolean deleted);
-
-    Optional<SignerInformationEntity> findFirstByIdGreaterThanAndDeletedOrderByIdAsc(Long resumeToken, boolean deleted);
+    @Query("SELECT DISTINCT s.group FROM SignerInformationEntity s")
+    List<String> getGroupList();
 }
