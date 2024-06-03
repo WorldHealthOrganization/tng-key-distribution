@@ -107,6 +107,12 @@ spec:
               value: "{{ index .Values.did "trust-list-id-prefix" }}"
             - name: DGC_DID_TRUSTLISTCONTROLLEPREFIX
               value: "{{ index .Values.did "trust-list-controller-prefix" }}"
+            - name: DGC_DID_LOCALKEYSTORE_ALIAS
+              value: {{ .Values.did.localKeyStore.alias | quote }}
+            - name: DGC_DID_LOCALKEYSTORE_PASSWORD
+              value: {{ .Values.did.localKeyStore.password  | quote }}
+            - name: DGC_DID_LOCALKEYSTORE_PATH
+              value: {{ .Values.did.localKeyStore.path | quote }}
            {{- range $key, $value := .Values.did.virtualCountries }}
             - name: DGC_DID_VIRTUALCOUNTRIES_{{ $key | toString | upper }}
               value: "{{ $value }}"
@@ -121,6 +127,9 @@ spec:
           volumeMounts:
             - name: secrets-jks
               mountPath: /certs
+              readOnly: true
+            - name: did-signing
+              mountPath: /didcerts
               readOnly: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -147,3 +156,10 @@ spec:
                 path: trustanchor_store.jks
               - key: tng_tls_server_truststore.p12
                 path: tng_tls_server_truststore.p12
+        - name: did-signing
+          secret:
+            secretName: did-signer-secret
+            items:
+              - key: did-signer.p12
+                path: did-signer.p12
+

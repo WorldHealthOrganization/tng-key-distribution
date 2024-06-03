@@ -158,7 +158,7 @@ did:
   did-id: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2.0.0
   trust-list-path: trustlist
   trust-list-ref-path: trustlist-ref
-  did-controller: did:web:def
+  did-controller: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2.0.0
   trust-list-id-prefix: did:web:abc
   trust-list-controller-prefix: did:web:abc
   contextMapping:
