@@ -24,6 +24,7 @@ if isinstance(public_key, ec.EllipticCurvePublicKey):
     y = public_key.public_numbers().y
 
 # Convert the x and y coordinates to base64url format
+# using base64url without padding as in https://datatracker.ietf.org/doc/html/rfc7515#appendix-C
 x = base64.urlsafe_b64encode(x.to_bytes((x.bit_length() + 7) // 8, 'big')).decode().rstrip('=')
 y = base64.urlsafe_b64encode(y.to_bytes((y.bit_length() + 7) // 8, 'big')).decode().rstrip('=')
 
@@ -43,7 +44,7 @@ did_document = {
     "controller": did_controller,
     "verificationMethod": [
         {
-            "id": did_id + "#%2FrcyDdJNU%2FA%3D",
+            "id": did_id,
             "type": "JsonWebKey2020",
             "controller": did_controller,
             "publicKeyJwk": {
