@@ -48,9 +48,6 @@ did_document = {
             "controller": did_controller,
             "publicKeyJwk": {
                 "kty": "EC",
-                "x5c": [
-                    public_key_pem_b64
-                ],
                 "crv": "P-256",
                 "x": x,
                 "y": y
