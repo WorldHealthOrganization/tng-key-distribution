@@ -27,4 +27,11 @@ import tng.trustnetwork.keydistribution.entity.TrustedIssuerEntity;
 public interface TrustedIssuerRepository extends JpaRepository<TrustedIssuerEntity, Long> {
 
     List<TrustedIssuerEntity> findAllByUrlTypeIs(TrustedIssuerEntity.UrlType urlType);
+
+    List<TrustedIssuerEntity> findAllByUrlTypeIsAndDomainIs(TrustedIssuerEntity.UrlType urlType, String domain);
+
+    List<TrustedIssuerEntity> findAllByUrlTypeIsAndCountryIs(TrustedIssuerEntity.UrlType urlType, String country);
+
+    List<TrustedIssuerEntity> findAllByUrlTypeIsAndDomainIsAndCountryIs(
+        TrustedIssuerEntity.UrlType urlType, String domain, String country);
 }

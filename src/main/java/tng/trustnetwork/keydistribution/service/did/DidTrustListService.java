@@ -170,7 +170,7 @@ public class DidTrustListService {
             domain -> didSpecifications.add(new DidSpecification(
                 List.of(domain),
                 () -> signerInformationService.getCertificatesByDomain(domain),
-                trustedIssuerService::getAllDid)));
+                () -> trustedIssuerService.getAllDid(domain, null))));
 
         // Add all Country and Domain specific DID
         domains.forEach(
@@ -178,7 +178,7 @@ public class DidTrustListService {
                 country -> didSpecifications.add(new DidSpecification(
                     List.of(domain, getParticipantCode(country)),
                     () -> signerInformationService.getCertificatesByCountryDomain(country, domain),
-                    trustedIssuerService::getAllDid)
+                    () -> trustedIssuerService.getAllDid(domain, country))
                 )));
 
         // Add all Domain independent and country specific DID
@@ -186,7 +186,7 @@ public class DidTrustListService {
             country -> didSpecifications.add(new DidSpecification(
                 List.of(WILDCARD_CHAR, getParticipantCode(country)),
                 () -> signerInformationService.getCertificatesByCountry(country),
-                trustedIssuerService::getAllDid)));
+                () -> trustedIssuerService.getAllDid(null, country))));
 
         // Add all domain, country and group specific did
         domains.forEach(
@@ -195,7 +195,7 @@ public class DidTrustListService {
                     group -> didSpecifications.add(new DidSpecification(
                         List.of(domain, getParticipantCode(country), getMappedGroupName(group)),
                         () -> signerInformationService.getCertificatesByDomainParticipantGroup(domain, country, group),
-                        trustedIssuerService::getAllDid)))));
+                        Collections::emptyList)))));
 
         // Add all country and group specific did
         countries.forEach(
@@ -203,7 +203,7 @@ public class DidTrustListService {
                 group -> didSpecifications.add(new DidSpecification(
                     List.of(WILDCARD_CHAR, getParticipantCode(country), getMappedGroupName(group)),
                     () -> signerInformationService.getCertificatesByGroupCountry(group, country),
-                    trustedIssuerService::getAllDid))));
+                    Collections::emptyList))));
 
         // Add all domain and group specific did
         domains.forEach(
@@ -211,14 +211,14 @@ public class DidTrustListService {
                 group -> didSpecifications.add(new DidSpecification(
                     List.of(domain, WILDCARD_CHAR, getMappedGroupName(group)),
                     () -> signerInformationService.getCertificatesByDomainGroup(domain, group),
-                    trustedIssuerService::getAllDid))));
+                    Collections::emptyList))));
 
         // Add all group specific did
         groups.forEach(
             group -> didSpecifications.add(new DidSpecification(
             List.of(WILDCARD_CHAR, WILDCARD_CHAR, getMappedGroupName(group)),
                 () -> signerInformationService.getCertificatesByGroup(group),
-                trustedIssuerService::getAllDid)));
+                Collections::emptyList)));
 
         Map<DidSpecification, String> didDocuments = new HashMap<>();
         didSpecifications.forEach(specification -> didDocuments
@@ -255,7 +255,7 @@ public class DidTrustListService {
         List<SignerInformationEntity> signerInformationEntities = filterEntities(specification.getCertSupplier().get());
         List<TrustedIssuerEntity> trustedIssuerEntities = specification.getIssuerSupplier().get();
 
-        if (signerInformationEntities.isEmpty() || trustedIssuerEntities.isEmpty()) {
+        if (signerInformationEntities.isEmpty() && trustedIssuerEntities.isEmpty()) {
             log.info("Empty DID for path {}", specification.getPath());
             return null;
         }
