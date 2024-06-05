@@ -21,11 +21,8 @@
 package tng.trustnetwork.keydistribution.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import eu.europa.ec.dgc.gateway.connector.mapper.TrustedIssuerMapper;
 import eu.europa.ec.dgc.gateway.connector.model.TrustedIssuer;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -57,7 +54,28 @@ public class TrustedIssuerService {
      */
     public List<TrustedIssuerEntity> getAllDid() {
 
-        return trustedIssuerRepository.findAllByUrlTypeIs(TrustedIssuerEntity.UrlType.DID);
+        return getAllDid(null, null);
+    }
+
+    /**
+     * Method to query the db for DID documents.
+     *
+     * @param domain filter request by domain - set to null to omit this filter
+     * @param country filter request by country - set to null to omit this filter
+     * @return List holding the found trusted issuers.
+     */
+    public List<TrustedIssuerEntity> getAllDid(String domain, String country) {
+
+        if (domain != null && country != null) {
+            return trustedIssuerRepository.findAllByUrlTypeIsAndDomainIsAndCountryIs(
+                TrustedIssuerEntity.UrlType.DID, domain, country);
+        } else if (domain == null && country != null) {
+            return trustedIssuerRepository.findAllByUrlTypeIsAndCountryIs(TrustedIssuerEntity.UrlType.DID, country);
+        } else if (domain != null && country == null) {
+            return trustedIssuerRepository.findAllByUrlTypeIsAndDomainIs(TrustedIssuerEntity.UrlType.DID, domain);
+        } else {
+            return trustedIssuerRepository.findAllByUrlTypeIs(TrustedIssuerEntity.UrlType.DID);
+        }
     }
 
     /**

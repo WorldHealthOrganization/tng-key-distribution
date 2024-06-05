@@ -47,6 +47,7 @@ public class TrustedIssuerTestHelper {
         trustedIssuer.setThumbprint("thumbprint");
         trustedIssuer.setKeyStorageType("JWKS");
         trustedIssuer.setSignature("sig");
+        trustedIssuer.setDomain("DCC");
 
         return trustedIssuer;
     }
