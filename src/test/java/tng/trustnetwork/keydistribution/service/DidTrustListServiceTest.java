@@ -511,6 +511,7 @@ public class DidTrustListServiceTest {
         Assertions.assertEquals(parentDidId, jsonNode.get("controller"));
         Assertions.assertEquals(parentDidId + "#" + URLEncoder.encode(kid, StandardCharsets.UTF_8),
                                 jsonNode.get("id"));
+        Assertions.assertEquals(URLEncoder.encode(kid, StandardCharsets.UTF_8), jsonNode.get("kid"));
 
         LinkedHashMap<?, ?> publicKeyJwk = (LinkedHashMap<?, ?>) jsonNode.get("publicKeyJwk");
 
