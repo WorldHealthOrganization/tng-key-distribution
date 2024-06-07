@@ -37,6 +37,8 @@ public class DidTrustListEntry {
 
     private String id;
 
+    private String kid;
+
     private String type;
 
     private String controller;

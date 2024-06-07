@@ -360,6 +360,7 @@ public class DidTrustListService {
         trustListEntry.setType("JsonWebKey2020");
         trustListEntry.setId(specification.getEntryId(
             URLEncoder.encode(signerInformationEntity.getKid(), StandardCharsets.UTF_8)));
+        trustListEntry.setKid(URLEncoder.encode(signerInformationEntity.getKid(), StandardCharsets.UTF_8));
         trustListEntry.setController(specification.getDocumentId(false));
         trustListEntry.setPublicKeyJwk(publicKeyJwk);
 
