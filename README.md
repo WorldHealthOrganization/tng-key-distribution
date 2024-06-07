@@ -30,7 +30,7 @@ The TNG Key Distribution Service is part of the national backends of the partici
 
 ### Prerequisites
 
-- [Open JDK 17](https://openjdk.java.net)
+- [Open JDK 21](https://openjdk.java.net)
 - [Maven](https://maven.apache.org)
 - [Docker](https://www.docker.com)
 - An installation of the [TNG](https://github.com/worldhealthorganization/smart-trust-network-gateway)
