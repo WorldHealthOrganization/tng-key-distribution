@@ -152,8 +152,12 @@ did:
     workdir: /tmp/kdsgituploader # oon clonind will checkout e.g. tng-cdn-dev
     prefix: v2.0.0 #for copy action into git workdir from local file exporter path
     url: https://github.com/WorldHealthOrganization/tng-cdn-dev
-    pat: <git did pat by secret> #TODO: set by secret
-  didSigningProvider: dummy
+    pat: <git did pat by secret>
+  didSigningProvider: local-keystore
+  localKeyStore:
+    alias: did-signer
+    password: secure-password
+    path: <full path of the did-signer.p12>
   ld-proof-verification-method: did:web:dummy.net
   did-id: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2.0.0
   trust-list-path: trustlist
