@@ -28,13 +28,6 @@ if isinstance(public_key, ec.EllipticCurvePublicKey):
 x = base64.urlsafe_b64encode(x.to_bytes((x.bit_length() + 7) // 8, 'big')).decode().rstrip('=')
 y = base64.urlsafe_b64encode(y.to_bytes((y.bit_length() + 7) // 8, 'big')).decode().rstrip('=')
 
-# Convert the public key to PEM format and encode it in base64
-public_key_pem = public_key.public_bytes(
-    encoding=serialization.Encoding.PEM,
-    format=serialization.PublicFormat.SubjectPublicKeyInfo
-)
-public_key_pem_b64 = base64.b64encode(public_key_pem).decode()
-
 did_document = {
     "@context": [
         "https://www.w3.org/ns/did/v1",
