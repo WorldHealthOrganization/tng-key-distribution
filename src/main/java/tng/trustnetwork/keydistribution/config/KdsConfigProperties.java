@@ -101,9 +101,6 @@ public class KdsConfigProperties {
         private String trustListPath;
         private String trustListRefPath;
 
-        private String trustListIdPrefix;
-        private String trustListControllerPrefix;
-
         private String ldProofVerificationMethod;
         private String ldProofDomain;
 
