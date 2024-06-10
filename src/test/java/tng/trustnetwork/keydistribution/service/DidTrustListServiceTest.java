@@ -511,7 +511,7 @@ public class DidTrustListServiceTest {
         Assertions.assertEquals(parentDidId, jsonNode.get("controller"));
         Assertions.assertEquals(parentDidId + "#" + URLEncoder.encode(kid, StandardCharsets.UTF_8),
                                 jsonNode.get("id"));
-        Assertions.assertEquals(URLEncoder.encode(kid, StandardCharsets.UTF_8), jsonNode.get("kid"));
+
 
         LinkedHashMap<?, ?> publicKeyJwk = (LinkedHashMap<?, ?>) jsonNode.get("publicKeyJwk");
 
@@ -523,6 +523,7 @@ public class DidTrustListServiceTest {
             Assertions.assertEquals(CertificateTestUtils.SignerType.EC.getSigningAlgorithm(),
                                     publicKeyJwk.get("kty").toString());
             Assertions.assertEquals("P-256", publicKeyJwk.get("crv").toString());
+            Assertions.assertEquals(URLEncoder.encode(kid, StandardCharsets.UTF_8), publicKeyJwk.get("kid"));
         } else {
             Assertions.assertEquals(((RSAPublicKey) dsc.getPublicKey()).getPublicExponent(),
                                     new BigInteger(Base64.getUrlDecoder().decode(publicKeyJwk.get("e").toString())));
@@ -530,6 +531,7 @@ public class DidTrustListServiceTest {
                                     new BigInteger(Base64.getUrlDecoder().decode(publicKeyJwk.get("n").toString())));
             Assertions.assertEquals(CertificateTestUtils.SignerType.RSA.getSigningAlgorithm(),
                                     publicKeyJwk.get("kty").toString());
+            Assertions.assertEquals(URLEncoder.encode(kid, StandardCharsets.UTF_8), publicKeyJwk.get("kid"));
         }
         ArrayList<String> x5c = ((ArrayList<String>) publicKeyJwk.get("x5c"));
         Assertions.assertEquals(Base64.getEncoder().encodeToString(dsc.getEncoded()), x5c.get(0));
