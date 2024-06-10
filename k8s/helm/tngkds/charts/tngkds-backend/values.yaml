@@ -163,8 +163,6 @@ did:
   trust-list-path: trustlist
   trust-list-ref-path: trustlist-ref
   did-controller: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2.0.0
-  trust-list-id-prefix: did:web:abc
-  trust-list-controller-prefix: did:web:abc
   contextMapping:
     "[https://www.w3.org/ns/did/v1]": did_v1.json
     "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json

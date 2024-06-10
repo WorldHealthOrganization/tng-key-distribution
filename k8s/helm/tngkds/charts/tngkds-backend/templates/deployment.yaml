@@ -103,10 +103,6 @@ spec:
               value: "{{ index .Values.did "trust-list-ref-path" }}"
             - name: DGC_DID_DIDCONTROLLER
               value: "{{ index .Values.did "did-controller" }}"
-            - name: DGC_DID_TRUSTLISTIDPREFIX
-              value: "{{ index .Values.did "trust-list-id-prefix" }}"
-            - name: DGC_DID_TRUSTLISTCONTROLLEPREFIX
-              value: "{{ index .Values.did "trust-list-controller-prefix" }}"
             - name: DGC_DID_LOCALKEYSTORE_ALIAS
               value: {{ .Values.did.localKeyStore.alias | quote }}
             - name: DGC_DID_LOCALKEYSTORE_PASSWORD
