@@ -33,11 +33,10 @@ import lombok.Setter;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 
 @Data
+//Following spec: https://www.w3.org/TR/did-core/#verification-methods
 public class DidTrustListEntry {
 
     private String id;
-
-    private String kid;
 
     private String type;
 
@@ -51,6 +50,10 @@ public class DidTrustListEntry {
     public abstract static class PublicKeyJwk {
         @JsonProperty("kty")
         private String keyType;
+
+        //https://datatracker.ietf.org/doc/html/rfc7517#section-4
+        @JsonProperty("kid")
+        private String kid;
 
         @JsonProperty("x5c")
         private List<String> encodedX509Certificates;
