@@ -49,7 +49,7 @@ public class LocalKeystoreByteSigner extends ByteSigner {
         throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException,
                UnrecoverableKeyException {
 
-        super("EC");
+        super("ES256");
 
         KeyStore keyStore = KeyStore.getInstance("JKS");
 
