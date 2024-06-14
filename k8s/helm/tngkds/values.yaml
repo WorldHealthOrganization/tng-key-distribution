@@ -41,3 +41,11 @@ tngkds-backend:
         alias: trustanchor
         password: <password of trustanchor_store>
         path: /certs/trustanchor_store.jks
+  secrets: # Below are all b64 encoded
+	  didSigner: <DID signer cert>
+	  dockerPull: <docker pull secret>
+	  trustStore: <trust store jks>
+	  mtls:
+		  tlsKeyStore: <tls trust store>
+		  tlsServerTrustStore: <tls server trust store>
+		  tlsTrustAnchorStore: <tls trustanchor store>
