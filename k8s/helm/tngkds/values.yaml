@@ -1,4 +1,4 @@
-# Default values for tngkds-backend.
+# Default values for tngkds.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -17,11 +17,6 @@ image:
 imagePullSecrets: tng-distribution-pull-secret
 nameOverride: ""
 fullnameOverride: ""
-
-# Liquibase
-liquibaseImage:
-  repository: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution-initcontainer
-  tag: <liquibase-image-tag>
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -174,6 +169,7 @@ did:
     EU: XEU
   group-deny-list:
     - UPLOAD
+    - AUTHENTICATION
   group-name-mapping:
     CSCA: SCA
 

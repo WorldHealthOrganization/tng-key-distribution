@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "tngkds-backend.fullname" . }}
+  name: {{ include "tngkds.fullname" . }}
   labels:
-    {{- include "tngkds-backend.labels" . | nindent 4 }}
+    {{- include "tngkds.labels" . | nindent 4 }}
   namespace: {{ .Release.Namespace }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
@@ -11,7 +11,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "tngkds-backend.selectorLabels" . | nindent 6 }}
+      {{- include "tngkds.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "tngkds-backend.labels" . | nindent 8 }}
+        {{- include "tngkds.labels" . | nindent 8 }}
     spec:
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}
