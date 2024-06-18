@@ -2,50 +2,182 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-tngkds-postgres:
-  path: /()(*)
-  port: 5432
+replicaCount: 1
 
-  asPod:
-    enabled: false # run db as Service or Pod,set in conjunction with tngkds-backend
+image:
+  # Create this image before your local installing with: "docker build -t kds:0.0.1" and load
+  # this image into your local minikube cluster with: "minikube image load kds:0.0.1"
+  repository: ghcr.io/worldhealthorganization/tng-key-distribution/tng-key-distribution
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "0.0.1-d890889" #"0.0.1-2840d04"
 
-tngkds-backend:
-  image:
-    tag: <kds-image-tag>
-  liquibaseImage:
-    tag: <liquibase-image-tag(initcontainer)>
-  path: /()(*)
+#kubectl -n <k8s-namespace> create secret docker-registry <k8s-docker-registry-secret-name> --docker-server=ghcr.io --docker-username=<github-username> --docker-password=<github-personal-access-token>  --docker-email=<email-address> -o yaml
+#kubectl -n kds create secret docker-registry tng-distribution-pull-secret --docker-server=ghcr.io --docker-username=anonymous --docker-password=<PAT>  --docker-email=anonymous@example.com -o yaml
+imagePullSecrets: tng-distribution-pull-secret
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: NodePort
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      nodePort: 30166
+      protocol: TCP
+
+ingress:
+  enabled: false
+  className: ""
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# H2
+db:
+  driverclass: org.h2.Driver
+  plattform: org.hibernate.dialect.H2Dialect
+  url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
+  username: sa
+  password: ''
+
+# ConfigMap
+# configMap:
+#   data:
+#     host: localhost
+#     dbName: postgres
+
+# Spring
+spring:
+  profile: cloud
+
+# Server port
+server:
   port: 8080
-  db:
-    driverclass: org.h2.Driver
-    plattform: org.hibernate.dialect.H2Dialect
-    url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
-    username: sa
-    password: ''
-  gateway:
-    connector:
-      enabled: true
-      endpoint: <tng-gateway-endpoint>
-      proxy:
-        enabled: false
-      max-cache-age: 300
-      tls_trust_store: #CA of TNG Gateway of TLS certificate
-        alias: tng-tls-server-certificate
-        password: <password of tls_truststore>
-        path: /certs/tng_tls_server_truststore.p12
-      tls_key_store: # client cert key pair of participant
-        alias: clientcredentials
-        password: <password of tls_key_store>
-        path: /certs/tls_key_store.p12
-      trust_anchor: # TA pem file of TNG that was used for signing
-        alias: trustanchor
-        password: <password of trustanchor_store>
-        path: /certs/trustanchor_store.jks
-  secrets: # Below are all b64 encoded
-	  didSigner: <DID signer cert>
-	  dockerPull: <docker pull secret>
-	  trustStore: <trust store jks>
-	  mtls:
-		  tlsKeyStore: <tls trust store>
-		  tlsServerTrustStore: <tls server trust store>
-		  tlsTrustAnchorStore: <tls trustanchor store>
+
+# Smart TN Gateway
+gateway:
+  connector:
+    enabled: true
+    endpoint: <endpoint of the tng>
+    proxy:
+      enabled: false
+    max-cache-age: 300
+    tls_trust_store: #CA of TNG Gateway of TLS certificate
+      alias: <alias of the cert in truststore>
+      password: <password to open truststore>
+      path: <full pathname of the truststore file>
+    tls_key_store: # client cert key pair of participant
+      alias: <alias of the cert in keystore>
+      password: <password to open keystore>
+      path: <full path of the keystore file>
+    trust_anchor: # TA pem file of TNG that was used for signing
+      alias: <alias of the trust_anchor chert>
+      password: <password to open trust_anchor_store>
+      path: <full path of the trust_anchor_store>
+did:
+  cron: "*/10 * * * * *"
+  enableDidGeneration: true
+  didUploadProvider: local-file
+  localFile:
+    directory: /tmp/kdsgitworkdir/tng-cdn-dev/v2.0.0
+    file-name: did.json
+  git:
+    workdir: /tmp/kdsgituploader # oon clonind will checkout e.g. tng-cdn-dev
+    prefix: v2.0.0 #for copy action into git workdir from local file exporter path
+    url: https://github.com/WorldHealthOrganization/tng-cdn-dev
+    pat: <git did pat by secret>
+  didSigningProvider: local-keystore
+  localKeyStore:
+    alias: did-signer
+    password: secure-password
+    path: <full path of the did-signer.p12>
+  ld-proof-verification-method: did:web:dummy.net
+  did-id: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2.0.0
+  trust-list-path: trustlist
+  trust-list-ref-path: trustlist-ref
+  did-controller: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2.0.0
+  contextMapping:
+    "[https://www.w3.org/ns/did/v1]": did_v1.json
+    "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
+  virtualCountries:
+    XA: XXA
+    XB: XXB
+    XO: XXO
+    XL: XCL
+    EU: XEU
+  group-deny-list:
+    - UPLOAD
+    - AUTHENTICATION
+  group-name-mapping:
+    CSCA: SCA
+
+secrets: # Below are all b64 encoded
+  didSigner: <DID signer cert>
+  dockerPull: <docker pull secret>
+  trustStore: <trust store jks>
+  mtls:
+    tlsKeyStore: <tls trust store>
+    tlsServerTrustStore: <tls server trust store>
+    tlsTrustAnchorStore: <tls trustanchor store>

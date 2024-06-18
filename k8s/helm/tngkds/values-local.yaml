@@ -1,11 +1,13 @@
-# Default values for tngkds-postgres.
+# Default values for tngkds.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: nginx
+  # Create this image before your local installing with: "docker build -t kds:0.0.1" and load
+  # this image into your local minikube cluster with: "minikube image load kds:0.0.1"
+  repository: kds:0.0.1
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -25,12 +27,10 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext:
-  {}
+podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -41,13 +41,16 @@ securityContext:
 service:
   type: NodePort
   ports:
-    - port: 5432
+    - name: http
+      port: 8080
+      targetPort: 8080
+      nodePort: 30166
+      protocol: TCP
 
 ingress:
   enabled: false
   className: ""
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -60,8 +63,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources:
-  {}
+resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -86,10 +88,33 @@ tolerations: []
 
 affinity: {}
 
+# H2
+db:
+  driverclass: org.h2.Driver
+  plattform: org.hibernate.dialect.H2Dialect
+  url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
+  username: sa
+  password: ''
+
 # ConfigMap
 configMap:
   data:
     host: localhost
     dbName: postgres
-dbuser: <dbuser>
-dbpassword: <dbpassword>
+
+# Spring
+spring:
+  profile: cloud
+
+# Server port
+server:
+  port: 8080
+
+secrets: # Below are all b64 encoded
+  didSigner: <DID signer cert>
+  dockerPull: <docker pull secret>
+  trustStore: <trust store jks>
+  mtls:
+    tlsKeyStore: <tls trust store>
+    tlsServerTrustStore: <tls server trust store>
+    tlsTrustAnchorStore: <tls trustanchor store>
