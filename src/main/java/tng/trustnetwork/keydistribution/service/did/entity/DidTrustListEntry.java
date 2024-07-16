@@ -118,7 +118,7 @@ public class DidTrustListEntry {
          */
         public RsaPublicKeyJwk(RSAPublicKey rsaPublicKey, List<String> base64EncodedCertificates) {
             super("RSA", base64EncodedCertificates);
-            valueN = Base64.getUrlEncoder().encodeToString(rsaPublicKey.getModulus().toByteArray());
+            valueN = Base64.getUrlEncoder().encodeToString(rsaPublicKey.getModulus().toByteArray()).split("=")[0];
             valueE = Base64.getUrlEncoder().encodeToString(rsaPublicKey.getPublicExponent().toByteArray());
         }
     }

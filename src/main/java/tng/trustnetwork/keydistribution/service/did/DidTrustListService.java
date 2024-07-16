@@ -305,7 +305,9 @@ public class DidTrustListService {
 
         // Add Trusted Issuer (DID References)
         // TODO: Add filtering for TrustedIssuers
-        trustedIssuerEntities.forEach(did -> trustList.getVerificationMethod().add(did.getUrl()));
+        if(onlyReferences){
+            trustedIssuerEntities.forEach(did -> trustList.getVerificationMethod().add(did.getUrl()));
+        }
 
         // Sign Document
         JsonWebSignature2020LdSigner signer = new JsonWebSignature2020LdSigner(byteSigner);
