@@ -305,7 +305,7 @@ public class DidTrustListService {
 
         // Add Trusted Issuer (DID References)
         // TODO: Add filtering for TrustedIssuers
-        if(onlyReferences){
+        if (onlyReferences) {
             trustedIssuerEntities.forEach(did -> trustList.getVerificationMethod().add(did.getUrl()));
         }
 
