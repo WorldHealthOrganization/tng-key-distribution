@@ -86,8 +86,10 @@ public class DidTrustListEntry {
          */
         public EcPublicKeyJwk(ECPublicKey ecPublicKey, List<String> base64EncodedCertificates) {
             super("EC", base64EncodedCertificates);
-            valueX = Base64.getUrlEncoder().encodeToString(ecPublicKey.getW().getAffineX().toByteArray());
-            valueY = Base64.getUrlEncoder().encodeToString(ecPublicKey.getW().getAffineY().toByteArray());
+            valueX = Base64.getUrlEncoder().withoutPadding()
+            .encodeToString(ecPublicKey.getW().getAffineX().toByteArray());
+            valueY = Base64.getUrlEncoder().withoutPadding()
+            .encodeToString(ecPublicKey.getW().getAffineY().toByteArray());
 
             ECNamedCurveSpec curveSpec = (ECNamedCurveSpec) ecPublicKey.getParams();
             switch (curveSpec.getName()) {
@@ -118,7 +120,8 @@ public class DidTrustListEntry {
          */
         public RsaPublicKeyJwk(RSAPublicKey rsaPublicKey, List<String> base64EncodedCertificates) {
             super("RSA", base64EncodedCertificates);
-            valueN = Base64.getUrlEncoder().encodeToString(rsaPublicKey.getModulus().toByteArray()).split("=")[0];
+            valueN = Base64.getUrlEncoder().withoutPadding()
+            .encodeToString(rsaPublicKey.getModulus().toByteArray());
             valueE = Base64.getUrlEncoder().encodeToString(rsaPublicKey.getPublicExponent().toByteArray());
         }
     }
