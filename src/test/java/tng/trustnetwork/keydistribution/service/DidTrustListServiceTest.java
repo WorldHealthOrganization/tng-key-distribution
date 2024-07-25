@@ -227,7 +227,7 @@ public class DidTrustListServiceTest {
             switch (parsed.getId()) {
                 case "did:web:abc:trustlist":
                     Assertions.assertEquals("did:web:abc:trustlist", parsed.getController());
-                    Assertions.assertEquals(7, parsed.getVerificationMethod().size());
+                    Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist");
@@ -237,83 +237,62 @@ public class DidTrustListServiceTest {
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist");
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist");
-
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+                    
                 case "did:web:abc:trustlist:DCC:XEU:DSC":
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:XEU:DSC", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU:DSC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC:XEU:DSC");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:DCC":
                     Assertions.assertEquals("did:web:abc:trustlist:DCC", parsed.getController());
-                    Assertions.assertEquals(7, parsed.getVerificationMethod().size());
+                    Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC");
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC");
-
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:-:XEU":
                     Assertions.assertEquals("did:web:abc:trustlist:-:XEU", parsed.getController());
-                    Assertions.assertEquals(3, parsed.getVerificationMethod().size());
+                    Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:-:XEU");
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:-:XEU");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:-:DEU":
                     Assertions.assertEquals("did:web:abc:trustlist:-:DEU", parsed.getController());
-                    Assertions.assertEquals(3, parsed.getVerificationMethod().size());
+                    Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:-:DEU");
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:-:DEU");
-
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:DCC:XEU:CSA":
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:XEU:CSA", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU:CSA#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:DCC:XEU:CSA");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:DCC:DEU:DSC":
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:DEU:DSC", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU:DSC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC:DEU:DSC");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:DCC:DEU:CSA":
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:DEU:CSA", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
@@ -321,69 +300,52 @@ public class DidTrustListServiceTest {
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU:CSA#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:DCC:DEU:CSA");
 
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:DCC:DEU":
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:DEU", parsed.getController());
-                    Assertions.assertEquals(3, parsed.getVerificationMethod().size());
+                    Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC:DEU");
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:DCC:DEU");
-
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:DCC:XEU":
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:XEU", parsed.getController());
-                    Assertions.assertEquals(3, parsed.getVerificationMethod().size());
+                    Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC:XEU");
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:DCC:XEU");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:-:XEU:DSC":
                     Assertions.assertEquals("did:web:abc:trustlist:-:XEU:DSC", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU:DSC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:-:XEU:DSC");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:-:DEU:DSC":
                     Assertions.assertEquals("did:web:abc:trustlist:-:DEU:DSC", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU:DSC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:-:DEU:DSC");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:-:DEU:CSA":
                     Assertions.assertEquals("did:web:abc:trustlist:-:DEU:CSA", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU:CSA#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:-:DEU:CSA");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:-:-:CSA":
                     Assertions.assertEquals("did:web:abc:trustlist:-:-:CSA", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
@@ -392,11 +354,8 @@ public class DidTrustListServiceTest {
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:-:-:CSA");
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:CSA#" + URLEncoder.encode(certCscaDeKid, StandardCharsets.UTF_8)),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:-:-:CSA");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:-:-:DSC":
                     Assertions.assertEquals("did:web:abc:trustlist:-:-:DSC", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
@@ -405,22 +364,16 @@ public class DidTrustListServiceTest {
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:-:-:DSC");
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:DSC#" + URLEncoder.encode(certDscDeKid, StandardCharsets.UTF_8)),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:-:-:DSC");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:-:XEU:CSA":
                     Assertions.assertEquals("did:web:abc:trustlist:-:XEU:CSA", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU:CSA#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:-:XEU:CSA");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:DCC:-:DSC":
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:-:DSC", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
@@ -429,11 +382,8 @@ public class DidTrustListServiceTest {
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC:-:DSC");
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:DSC#" + URLEncoder.encode(certDscEuKid, StandardCharsets.UTF_8)),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC:-:DSC");
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
+
                 case "did:web:abc:trustlist:DCC:-:CSA":
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:-:CSA", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
@@ -442,27 +392,36 @@ public class DidTrustListServiceTest {
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:DCC:-:CSA");
                     assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:CSA#" + URLEncoder.encode(certCscaEuKid, StandardCharsets.UTF_8)),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:DCC:-:CSA");
+                    break;
 
+                case "did:web:abc:trustlist:-:XY":
+                    Assertions.assertEquals("did:web:abc:trustlist:-:XY", parsed.getController());
+                    Assertions.assertEquals(0, parsed.getVerificationMethod().size());
+                    break;
+
+                case "did:web:abc:trustlist:DCC:XY":
+                    Assertions.assertEquals("did:web:abc:trustlist:DCC:XY", parsed.getController());
+                    Assertions.assertEquals(0, parsed.getVerificationMethod().size());
+                    break;
+                
+                case "did:web:abc:trustlist-ref:DCC:EU":
                     Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
+                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
+                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
+                    break;
+
+                case "did:web:abc:trustlist-ref:DCC:XY":
+                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
+                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
+                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
+                    break;
+
+                case "did:web:abc:trustlist-ref:DCC:DE":
+                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
                     Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
                     Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
                     break;
-                case "did:web:abc:trustlist:-:XY":
-                    Assertions.assertEquals("did:web:abc:trustlist:-:XY", parsed.getController());
-                    Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
-                    break;
-                case "did:web:abc:trustlist:DCC:XY":
-                    Assertions.assertEquals("did:web:abc:trustlist:DCC:XY", parsed.getController());
-                    Assertions.assertEquals(1, parsed.getVerificationMethod().size());
-
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
-                    Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
-                    Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:XY:issuer"));
-                    break;
                 default:
                     if (!parsed.getId().contains("trustlist-ref")) {
                         Assertions.fail("Unexpected Document in DID Collection! (" +  parsed.getId() + ")");
