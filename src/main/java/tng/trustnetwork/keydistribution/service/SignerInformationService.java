@@ -132,6 +132,13 @@ public class SignerInformationService {
         return signerInformationRepository.getByDomainIsAndCountryIsAndGroupIs(domain, participant, group);
     }
 
+
+    public List<SignerInformationEntity> getCertificatesByDomainParticipantGroupKid(
+        String domain, String participant, String group, String kid) {
+
+        return signerInformationRepository.getByDomainIsAndCountryIsAndGroupIsAndKidIs(domain, participant, group, kid);
+    }
+
     /**
      * Returns signer information that are filtered by participant.
      *
@@ -178,6 +185,11 @@ public class SignerInformationService {
         return signerInformationRepository.getByCountryIsAndGroupIs(country, group);
     }
 
+    public List<SignerInformationEntity> getCertificatesByKidGroupCountry(String country, String group, String kid) {
+
+        return signerInformationRepository.getByCountryIsAndGroupIsAndKidIs(country, group, kid);
+    }
+
     /**
      * Returns signer information that are filtered by domain and group.
      *
@@ -190,6 +202,12 @@ public class SignerInformationService {
         return signerInformationRepository.getByDomainIsAndGroupIs(domain, group);
     }
 
+
+    public List<SignerInformationEntity> getCertificatesByDomainGroupKid(String domain, String group, String kid) {
+
+        return signerInformationRepository.getByDomainIsAndGroupIsAndKidIs(domain, group, kid);
+    }
+
     /**
      * Returns signer information that are filtered by group.
      *
@@ -199,6 +217,11 @@ public class SignerInformationService {
     public List<SignerInformationEntity> getCertificatesByGroup(String group) {
 
         return signerInformationRepository.getByGroupIs(group);
+    }
+
+    public List<SignerInformationEntity> getCertificatesByGroupKid(String group, String kid) {
+
+        return signerInformationRepository.getByGroupIsAndKidIs(group, kid);
     }
 
     /**
