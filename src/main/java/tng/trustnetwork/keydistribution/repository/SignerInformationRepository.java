@@ -35,11 +35,20 @@ public interface SignerInformationRepository extends JpaRepository<SignerInforma
 
     List<SignerInformationEntity> getByCountryIsAndGroupIs(String country, String group);
 
+    List<SignerInformationEntity> getByCountryIsAndGroupIsAndKidIs(String country, String group, String kid);
+
     List<SignerInformationEntity> getByDomainIsAndGroupIs(String domain, String group);
+
+    List<SignerInformationEntity> getByDomainIsAndGroupIsAndKidIs(String domain, String group, String kid);
 
     List<SignerInformationEntity> getByGroupIs(String group);
 
+    List<SignerInformationEntity> getByGroupIsAndKidIs(String group, String kid);
+
     List<SignerInformationEntity> getByDomainIsAndCountryIsAndGroupIs(String domain, String country, String group);
+
+    List<SignerInformationEntity> getByDomainIsAndCountryIsAndGroupIsAndKidIs(
+        String domain, String country, String group, String kid);
 
     List<SignerInformationEntity> getBySubjectHashIsAndCountryIsAndDomainIs(
         String subjectHash, String country, String domain);

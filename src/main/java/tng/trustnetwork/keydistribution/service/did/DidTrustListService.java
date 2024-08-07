@@ -25,6 +25,7 @@ import static tng.trustnetwork.keydistribution.service.did.KdsDidContextDocument
 import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.danubetech.keyformats.crypto.ByteSigner;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.util.Base64URL;
 import eu.europa.ec.dgc.utils.CertificateUtils;
 import foundation.identity.jsonld.JsonLDException;
 import foundation.identity.jsonld.JsonLDObject;
@@ -32,7 +33,6 @@ import info.weboftrust.ldsignatures.jsonld.LDSecurityKeywords;
 import info.weboftrust.ldsignatures.signer.JsonWebSignature2020LdSigner;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -197,6 +197,29 @@ public class DidTrustListService {
                         () -> signerInformationService.getCertificatesByDomainParticipantGroup(domain, country, group),
                         Collections::emptyList)))));
 
+        // Add all domain, country, group, kid specific did
+        domains.forEach(
+            domain -> countries.forEach(
+                country -> groups.forEach(
+                    group -> {
+                        List<SignerInformationEntity> entityList =
+                            signerInformationService.getCertificatesByDomainParticipantGroup(domain, country, group);
+
+                        entityList.forEach(entity -> {
+                            didSpecifications.add(new DidSpecification(
+                                List.of(domain, getParticipantCode(country), getMappedGroupName(group),
+                                        encodeKid(entity.getKid())),
+
+                                () -> signerInformationService.getCertificatesByDomainParticipantGroupKid(
+                                    domain, country, group, entity.getKid()),
+
+                                Collections::emptyList
+                            ));
+                        });
+                    }
+                )));
+
+
         // Add all country and group specific did
         countries.forEach(
             country -> groups.forEach(
@@ -204,6 +227,27 @@ public class DidTrustListService {
                     List.of(WILDCARD_CHAR, getParticipantCode(country), getMappedGroupName(group)),
                     () -> signerInformationService.getCertificatesByGroupCountry(group, country),
                     Collections::emptyList))));
+
+        // Add all country, group, kid specific did
+        countries.forEach(
+            country -> groups.forEach(
+                group -> {
+                    List<SignerInformationEntity> entityList =
+                        signerInformationService.getCertificatesByGroupCountry(group, country);
+
+                    entityList.forEach(entity -> {
+
+                        didSpecifications.add(new DidSpecification(
+                            List.of(WILDCARD_CHAR, getParticipantCode(country), getMappedGroupName(group),
+                                    encodeKid(entity.getKid())),
+
+                            () -> signerInformationService.getCertificatesByKidGroupCountry(
+                                country, group, entity.getKid()),
+
+                            Collections::emptyList
+                        ));
+                    });
+                }));
 
         // Add all domain and group specific did
         domains.forEach(
@@ -213,12 +257,49 @@ public class DidTrustListService {
                     () -> signerInformationService.getCertificatesByDomainGroup(domain, group),
                     Collections::emptyList))));
 
+        // Add all domain, group and kid specific did
+        domains.forEach(
+            domain -> groups.forEach(
+                group -> {
+                    List<SignerInformationEntity> entityList =
+                        signerInformationService.getCertificatesByDomainGroup(domain, group);
+                    entityList.forEach(entity -> {
+                        didSpecifications.add(new DidSpecification(
+                            List.of(domain, WILDCARD_CHAR, getMappedGroupName(group),
+                                    encodeKid(entity.getKid())),
+
+                            () -> signerInformationService.getCertificatesByDomainGroupKid(
+                                domain, group, entity.getKid()),
+
+                            Collections::emptyList
+                        ));
+                    });
+                }));
+
         // Add all group specific did
         groups.forEach(
             group -> didSpecifications.add(new DidSpecification(
             List.of(WILDCARD_CHAR, WILDCARD_CHAR, getMappedGroupName(group)),
                 () -> signerInformationService.getCertificatesByGroup(group),
                 Collections::emptyList)));
+
+        // Add all group, kid specific did
+        groups.forEach(
+            group -> {
+                List<SignerInformationEntity> entityList = signerInformationService.getCertificatesByGroup(group);
+                entityList.forEach(entity -> {
+                    didSpecifications.add(new DidSpecification(
+                        List.of(WILDCARD_CHAR, WILDCARD_CHAR, getMappedGroupName(group),
+                                encodeKid(entity.getKid())),
+
+                        () -> signerInformationService.getCertificatesByGroupKid(group, entity.getKid()),
+
+                        Collections::emptyList
+                    ));
+                });
+            }
+        );
+
 
         Map<DidSpecification, String> didDocuments = new HashMap<>();
         didSpecifications.forEach(specification -> didDocuments
@@ -271,8 +352,8 @@ public class DidTrustListService {
         for (SignerInformationEntity signerInformationEntity : signerInformationEntities) {
 
             if (onlyReferences) {
-                trustList.getVerificationMethod().add(specification.getEntryId(
-                    URLEncoder.encode(signerInformationEntity.getKid(), StandardCharsets.UTF_8)));
+                trustList.getVerificationMethod().add(
+                    specification.getEntryId(encodeKid(signerInformationEntity.getKid())));
 
             } else {
                 X509Certificate parsedCertificate = kdsCertUtils.parseCertificate(signerInformationEntity.getRawData());
@@ -360,10 +441,9 @@ public class DidTrustListService {
 
         DidTrustListEntry trustListEntry = new DidTrustListEntry();
         trustListEntry.setType("JsonWebKey2020");
-        trustListEntry.setId(specification.getEntryId(
-            URLEncoder.encode(signerInformationEntity.getKid(), StandardCharsets.UTF_8)));
+        trustListEntry.setId(specification.getEntryId(encodeKid(signerInformationEntity.getKid())));
         trustListEntry.setController(specification.getDocumentId(false));
-        publicKeyJwk.setKid(URLEncoder.encode(signerInformationEntity.getKid(), StandardCharsets.UTF_8));
+        publicKeyJwk.setKid(encodeKid(signerInformationEntity.getKid()));
         trustListEntry.setPublicKeyJwk(publicKeyJwk);
 
         trustList.getVerificationMethod().add(trustListEntry);
@@ -439,4 +519,7 @@ public class DidTrustListService {
         return nonce.toString();
     }
 
+    private String encodeKid(String kid) {
+        return Base64URL.encode(kid).toString();
+    }
 }
