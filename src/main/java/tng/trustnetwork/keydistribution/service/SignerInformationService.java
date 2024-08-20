@@ -166,6 +166,7 @@ public class SignerInformationService {
      * @param country     a participant aka country code, used as filter
      * @return matching SignerInformationEntities
      */
+
     public List<SignerInformationEntity> getCertificatesByCountryDomain(String country, String domain) {
 
         return signerInformationRepository.getByDomainIsAndCountryIs(domain, country);
