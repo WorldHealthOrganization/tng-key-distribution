@@ -150,6 +150,15 @@ public class SignerInformationService {
         return signerInformationRepository.getByCountryIs(country);
     }
 
+    public List<SignerInformationEntity> getCertificatesByAllCountries(List<String>  countries) {
+
+        return signerInformationRepository.findByCountryIn(countries);
+    }
+
+    public List<SignerInformationEntity> getCertificatesByAllGroups(List<String>  groups) {
+
+        return signerInformationRepository.findByGroupIn(groups);
+    }
     /**
      * Returns signer information that are filtered by domain and participant.
      *
