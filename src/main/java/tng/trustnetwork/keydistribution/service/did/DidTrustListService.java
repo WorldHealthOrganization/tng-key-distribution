@@ -49,6 +49,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -111,6 +113,8 @@ public class DidTrustListService {
 
         private final Supplier<List<TrustedIssuerEntity>> issuerSupplier;
 
+        private final Supplier<List<String>> didPathSupplier;
+
         public List<String> getPath(boolean ref) {
             ArrayList<String> path = new ArrayList<>(this.path);
             path.add(0, getListPathElement(ref));
@@ -163,49 +167,91 @@ public class DidTrustListService {
         didSpecifications.add(new DidSpecification(
             Collections.emptyList(),
             signerInformationService::getAllCertificates,
-            trustedIssuerService::getAllDid));
+            trustedIssuerService::getAllDid,
+            () -> Stream.concat(Stream.of(WILDCARD_CHAR), domains.stream()).collect(Collectors.toList())
+        ));
 
         // Add all Domain DID
-        domains.forEach(
-            domain -> didSpecifications.add(new DidSpecification(
+        domains.forEach(domain -> {
+            List<SignerInformationEntity> signerInformationEntitiesList =
+                signerInformationService.getCertificatesByDomain(domain);
+            didSpecifications.add(new DidSpecification(
                 List.of(domain),
-                () -> signerInformationService.getCertificatesByDomain(domain),
-                () -> trustedIssuerService.getAllDid(domain, null))));
+                () -> signerInformationEntitiesList,
+                () -> trustedIssuerService.getAllDid(domain, null),
+                () -> new ArrayList<>(
+                    Stream.concat(Stream.of(WILDCARD_CHAR),signerInformationEntitiesList
+                        .stream().map(entity -> getParticipantCode(entity.getCountry()))).collect(Collectors.toSet()))
+            ));
+        });
 
         // Add all Country and Domain specific DID
         domains.forEach(
-            domain -> countries.forEach(
-                country -> didSpecifications.add(new DidSpecification(
+            domain -> countries.forEach(country -> {
+                List<SignerInformationEntity> signerInformationEntitiesList =
+                    signerInformationService.getCertificatesByCountryDomain(country, domain);
+                didSpecifications.add(new DidSpecification(
                     List.of(domain, getParticipantCode(country)),
-                    () -> signerInformationService.getCertificatesByCountryDomain(country, domain),
-                    () -> trustedIssuerService.getAllDid(domain, country))
-                )));
+                    () -> signerInformationEntitiesList,
+                    () -> trustedIssuerService.getAllDid(domain, country),
+                    () -> new ArrayList<>(
+                        signerInformationEntitiesList.stream()
+                          .filter(signerInformationEntity -> isDeniedGroup(signerInformationEntity.getGroup()))
+                          .map(entity -> getMappedGroupName(entity.getGroup())).collect(Collectors.toSet()))));
+            }));
+
+        // Add all Country and Domain independant DID
+        didSpecifications.add(new DidSpecification(
+            List.of(WILDCARD_CHAR),
+            () -> signerInformationService.getCertificatesByAllCountries(countries),
+            Collections::emptyList,
+            () -> new ArrayList<>(
+                Stream.concat(Stream.of(WILDCARD_CHAR), countries.stream().map(country -> getParticipantCode(country)))
+                      .collect(Collectors.toSet()))));
+
+
 
         // Add all Domain independent and country specific DID
         countries.forEach(
-            country -> didSpecifications.add(new DidSpecification(
-                List.of(WILDCARD_CHAR, getParticipantCode(country)),
-                () -> signerInformationService.getCertificatesByCountry(country),
-                () -> trustedIssuerService.getAllDid(null, country))));
+            country -> {
+                List<SignerInformationEntity> signerInformationEntitiesList =
+                    signerInformationService.getCertificatesByCountry(country);
+                didSpecifications.add(new DidSpecification(
+                    List.of(WILDCARD_CHAR, getParticipantCode(country)),
+                    () -> signerInformationEntitiesList,
+                    () -> trustedIssuerService.getAllDid(null, country),
+                    () -> new ArrayList<>(
+                        signerInformationEntitiesList.stream()
+                            .filter(signerInformation -> isDeniedGroup(signerInformation.getGroup()))
+                            .map(entity -> getMappedGroupName(entity.getGroup())).collect(Collectors.toSet()))
+                ));
+            });
 
         // Add all domain, country and group specific did
         domains.forEach(
             domain -> countries.forEach(
                 country -> groups.forEach(
-                    group -> didSpecifications.add(new DidSpecification(
-                        List.of(domain, getParticipantCode(country), getMappedGroupName(group)),
-                        () -> signerInformationService.getCertificatesByDomainParticipantGroup(domain, country, group),
-                        Collections::emptyList)))));
+                    group -> {
+                        List<SignerInformationEntity> signerInformationEntitiesList =
+                            signerInformationService.getCertificatesByDomainParticipantGroup(domain, country, group);
+                        didSpecifications.add(new DidSpecification(
+                            List.of(domain, getParticipantCode(country), getMappedGroupName(group)),
+                            () -> signerInformationEntitiesList,
+                            Collections::emptyList,
+                            () -> new ArrayList<>(
+                                signerInformationEntitiesList.stream().map(entity -> encodeKid(entity.getKid()))
+                                                             .collect(Collectors.toSet()))));
+                    })));
 
         // Add all domain, country, group, kid specific did
         domains.forEach(
             domain -> countries.forEach(
                 country -> groups.forEach(
                     group -> {
-                        List<SignerInformationEntity> entityList =
+                        List<SignerInformationEntity> signerInformationEntitiesList =
                             signerInformationService.getCertificatesByDomainParticipantGroup(domain, country, group);
 
-                        entityList.forEach(entity -> {
+                        signerInformationEntitiesList.forEach(entity -> {
                             didSpecifications.add(new DidSpecification(
                                 List.of(domain, getParticipantCode(country), getMappedGroupName(group),
                                         encodeKid(entity.getKid())),
@@ -213,6 +259,7 @@ public class DidTrustListService {
                                 () -> signerInformationService.getCertificatesByDomainParticipantGroupKid(
                                     domain, country, group, entity.getKid()),
 
+                                Collections::emptyList,
                                 Collections::emptyList
                             ));
                         });
@@ -223,19 +270,26 @@ public class DidTrustListService {
         // Add all country and group specific did
         countries.forEach(
             country -> groups.forEach(
-                group -> didSpecifications.add(new DidSpecification(
-                    List.of(WILDCARD_CHAR, getParticipantCode(country), getMappedGroupName(group)),
-                    () -> signerInformationService.getCertificatesByGroupCountry(group, country),
-                    Collections::emptyList))));
+                group -> {
+                    List<SignerInformationEntity> signerInformationEntitiesList =
+                        signerInformationService.getCertificatesByGroupCountry(group, country);
+                    didSpecifications.add(new DidSpecification(
+                        List.of(WILDCARD_CHAR, getParticipantCode(country), getMappedGroupName(group)),
+                        () -> signerInformationEntitiesList,
+                        Collections::emptyList,
+                        () -> new ArrayList<>(
+                            signerInformationEntitiesList.stream().map(entity -> encodeKid(entity.getKid()))
+                                                         .collect(Collectors.toSet()))));
+                }));
 
         // Add all country, group, kid specific did
         countries.forEach(
             country -> groups.forEach(
                 group -> {
-                    List<SignerInformationEntity> entityList =
+                    List<SignerInformationEntity> signerInformationEntitiesList =
                         signerInformationService.getCertificatesByGroupCountry(group, country);
 
-                    entityList.forEach(entity -> {
+                    signerInformationEntitiesList.forEach(entity -> {
 
                         didSpecifications.add(new DidSpecification(
                             List.of(WILDCARD_CHAR, getParticipantCode(country), getMappedGroupName(group),
@@ -244,6 +298,7 @@ public class DidTrustListService {
                             () -> signerInformationService.getCertificatesByKidGroupCountry(
                                 country, group, entity.getKid()),
 
+                            Collections::emptyList,
                             Collections::emptyList
                         ));
                     });
@@ -252,18 +307,45 @@ public class DidTrustListService {
         // Add all domain and group specific did
         domains.forEach(
             domain -> groups.forEach(
-                group -> didSpecifications.add(new DidSpecification(
-                    List.of(domain, WILDCARD_CHAR, getMappedGroupName(group)),
-                    () -> signerInformationService.getCertificatesByDomainGroup(domain, group),
-                    Collections::emptyList))));
+                group -> {
+                    List<SignerInformationEntity> signerInformationEntitiesList =
+                        signerInformationService.getCertificatesByDomainGroup(domain, group);
+                    didSpecifications.add(new DidSpecification(
+                        List.of(domain, WILDCARD_CHAR, getMappedGroupName(group)),
+                        () -> signerInformationEntitiesList,
+                        Collections::emptyList,
+                        () -> new ArrayList<>(
+                            signerInformationEntitiesList.stream().map(entity -> encodeKid(entity.getKid()))
+                                                         .collect(Collectors.toSet()))));
+
+                }));
+
+        // Add all country independent but domain and group specific did
+        domains.forEach(
+            domain -> {
+                List<SignerInformationEntity> signerInformationEntitiesList =
+                    signerInformationService.getCertificatesByDomain(domain);
+                didSpecifications.add(new DidSpecification(
+                    List.of(domain, WILDCARD_CHAR),
+                    () -> signerInformationEntitiesList,
+                    Collections::emptyList,
+                    () -> new ArrayList<>(
+                        signerInformationEntitiesList.stream()
+                                                     .filter(domainEntity -> isDeniedGroup(domainEntity.getGroup()))
+                                                     .map(domainEntity -> getMappedGroupName(domainEntity.getGroup()))
+                                                     .collect(Collectors.toSet()))
+                ));
+            });
+
+
 
         // Add all domain, group and kid specific did
         domains.forEach(
             domain -> groups.forEach(
                 group -> {
-                    List<SignerInformationEntity> entityList =
+                    List<SignerInformationEntity> signerInformationEntitiesList =
                         signerInformationService.getCertificatesByDomainGroup(domain, group);
-                    entityList.forEach(entity -> {
+                    signerInformationEntitiesList.forEach(entity -> {
                         didSpecifications.add(new DidSpecification(
                             List.of(domain, WILDCARD_CHAR, getMappedGroupName(group),
                                     encodeKid(entity.getKid())),
@@ -271,29 +353,52 @@ public class DidTrustListService {
                             () -> signerInformationService.getCertificatesByDomainGroupKid(
                                 domain, group, entity.getKid()),
 
+                            Collections::emptyList,
                             Collections::emptyList
                         ));
                     });
                 }));
 
+
+
         // Add all group specific did
         groups.forEach(
-            group -> didSpecifications.add(new DidSpecification(
-            List.of(WILDCARD_CHAR, WILDCARD_CHAR, getMappedGroupName(group)),
-                () -> signerInformationService.getCertificatesByGroup(group),
-                Collections::emptyList)));
+            group -> {
+                List<SignerInformationEntity> signerInformationEntitiesList =
+                    signerInformationService.getCertificatesByGroup(group);
+                didSpecifications.add(new DidSpecification(
+                    List.of(WILDCARD_CHAR, WILDCARD_CHAR, getMappedGroupName(group)),
+                    () -> signerInformationEntitiesList,
+                    Collections::emptyList,
+                    () -> new ArrayList<>(
+                        signerInformationEntitiesList.stream()
+                                                     .map(entity -> encodeKid(entity.getKid()))
+                                                     .collect(Collectors.toSet()))));
+            });
+
+        // Add all domain  country independent and group specific did
+        didSpecifications.add(new DidSpecification(
+            List.of(WILDCARD_CHAR, WILDCARD_CHAR),
+            () -> signerInformationService.getCertificatesByAllGroups(groups),
+            Collections::emptyList,
+            () -> new ArrayList<>(
+                groups.stream().filter(group -> isDeniedGroup(group))
+                      .map(group -> getMappedGroupName(group))
+                      .collect(Collectors.toSet()))));
 
         // Add all group, kid specific did
         groups.forEach(
             group -> {
-                List<SignerInformationEntity> entityList = signerInformationService.getCertificatesByGroup(group);
-                entityList.forEach(entity -> {
+                List<SignerInformationEntity> signerInformationEntitiesList =
+                    signerInformationService.getCertificatesByGroup(group);
+                signerInformationEntitiesList.forEach(entity -> {
                     didSpecifications.add(new DidSpecification(
                         List.of(WILDCARD_CHAR, WILDCARD_CHAR, getMappedGroupName(group),
                                 encodeKid(entity.getKid())),
 
                         () -> signerInformationService.getCertificatesByGroupKid(group, entity.getKid()),
 
+                        Collections::emptyList,
                         Collections::emptyList
                     ));
                 });
@@ -335,6 +440,7 @@ public class DidTrustListService {
 
         List<SignerInformationEntity> signerInformationEntities = filterEntities(specification.getCertSupplier().get());
         List<TrustedIssuerEntity> trustedIssuerEntities = specification.getIssuerSupplier().get();
+        List<String> didRefPathList =  specification.getDidPathSupplier().get();
 
         if (signerInformationEntities.isEmpty() && trustedIssuerEntities.isEmpty()) {
             log.info("Empty DID for path {}", specification.getPath());
@@ -348,15 +454,28 @@ public class DidTrustListService {
         trustList.setVerificationMethod(new ArrayList<>());
 
         // Add Certificates
-
-        for (SignerInformationEntity signerInformationEntity : signerInformationEntities) {
-
-            if (onlyReferences) {
-                trustList.getVerificationMethod().add(
-                    specification.getEntryId(encodeKid(signerInformationEntity.getKid())));
-
+        if (onlyReferences) {
+            if (didRefPathList.isEmpty()) {
+                trustList.getVerificationMethod().add(specification.getDocumentId(false));
             } else {
-                X509Certificate parsedCertificate = kdsCertUtils.parseCertificate(signerInformationEntity.getRawData());
+                didRefPathList.forEach(path -> {
+                    trustList.getVerificationMethod()
+                             .add(specification.getDocumentId(true) + SEPARATOR_DID_PATH + path);
+                });
+            }
+
+            trustedIssuerEntities.forEach(did -> {
+                if (!trustList.getVerificationMethod().contains(did.getUrl())) {
+                    trustList.getVerificationMethod().add(did.getUrl());
+                }
+            });
+
+        } else {
+            for (SignerInformationEntity signerInformationEntity : signerInformationEntities) {
+
+                X509Certificate parsedCertificate =
+                    kdsCertUtils.parseCertificate(signerInformationEntity.getRawData());
+
                 if (parsedCertificate == null) {
                     log.error("Could not parse cert {} of country {}",
                               signerInformationEntity.getKid(),
@@ -384,11 +503,6 @@ public class DidTrustListService {
             }
         }
 
-        // Add Trusted Issuer (DID References)
-        // TODO: Add filtering for TrustedIssuers
-        if (onlyReferences) {
-            trustedIssuerEntities.forEach(did -> trustList.getVerificationMethod().add(did.getUrl()));
-        }
 
         // Sign Document
         JsonWebSignature2020LdSigner signer = new JsonWebSignature2020LdSigner(byteSigner);
@@ -453,8 +567,7 @@ public class DidTrustListService {
     private List<SignerInformationEntity> filterEntities(List<SignerInformationEntity> entities) {
 
         return entities.stream()
-                       .filter(entity -> kdsConfigProperties.getDid().getGroupDenyList().stream()
-                                                            .noneMatch(e -> entity.getGroup().equalsIgnoreCase(e)))
+                       .filter(entity -> isDeniedGroup(entity.getGroup()))
                        .toList();
     }
 
@@ -462,6 +575,12 @@ public class DidTrustListService {
 
         return kdsConfigProperties.getDid().getGroupNameMapping()
                                   .computeIfAbsent(groupName, g -> g);
+    }
+
+
+    private boolean isDeniedGroup(String group) {
+        return kdsConfigProperties.getDid().getGroupDenyList().stream()
+                                  .noneMatch(e -> group.equalsIgnoreCase(e));
     }
 
     /**
