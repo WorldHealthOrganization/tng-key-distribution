@@ -154,14 +154,14 @@ public class DidTrustListService {
                 + SEPARATOR_DID_PATH + getMappedGroupName(signerInformationEntity.getGroup())
                 + SEPARATOR_DID_PATH + encodeKid(signerInformationEntity.getKid());
 
-            StringBuffer buf = new StringBuffer();
+            StringBuilder stringBuilder = new StringBuilder();
             String[] pathArray =  defaultPath.split(SEPARATOR_DID_PATH);
 
             for (int i = path.size(); i <= pathArray.length - 1; i++) {
-                buf.append(SEPARATOR_DID_PATH + pathArray[i]);
+                stringBuilder.append(SEPARATOR_DID_PATH + pathArray[i]);
             }
 
-            return getDocumentId(false) + buf + SEPARATOR_DID_ID + encodeKid(signerInformationEntity.getKid());
+            return getDocumentId(false) + stringBuilder;
         }
     }
 
