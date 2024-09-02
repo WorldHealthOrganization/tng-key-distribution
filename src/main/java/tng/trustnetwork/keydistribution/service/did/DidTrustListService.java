@@ -146,6 +146,23 @@ public class DidTrustListService {
                 return "";
             }
         }
+
+        public String generateTrustListVerificationId(SignerInformationEntity signerInformationEntity) {
+
+            String defaultPath = signerInformationEntity.getDomain()
+                + SEPARATOR_DID_PATH + getParticipantCode(signerInformationEntity.getCountry())
+                + SEPARATOR_DID_PATH + getMappedGroupName(signerInformationEntity.getGroup())
+                + SEPARATOR_DID_PATH + encodeKid(signerInformationEntity.getKid());
+
+            StringBuilder stringBuilder = new StringBuilder();
+            String[] pathArray =  defaultPath.split(SEPARATOR_DID_PATH);
+
+            for (int i = path.size(); i <= pathArray.length - 1; i++) {
+                stringBuilder.append(SEPARATOR_DID_PATH + pathArray[i]);
+            }
+
+            return getDocumentId(false) + stringBuilder;
+        }
     }
 
     /**
@@ -555,7 +572,7 @@ public class DidTrustListService {
 
         DidTrustListEntry trustListEntry = new DidTrustListEntry();
         trustListEntry.setType("JsonWebKey2020");
-        trustListEntry.setId(specification.getEntryId(encodeKid(signerInformationEntity.getKid())));
+        trustListEntry.setId(specification.generateTrustListVerificationId(signerInformationEntity));
         trustListEntry.setController(specification.getDocumentId(false));
         publicKeyJwk.setKid(encodeKid(signerInformationEntity.getKid()));
         trustListEntry.setPublicKeyJwk(publicKeyJwk);
