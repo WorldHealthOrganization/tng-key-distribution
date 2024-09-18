@@ -38,6 +38,7 @@ dgc:
   did:
     cron: ""
     enableDidGeneration: true
+    enableKidLevelDidGeneration: false
     didUploadProvider: dummy
     didSigningProvider: dummy
     git:

@@ -87,6 +87,7 @@ dgc:
   did:
     cron: "0 0 2 * * *"
     enableDidGeneration: true
+    enableKeyLevelDidGeneration: false
     didUploadProvider: local-file
     localFile:
       directory: <root-directory-of-trustlist>
