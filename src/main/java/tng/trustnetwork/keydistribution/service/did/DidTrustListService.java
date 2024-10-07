@@ -152,8 +152,7 @@ public class DidTrustListService {
 
             String defaultPath = signerInformationEntity.getDomain()
                 + SEPARATOR_DID_PATH + getParticipantCode(signerInformationEntity.getCountry())
-                + SEPARATOR_DID_PATH + getMappedGroupName(signerInformationEntity.getGroup())
-                + SEPARATOR_DID_PATH + encodeKid(signerInformationEntity.getKid());
+                + SEPARATOR_DID_PATH + getMappedGroupName(signerInformationEntity.getGroup());
 
             StringBuilder stringBuilder = new StringBuilder();
             String[] pathArray =  defaultPath.split(SEPARATOR_DID_PATH);
@@ -162,7 +161,8 @@ public class DidTrustListService {
                 stringBuilder.append(SEPARATOR_DID_PATH + pathArray[i]);
             }
 
-            return getDocumentId(false) + stringBuilder;
+            return getDocumentId(false) + stringBuilder + SEPARATOR_DID_ID
+                + encodeKid(signerInformationEntity.getKid());
         }
     }
 
