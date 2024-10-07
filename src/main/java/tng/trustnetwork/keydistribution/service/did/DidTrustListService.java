@@ -41,6 +41,7 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -136,7 +137,7 @@ public class DidTrustListService {
 
         private String getListPathElement(boolean ref) {
             if (ref && configProperties.getDid().getTrustListRefPath() != null
-                    && !configProperties.getDid().getTrustListRefPath().isEmpty()) {
+                && !configProperties.getDid().getTrustListRefPath().isEmpty()) {
                 return configProperties.getDid().getTrustListRefPath();
 
             } else if (!ref && configProperties.getDid().getTrustListPath() != null
@@ -151,8 +152,7 @@ public class DidTrustListService {
 
             String defaultPath = signerInformationEntity.getDomain()
                 + SEPARATOR_DID_PATH + getParticipantCode(signerInformationEntity.getCountry())
-                + SEPARATOR_DID_PATH + getMappedGroupName(signerInformationEntity.getGroup())
-                + SEPARATOR_DID_PATH + encodeKid(signerInformationEntity.getKid());
+                + SEPARATOR_DID_PATH + getMappedGroupName(signerInformationEntity.getGroup());
 
             StringBuilder stringBuilder = new StringBuilder();
             String[] pathArray =  defaultPath.split(SEPARATOR_DID_PATH);
@@ -161,7 +161,8 @@ public class DidTrustListService {
                 stringBuilder.append(SEPARATOR_DID_PATH + pathArray[i]);
             }
 
-            return getDocumentId(false) + stringBuilder;
+            return getDocumentId(false) + stringBuilder + SEPARATOR_DID_ID
+                + encodeKid(signerInformationEntity.getKid());
         }
     }
 
@@ -260,29 +261,6 @@ public class DidTrustListService {
                                                              .collect(Collectors.toSet()))));
                     })));
 
-        // Add all domain, country, group, kid specific did
-        domains.forEach(
-            domain -> countries.forEach(
-                country -> groups.forEach(
-                    group -> {
-                        List<SignerInformationEntity> signerInformationEntitiesList =
-                            signerInformationService.getCertificatesByDomainParticipantGroup(domain, country, group);
-
-                        signerInformationEntitiesList.forEach(entity -> {
-                            didSpecifications.add(new DidSpecification(
-                                List.of(domain, getParticipantCode(country), getMappedGroupName(group),
-                                        encodeKid(entity.getKid())),
-
-                                () -> signerInformationService.getCertificatesByDomainParticipantGroupKid(
-                                    domain, country, group, entity.getKid()),
-
-                                Collections::emptyList,
-                                Collections::emptyList
-                            ));
-                        });
-                    }
-                )));
-
 
         // Add all country and group specific did
         countries.forEach(
@@ -299,27 +277,6 @@ public class DidTrustListService {
                                                          .collect(Collectors.toSet()))));
                 }));
 
-        // Add all country, group, kid specific did
-        countries.forEach(
-            country -> groups.forEach(
-                group -> {
-                    List<SignerInformationEntity> signerInformationEntitiesList =
-                        signerInformationService.getCertificatesByGroupCountry(group, country);
-
-                    signerInformationEntitiesList.forEach(entity -> {
-
-                        didSpecifications.add(new DidSpecification(
-                            List.of(WILDCARD_CHAR, getParticipantCode(country), getMappedGroupName(group),
-                                    encodeKid(entity.getKid())),
-
-                            () -> signerInformationService.getCertificatesByKidGroupCountry(
-                                country, group, entity.getKid()),
-
-                            Collections::emptyList,
-                            Collections::emptyList
-                        ));
-                    });
-                }));
 
         // Add all domain and group specific did
         domains.forEach(
@@ -355,29 +312,6 @@ public class DidTrustListService {
             });
 
 
-
-        // Add all domain, group and kid specific did
-        domains.forEach(
-            domain -> groups.forEach(
-                group -> {
-                    List<SignerInformationEntity> signerInformationEntitiesList =
-                        signerInformationService.getCertificatesByDomainGroup(domain, group);
-                    signerInformationEntitiesList.forEach(entity -> {
-                        didSpecifications.add(new DidSpecification(
-                            List.of(domain, WILDCARD_CHAR, getMappedGroupName(group),
-                                    encodeKid(entity.getKid())),
-
-                            () -> signerInformationService.getCertificatesByDomainGroupKid(
-                                domain, group, entity.getKid()),
-
-                            Collections::emptyList,
-                            Collections::emptyList
-                        ));
-                    });
-                }));
-
-
-
         // Add all group specific did
         groups.forEach(
             group -> {
@@ -403,24 +337,93 @@ public class DidTrustListService {
                       .map(group -> getMappedGroupName(group))
                       .collect(Collectors.toSet()))));
 
-        // Add all group, kid specific did
-        groups.forEach(
-            group -> {
-                List<SignerInformationEntity> signerInformationEntitiesList =
-                    signerInformationService.getCertificatesByGroup(group);
-                signerInformationEntitiesList.forEach(entity -> {
-                    didSpecifications.add(new DidSpecification(
-                        List.of(WILDCARD_CHAR, WILDCARD_CHAR, getMappedGroupName(group),
-                                encodeKid(entity.getKid())),
+        if (kdsConfigProperties.getDid().getEnableKidLevelDidGeneration()) {
+            // Add all domain, country, group, kid specific did
+            domains.forEach(
+                domain -> countries.forEach(
+                    country -> groups.forEach(
+                        group -> {
+                            List<SignerInformationEntity> signerInformationEntitiesList =
+                                signerInformationService.getCertificatesByDomainParticipantGroup(domain, country,
+                                                                                                 group);
 
-                        () -> signerInformationService.getCertificatesByGroupKid(group, entity.getKid()),
+                            signerInformationEntitiesList.forEach(entity -> {
+                                didSpecifications.add(new DidSpecification(
+                                    List.of(domain, getParticipantCode(country), getMappedGroupName(group),
+                                            encodeKid(entity.getKid())),
 
-                        Collections::emptyList,
-                        Collections::emptyList
-                    ));
-                });
-            }
-        );
+                                    () -> signerInformationService.getCertificatesByDomainParticipantGroupKid(
+                                        domain, country, group, entity.getKid()),
+
+                                    Collections::emptyList,
+                                    Collections::emptyList
+                                ));
+                            });
+                        }
+                    )));
+
+            // Add all country, group, kid specific did
+            countries.forEach(
+                country -> groups.forEach(
+                    group -> {
+                        List<SignerInformationEntity> signerInformationEntitiesList =
+                            signerInformationService.getCertificatesByGroupCountry(group, country);
+
+                        signerInformationEntitiesList.forEach(entity -> {
+
+                            didSpecifications.add(new DidSpecification(
+                                List.of(WILDCARD_CHAR, getParticipantCode(country), getMappedGroupName(group),
+                                        encodeKid(entity.getKid())),
+
+                                () -> signerInformationService.getCertificatesByKidGroupCountry(
+                                    country, group, entity.getKid()),
+
+                                Collections::emptyList,
+                                Collections::emptyList
+                            ));
+                        });
+                    }));
+
+            // Add all domain, group and kid specific did
+            domains.forEach(
+                domain -> groups.forEach(
+                    group -> {
+                        List<SignerInformationEntity> signerInformationEntitiesList =
+                            signerInformationService.getCertificatesByDomainGroup(domain, group);
+                        signerInformationEntitiesList.forEach(entity -> {
+                            didSpecifications.add(new DidSpecification(
+                                List.of(domain, WILDCARD_CHAR, getMappedGroupName(group),
+                                        encodeKid(entity.getKid())),
+
+                                () -> signerInformationService.getCertificatesByDomainGroupKid(
+                                    domain, group, entity.getKid()),
+
+                                Collections::emptyList,
+                                Collections::emptyList
+                            ));
+                        });
+                    }));
+
+            // Add all group, kid specific did
+            groups.forEach(
+                group -> {
+                    List<SignerInformationEntity> signerInformationEntitiesList =
+                        signerInformationService.getCertificatesByGroup(group);
+                    signerInformationEntitiesList.forEach(entity -> {
+                        didSpecifications.add(new DidSpecification(
+                            List.of(WILDCARD_CHAR, WILDCARD_CHAR, getMappedGroupName(group),
+                                    encodeKid(entity.getKid())),
+
+                            () -> signerInformationService.getCertificatesByGroupKid(group, entity.getKid()),
+
+                            Collections::emptyList,
+                            Collections::emptyList
+                        ));
+                    });
+                }
+            );
+
+        }
 
 
         Map<DidSpecification, String> didDocuments = new HashMap<>();
@@ -472,15 +475,35 @@ public class DidTrustListService {
 
         // Add Certificates
         if (onlyReferences) {
-            if (didRefPathList.isEmpty()) {
+
+            String trustListDocumentId = specification.getDocumentId(false);
+
+            List<String> specificationGroups = signerInformationEntities.stream()
+                                                .filter(entity -> isDeniedGroup(entity.getGroup()))
+                                                .map(entity -> getMappedGroupName(entity.getGroup())).toList();
+
+            if (didRefPathList.isEmpty() && kdsConfigProperties.getDid().getEnableKidLevelDidGeneration()) {
                 trustList.getVerificationMethod().add(specification.getDocumentId(false));
             } else {
+
                 didRefPathList.forEach(path -> {
-                    trustList.getVerificationMethod()
-                             .add(specification.getDocumentId(true) + SEPARATOR_DID_PATH + path);
+                    if (!kdsConfigProperties.getDid().getEnableKidLevelDidGeneration()
+                        && Arrays.stream(trustList.getId().split(SEPARATOR_DID_PATH))
+                                     .anyMatch(specificationGroups::contains)) {
+
+                        if (trustList.getVerificationMethod().stream()
+                                     .noneMatch(id -> id.equals(trustListDocumentId))) {
+
+                            trustList.getVerificationMethod().add(trustListDocumentId);
+
+                        }
+                    } else {
+
+                        trustList.getVerificationMethod()
+                                 .add(specification.getDocumentId(true) + SEPARATOR_DID_PATH + path);
+                    }
                 });
             }
-
             trustedIssuerEntities.forEach(did -> {
                 if (!trustList.getVerificationMethod().contains(did.getUrl())) {
                     trustList.getVerificationMethod().add(did.getUrl());

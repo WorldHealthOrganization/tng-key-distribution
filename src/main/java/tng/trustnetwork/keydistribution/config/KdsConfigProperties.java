@@ -94,6 +94,7 @@ public class KdsConfigProperties {
     public static class DidConfig {
 
         private Boolean enableDidGeneration;
+        private Boolean enableKidLevelDidGeneration;
 
         private String didId;
         private String didController;

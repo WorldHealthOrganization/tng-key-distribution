@@ -206,7 +206,7 @@ public class DidTrustListServiceTest {
 
         didTrustListService.job();
 
-        Assertions.assertEquals(110, uploadArgumentCaptor.getAllValues().size());
+        Assertions.assertEquals(70, uploadArgumentCaptor.getAllValues().size());
 
         int expectedNullDid = 32;
 
