@@ -141,11 +141,11 @@ did:
   enableDidGeneration: true
   didUploadProvider: local-file
   localFile:
-    directory: /tmp/kdsgitworkdir/tng-cdn-dev/v2.0.0
+    directory: /tmp/kdsgitworkdir/tng-cdn-dev/v2
     file-name: did.json
   git:
     workdir: /tmp/kdsgituploader # oon clonind will checkout e.g. tng-cdn-dev
-    prefix: v2.0.0 #for copy action into git workdir from local file exporter path
+    prefix: v2 #for copy action into git workdir from local file exporter path
     url: https://github.com/WorldHealthOrganization/tng-cdn-dev
     pat: <git did pat by secret>
   didSigningProvider: local-keystore
@@ -154,10 +154,10 @@ did:
     password: secure-password
     path: <full path of the did-signer.p12>
   ld-proof-verification-method: did:web:dummy.net
-  did-id: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2.0.0
+  did-id: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2
   trust-list-path: trustlist
   trust-list-ref-path: trustlist-ref
-  did-controller: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2.0.0
+  did-controller: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2
   contextMapping:
     "[https://www.w3.org/ns/did/v1]": did_v1.json
     "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
