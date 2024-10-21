@@ -42,4 +42,8 @@
     <notes>False positive, Dependency Updated but still matches for fixed version</notes>
     <cve>CVE-2022-45688</cve>
   </suppress>
+  <suppress>
+      <notes>Not vulnerable, see https://spring.io/security/cve-2024-38816</notes>
+      <cve>CVE-2024-38816</cve>
+  </suppress>
 </suppressions>
