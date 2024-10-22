@@ -558,7 +558,7 @@ public class DidTrustListService {
                                 +  " Group -- " + signerInformationEntity.getGroup() + ","
                                 +  " KID -- " + signerInformationEntity.getKid();
 
-                    log.error("PublicKey Generation Failed for : [" + failedFor + " ]"
+                    log.error("PublicKey Export Generation Failed for : [" + failedFor + " ]"
                                   + "\n" + " Exception : " + ex.getMessage());
 
                     continue;
