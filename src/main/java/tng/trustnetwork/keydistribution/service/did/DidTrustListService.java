@@ -130,6 +130,15 @@ public class DidTrustListService {
                 + String.join(SEPARATOR_DID_PATH, path));
         }
 
+        public String getControllerId(boolean ref) {
+            //Example Id: did:web:tng-cdn-dev.who.int:trustlist:v.2.0.0:DDCC:XXA:DSC
+            //Controller Id: did:web:tng-cdn-dev.who.int:trustlist:v.2.0.0:DDCC:XXA
+            return configProperties.getDid().getDidId()
+                + SEPARATOR_DID_PATH + getListPathElement(ref)
+                + (path.size() <= 1 ? "" : SEPARATOR_DID_PATH
+                + String.join(SEPARATOR_DID_PATH, path.subList(0, path.size() - 1)));
+        }
+
         public String getEntryId(String kid) {
             //Example: did:web:tng-cdn-dev.who.int:trustlist:v.2.0.0:DDCC:XXA:DSC#kidkidkid
             return getDocumentId(false) + SEPARATOR_DID_ID + kid;
@@ -470,7 +479,7 @@ public class DidTrustListService {
         DidTrustList trustList = new DidTrustList();
         trustList.setContext(DID_CONTEXTS);
         trustList.setId(specification.getDocumentId(onlyReferences));
-        trustList.setController(specification.getDocumentId(onlyReferences));
+        trustList.setController(specification.getControllerId(onlyReferences));
         trustList.setVerificationMethod(new ArrayList<>());
 
         // Add Certificates
@@ -525,18 +534,34 @@ public class DidTrustListService {
 
                 PublicKey publicKey = parsedCertificate.getPublicKey();
                 DidTrustListEntry.PublicKeyJwk publicKeyJwk = null;
-                if (publicKey instanceof RSAPublicKey rsaPublicKey) {
-                    publicKeyJwk = new DidTrustListEntry.RsaPublicKeyJwk(
-                        rsaPublicKey, List.of(signerInformationEntity.getRawData()));
 
-                } else if (publicKey instanceof ECPublicKey ecPublicKey) {
-                    publicKeyJwk = new DidTrustListEntry.EcPublicKeyJwk(
-                        ecPublicKey, List.of(signerInformationEntity.getRawData()));
+                try {
+                    if (publicKey instanceof RSAPublicKey rsaPublicKey) {
+                        publicKeyJwk = new DidTrustListEntry.RsaPublicKeyJwk(
+                                rsaPublicKey, List.of(signerInformationEntity.getRawData()));
 
-                } else {
-                    log.error("Public Key is not RSA or EC Public Key for cert {} of country {}",
-                              signerInformationEntity.getKid(),
-                              signerInformationEntity.getCountry());
+                    } else if (publicKey instanceof ECPublicKey ecPublicKey) {
+                        publicKeyJwk = new DidTrustListEntry.EcPublicKeyJwk(
+                                ecPublicKey, List.of(signerInformationEntity.getRawData()));
+
+                    } else {
+                        log.error("Public Key is not RSA or EC Public Key for cert {} of country {}",
+                                      signerInformationEntity.getKid(),
+                                      signerInformationEntity.getCountry());
+
+                        continue;
+                    }
+
+                } catch (Exception ex) {
+                    String failedFor = " Domain -- " + signerInformationEntity.getDomain() + ","
+                                +  " Country -- " + signerInformationEntity.getCountry() + ","
+                                +  " Group -- " + signerInformationEntity.getGroup() + ","
+                                +  " KID -- " + signerInformationEntity.getKid();
+
+                    log.error("PublicKey Export Generation Failed for : [" + failedFor + " ]"
+                                  + "\n" + " Exception : " + ex.getMessage());
+
+                    continue;
                 }
 
                 addTrustListEntry(trustList, specification, signerInformationEntity, publicKeyJwk);
@@ -596,7 +621,7 @@ public class DidTrustListService {
         DidTrustListEntry trustListEntry = new DidTrustListEntry();
         trustListEntry.setType("JsonWebKey2020");
         trustListEntry.setId(specification.generateTrustListVerificationId(signerInformationEntity));
-        trustListEntry.setController(specification.getDocumentId(false));
+        trustListEntry.setController(specification.getControllerId(false));
         publicKeyJwk.setKid(encodeKid(signerInformationEntity.getKid()));
         trustListEntry.setPublicKeyJwk(publicKeyJwk);
 
