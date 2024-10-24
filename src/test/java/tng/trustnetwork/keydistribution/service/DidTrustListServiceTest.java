@@ -127,8 +127,8 @@ public class DidTrustListServiceTest {
         certDscEuKid = certificateUtils.getCertKid(certDscEu);
 
         certUploadDe = CertificateTestUtils.generateCertificate(keyPairGenerator.generateKeyPair(), "DE",
-                                                             "Upload Test", certCscaDe, cscaDeKeyPair.getPrivate(),
-                                                             signerType);
+                                                                "Upload Test", certCscaDe, cscaDeKeyPair.getPrivate(),
+                                                                signerType);
         certUploadDeKid = certificateUtils.getCertKid(certUploadDe);
 
         signerInformationRepository.save(new SignerInformationEntity(
@@ -230,26 +230,26 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist" , encodeKid(certDscDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist" , certDscDeKid),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist" , encodeKid(certCscaDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist" , certCscaDeKid),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist",encodeKid(certDscEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist",certDscEuKid),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist",encodeKid(certCscaEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist",certCscaEuKid),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist");
                     break;
                 case "did:web:abc:trustlist:-":
                     Assertions.assertEquals("did:web:abc:trustlist", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-",encodeKid(certDscDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-",certDscDeKid),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:-");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-",encodeKid(certCscaDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-",certCscaDeKid),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:-");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-",encodeKid(certDscEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-",certDscEuKid),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:-");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-",encodeKid(certCscaEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-",certCscaEuKid),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:-");
                     break;
 
@@ -257,9 +257,9 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:-", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-",encodeKid(certDscDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-",certDscDeKid),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:-:-");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-",encodeKid(certDscEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-",certDscEuKid),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:-:-");
                     break;
 
@@ -267,9 +267,9 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:DCC", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-",encodeKid(certDscDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-",certDscDeKid),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC:-");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-",encodeKid(certDscEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-",certDscEuKid),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC:-");
                     break;
 
@@ -278,7 +278,7 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:XEU", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU:DSC",encodeKid(certDscEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU:DSC",certDscEuKid),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC:XEU:DSC");
                     break;
 
@@ -286,9 +286,9 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist", parsed.getController());
                     Assertions.assertEquals(4, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC", encodeKid(certDscDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC", certDscDeKid),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC", encodeKid(certDscEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC", certDscEuKid),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC");
                     break;
 
@@ -296,9 +296,9 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:-", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU",encodeKid(certCscaEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU",certCscaEuKid),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:-:XEU");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU",encodeKid(certDscEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU",certDscEuKid),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:-:XEU");
                     break;
 
@@ -306,9 +306,9 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:-", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU",encodeKid(certDscDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU",certDscDeKid),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:-:DEU");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU",encodeKid(certCscaDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU",certCscaDeKid),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:-:DEU");
                     break;
 
@@ -316,7 +316,7 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:XEU", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU:CSA",encodeKid(certCscaEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU:CSA",certCscaEuKid),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:DCC:XEU:CSA");
                     break;
 
@@ -324,7 +324,7 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:DEU", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU:DSC",encodeKid(certDscDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU:DSC",certDscDeKid),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC:DEU:DSC");
                     break;
 
@@ -332,7 +332,7 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:DEU", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU:CSA",encodeKid(certCscaDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU:CSA",certCscaDeKid),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:DCC:DEU:CSA");
 
                     break;
@@ -341,9 +341,9 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:DCC", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU",encodeKid(certDscDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU",certDscDeKid),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC:DEU");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU",encodeKid(certCscaDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:DEU",certCscaDeKid),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:DCC:DEU");
                     break;
 
@@ -351,9 +351,9 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:DCC", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU",encodeKid(certDscEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU",certDscEuKid),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC:XEU");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU",encodeKid(certCscaEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:XEU",certCscaEuKid),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:DCC:XEU");
                     break;
 
@@ -361,7 +361,7 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:-:XEU", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU:DSC",encodeKid(certDscEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU:DSC",certDscEuKid),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:-:XEU:DSC");
                     break;
 
@@ -369,7 +369,7 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:-:DEU", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU:DSC",encodeKid(certDscDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU:DSC",certDscDeKid),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:-:DEU:DSC");
                     break;
 
@@ -377,7 +377,7 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:-:DEU", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU:CSA",encodeKid(certCscaDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:DEU:CSA",certCscaDeKid),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:-:DEU:CSA");
                     break;
 
@@ -385,9 +385,9 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:-:-", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:CSA",encodeKid(certCscaEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:CSA",certCscaEuKid),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:-:-:CSA");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:CSA",encodeKid(certCscaDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:CSA",certCscaDeKid),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:-:-:CSA");
                     break;
 
@@ -395,9 +395,9 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:-:-", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:DSC",encodeKid(certDscEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:DSC",certDscEuKid),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:-:-:DSC");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:DSC",encodeKid(certDscDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:-:DSC",certDscDeKid),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:-:-:DSC");
                     break;
 
@@ -405,7 +405,7 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:-:XEU", parsed.getController());
                     Assertions.assertEquals(1, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU:CSA",encodeKid(certCscaEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:-:XEU:CSA",certCscaEuKid),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:-:XEU:CSA");
                     break;
 
@@ -413,9 +413,9 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:-", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:DSC",encodeKid(certDscDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:DSC",certDscDeKid),
                                              certDscDeKid, certDscDe, certCscaDe, "did:web:abc:trustlist:DCC:-:DSC");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:DSC",encodeKid(certDscEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:DSC",certDscEuKid),
                                              certDscEuKid, certDscEu, certCscaEu, "did:web:abc:trustlist:DCC:-:DSC");
                     break;
 
@@ -423,9 +423,9 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:DCC:-", parsed.getController());
                     Assertions.assertEquals(2, parsed.getVerificationMethod().size());
 
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:CSA",encodeKid(certCscaDeKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:CSA",certCscaDeKid),
                                              certCscaDeKid, certCscaDe, null, "did:web:abc:trustlist:DCC:-:CSA");
-                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:CSA",encodeKid(certCscaEuKid)),
+                    assertVerificationMethod(getVerificationMethodByKid(parsed.getVerificationMethod(),"did:web:abc:trustlist:DCC:-:CSA",certCscaEuKid),
                                              certCscaEuKid, certCscaEu, null, "did:web:abc:trustlist:DCC:-:CSA");
                     break;
 
@@ -438,7 +438,7 @@ public class DidTrustListServiceTest {
                     Assertions.assertEquals("did:web:abc:trustlist:DCC", parsed.getController());
                     Assertions.assertEquals(0, parsed.getVerificationMethod().size());
                     break;
-                
+
                 case "did:web:abc:trustlist-ref:DCC:EU":
                     Assertions.assertFalse(parsed.getVerificationMethod().contains("did:trusted:DE:issuer"));
                     Assertions.assertTrue(parsed.getVerificationMethod().contains("did:trusted:EU:issuer"));
@@ -502,7 +502,7 @@ public class DidTrustListServiceTest {
 
         LinkedHashMap<?, ?> jsonNode = (LinkedHashMap<?, ?>) in;
         Assertions.assertEquals("JsonWebKey2020", jsonNode.get("type"));
-        Assertions.assertTrue(jsonNode.get("id").toString().contains(parentDidId) && jsonNode.get("id").toString().contains(encodeKid(kid)));;
+        Assertions.assertTrue(jsonNode.get("id").toString().contains(parentDidId) && jsonNode.get("id").toString().contains(kid));
 
 
         LinkedHashMap<?, ?> publicKeyJwk = (LinkedHashMap<?, ?>) jsonNode.get("publicKeyJwk");
@@ -515,7 +515,7 @@ public class DidTrustListServiceTest {
             Assertions.assertEquals(CertificateTestUtils.SignerType.EC.getSigningAlgorithm(),
                                     publicKeyJwk.get("kty").toString());
             Assertions.assertEquals("P-256", publicKeyJwk.get("crv").toString());
-            Assertions.assertEquals(encodeKid(kid), publicKeyJwk.get("kid"));
+            Assertions.assertEquals(kid, publicKeyJwk.get("kid"));
         } else {
             Assertions.assertEquals(((RSAPublicKey) dsc.getPublicKey()).getPublicExponent(),
                                     new BigInteger(Base64.getUrlDecoder().decode(publicKeyJwk.get("e").toString())));
@@ -523,16 +523,13 @@ public class DidTrustListServiceTest {
                                     new BigInteger(Base64.getUrlDecoder().decode(publicKeyJwk.get("n").toString())));
             Assertions.assertEquals(CertificateTestUtils.SignerType.RSA.getSigningAlgorithm(),
                                     publicKeyJwk.get("kty").toString());
-            Assertions.assertEquals(encodeKid(kid), publicKeyJwk.get("kid"));
+            Assertions.assertEquals(kid, publicKeyJwk.get("kid"));
         }
         ArrayList<String> x5c = ((ArrayList<String>) publicKeyJwk.get("x5c"));
         Assertions.assertEquals(Base64.getEncoder().encodeToString(dsc.getEncoded()), x5c.get(0));
         if (csca != null) {
             Assertions.assertEquals(Base64.getEncoder().encodeToString(csca.getEncoded()), x5c.get(1));
         }
-    }
-    private String encodeKid(String kid) {
-        return Base64URL.encode(kid).toString();
     }
 
     @Getter
