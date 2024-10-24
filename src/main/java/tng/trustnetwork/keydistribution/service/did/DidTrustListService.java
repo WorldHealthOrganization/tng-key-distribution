@@ -171,7 +171,7 @@ public class DidTrustListService {
             }
 
             return getDocumentId(false) + stringBuilder + SEPARATOR_DID_ID
-                + encodeKid(signerInformationEntity.getKid());
+                + signerInformationEntity.getKid();
         }
     }
 
@@ -266,7 +266,7 @@ public class DidTrustListService {
                             () -> signerInformationEntitiesList,
                             Collections::emptyList,
                             () -> new ArrayList<>(
-                                signerInformationEntitiesList.stream().map(entity -> encodeKid(entity.getKid()))
+                                signerInformationEntitiesList.stream().map(entity -> entity.getKid())
                                                              .collect(Collectors.toSet()))));
                     })));
 
@@ -282,7 +282,7 @@ public class DidTrustListService {
                         () -> signerInformationEntitiesList,
                         Collections::emptyList,
                         () -> new ArrayList<>(
-                            signerInformationEntitiesList.stream().map(entity -> encodeKid(entity.getKid()))
+                            signerInformationEntitiesList.stream().map(entity -> entity.getKid())
                                                          .collect(Collectors.toSet()))));
                 }));
 
@@ -298,7 +298,7 @@ public class DidTrustListService {
                         () -> signerInformationEntitiesList,
                         Collections::emptyList,
                         () -> new ArrayList<>(
-                            signerInformationEntitiesList.stream().map(entity -> encodeKid(entity.getKid()))
+                            signerInformationEntitiesList.stream().map(entity -> entity.getKid())
                                                          .collect(Collectors.toSet()))));
 
                 }));
@@ -332,7 +332,7 @@ public class DidTrustListService {
                     Collections::emptyList,
                     () -> new ArrayList<>(
                         signerInformationEntitiesList.stream()
-                                                     .map(entity -> encodeKid(entity.getKid()))
+                                                     .map(entity -> entity.getKid())
                                                      .collect(Collectors.toSet()))));
             });
 
@@ -359,7 +359,7 @@ public class DidTrustListService {
                             signerInformationEntitiesList.forEach(entity -> {
                                 didSpecifications.add(new DidSpecification(
                                     List.of(domain, getParticipantCode(country), getMappedGroupName(group),
-                                            encodeKid(entity.getKid())),
+                                            entity.getKid()),
 
                                     () -> signerInformationService.getCertificatesByDomainParticipantGroupKid(
                                         domain, country, group, entity.getKid()),
@@ -382,7 +382,7 @@ public class DidTrustListService {
 
                             didSpecifications.add(new DidSpecification(
                                 List.of(WILDCARD_CHAR, getParticipantCode(country), getMappedGroupName(group),
-                                        encodeKid(entity.getKid())),
+                                        entity.getKid()),
 
                                 () -> signerInformationService.getCertificatesByKidGroupCountry(
                                     country, group, entity.getKid()),
@@ -402,7 +402,7 @@ public class DidTrustListService {
                         signerInformationEntitiesList.forEach(entity -> {
                             didSpecifications.add(new DidSpecification(
                                 List.of(domain, WILDCARD_CHAR, getMappedGroupName(group),
-                                        encodeKid(entity.getKid())),
+                                        entity.getKid()),
 
                                 () -> signerInformationService.getCertificatesByDomainGroupKid(
                                     domain, group, entity.getKid()),
@@ -421,7 +421,7 @@ public class DidTrustListService {
                     signerInformationEntitiesList.forEach(entity -> {
                         didSpecifications.add(new DidSpecification(
                             List.of(WILDCARD_CHAR, WILDCARD_CHAR, getMappedGroupName(group),
-                                    encodeKid(entity.getKid())),
+                                    entity.getKid()),
 
                             () -> signerInformationService.getCertificatesByGroupKid(group, entity.getKid()),
 
@@ -622,7 +622,7 @@ public class DidTrustListService {
         trustListEntry.setType("JsonWebKey2020");
         trustListEntry.setId(specification.generateTrustListVerificationId(signerInformationEntity));
         trustListEntry.setController(specification.getControllerId(false));
-        publicKeyJwk.setKid(encodeKid(signerInformationEntity.getKid()));
+        publicKeyJwk.setKid(signerInformationEntity.getKid());
         trustListEntry.setPublicKeyJwk(publicKeyJwk);
 
         trustList.getVerificationMethod().add(trustListEntry);
@@ -703,7 +703,4 @@ public class DidTrustListService {
         return nonce.toString();
     }
 
-    private String encodeKid(String kid) {
-        return Base64URL.encode(kid).toString();
-    }
 }
