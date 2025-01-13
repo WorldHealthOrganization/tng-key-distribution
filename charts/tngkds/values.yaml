@@ -154,10 +154,10 @@ did:
     password: <keystore password for did-signer.p12>
     path: <full path of the did-signer.p12>
   ld-proof-verification-method: did:web:dummy.net
-  did-id: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2
+  did-id: did:web:tng-cdn-dev.who.int:v2
   trust-list-path: trustlist
   trust-list-ref-path: trustlist-ref
-  did-controller: did:web:worldhealthorganization.github.io:tng-cdn-dev:v2
+  did-controller: did:web:tng-cdn-dev.who.int:v2
   contextMapping:
     "[https://www.w3.org/ns/did/v1]": did_v1.json
     "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
