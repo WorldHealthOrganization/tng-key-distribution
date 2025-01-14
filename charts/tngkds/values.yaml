@@ -151,7 +151,7 @@ did:
   didSigningProvider: local-keystore
   localKeyStore:
     alias: did-signer
-    password: secure-password
+    password: <keystore password for did-signer.p12>
     path: <full path of the did-signer.p12>
   ld-proof-verification-method: did:web:dummy.net
   did-id: did:web:tng-cdn-dev.who.int:v2

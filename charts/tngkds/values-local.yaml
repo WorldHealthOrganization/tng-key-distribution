@@ -118,3 +118,6 @@ secrets: # Below are all b64 encoded
     tlsKeyStore: <tls trust store>
     tlsServerTrustStore: <tls server trust store>
     tlsTrustAnchorStore: <tls trustanchor store>
+did:
+  localKeyStore:
+    password: <password for did-signer.p12>
