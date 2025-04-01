@@ -112,6 +112,8 @@ dgc:
       XO: XXO
       XL: XCL
       WH: WHO
+      XG: XXG
+      XS: XXS
     group-deny-list:
       - AUTHENTICATION
       - UPLOAD
