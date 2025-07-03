@@ -44,6 +44,12 @@ public class DidTrustListEntry {
 
     private PublicKeyJwk publicKeyJwk;
 
+    private String domain;
+
+    private String participant;
+
+    private String keyusage;
+
     @NoArgsConstructor
     @Setter
     @Getter
