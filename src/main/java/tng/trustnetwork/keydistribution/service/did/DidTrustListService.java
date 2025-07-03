@@ -639,6 +639,7 @@ public class DidTrustListService {
                 trustListEntry.setParticipant(idParts[7]);
             }
             if (idParts.length >= 9) {
+                idParts[8] = idParts[8].split(SEPARATOR_DID_ID)[0];
                 trustListEntry.setKeyusage(idParts[8]);
             }
         }
