@@ -624,10 +624,26 @@ public class DidTrustListService {
         trustListEntry.setController(specification.getControllerId(false));
         publicKeyJwk.setKid(signerInformationEntity.getKid());
         trustListEntry.setPublicKeyJwk(publicKeyJwk);
-
+        setAdditionalAttributeInVerificationMethod(trustListEntry);
         trustList.getVerificationMethod().add(trustListEntry);
     }
 
+    private static void setAdditionalAttributeInVerificationMethod(DidTrustListEntry trustListEntry) {
+
+        if (trustListEntry.getId() != null) {
+            String[] idParts = trustListEntry.getId().split(SEPARATOR_DID_PATH);
+            if (idParts.length >= 7) {
+                trustListEntry.setDomain(idParts[6]);
+            }
+            if (idParts.length >= 8) {
+                trustListEntry.setParticipant(idParts[7]);
+            }
+            if (idParts.length >= 9) {
+                idParts[8] = idParts[8].split(SEPARATOR_DID_ID)[0];
+                trustListEntry.setKeyusage(idParts[8]);
+            }
+        }
+    }
 
     private List<SignerInformationEntity> filterEntities(List<SignerInformationEntity> entities) {
 
