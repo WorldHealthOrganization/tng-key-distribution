@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://worldhealthorganization.github.io/smart-trust/ValueSet-Domain.schema.json",
+  "title": "Domain ValueSet Schema",
+  "description": "JSON schema for validating domain values in DID verification methods",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "Domain context definition",
+          "const": "https://worldhealthorganization.github.io/smart-trust/ValueSet-Domain"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "definitions": {
+    "domainValue": {
+      "type": "string",
+      "enum": [
+        "DCC",
+        "DIVOC",
+        "ICAO",
+        "SHC"
+      ],
+      "description": "Valid trust domain codes as defined in the TNG domain value set"
+    }
+  }
+}

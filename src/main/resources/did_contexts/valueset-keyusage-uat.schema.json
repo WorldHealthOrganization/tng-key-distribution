@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://worldhealthorganization.github.io/smart-trust/ValueSet-KeyUsage-UAT.schema.json",
+  "title": "Key Usage ValueSet Schema (UAT Environment)",
+  "description": "JSON schema for validating key usage values in DID verification methods for UAT environment",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "keyusage": {
+          "type": "string",
+          "description": "Key usage context definition for UAT environment",
+          "const": "https://worldhealthorganization.github.io/smart-trust/ValueSet-KeyUsage-UAT"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "definitions": {
+    "keyUsageValue": {
+      "type": "string",
+      "enum": [
+        "SCA",
+        "UPLOAD",
+        "AUTHENTICATION",
+        "DSC"
+      ],
+      "description": "Valid key usage codes as defined in the TNG key usage value set for UAT environment"
+    }
+  }
+}
