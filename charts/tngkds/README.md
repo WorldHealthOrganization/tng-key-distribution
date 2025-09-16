@@ -3,7 +3,9 @@
 
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
-The Helm chart for TNG Key Distribution Service.
+# The Helm chart for TNG Key Distribution Service.
+## Introduction
+This Helm chart simplifies deploying and configuring the TNG Key Distribution Service. It packages the container image, defines deployment settings (such as replicas, resource limits, and autoscaling), and allows customization of environment variables for aspects like the datasource, DID document generation, and gateway connector configuration. It also provides parameters for setting up secrets, ingress, and other deployment details, ensuring that the application can be tailored easily to different environments.
 
 
 ## Values: configuration parameters for the KDS deployment explained

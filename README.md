@@ -22,7 +22,13 @@
 
 This repository contains the source code of the TNG Key Distribution Service.
 
-The TNG Key Distribution Service is part of the national backends of the participants and caches the public keys that are distributed through the Trust Network Gateway [(TNG)](https://github.com/worldhealthorganization/smart-trust-network-gateway). It can be accessed by clients distributed by the particapants to update their local key store periodically e.g. for offline verification scenarios.
+The TNG Key Distribution Service caches public keys that are distributed through the Trust Network Gateway [(TNG)](https://github.com/worldhealthorganization/smart-trust-network-gateway) and distributes them on a CDN. This can either be:  
+ - GitHub (via a git push to a repository and an Github action to provision them to GitHub CDN
+ - Azure CDN (by storing it to a azure blob storage and run an action to provision it to an Azure CDN)
+ - a local directory
+The export format is as a trustlist compiled by a list of JSON Web Key (JWK) that can be consumed by any client for verifying given certificates to their signature.
+
+Refer to the [documentation](./docs/tng-key-distribution.md) for further information.
 
 ## Development
 
