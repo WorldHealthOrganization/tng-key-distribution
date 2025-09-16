@@ -59,3 +59,4 @@ Chart.lock
 *.key
 *.p12
 *.jks
+.aider*
