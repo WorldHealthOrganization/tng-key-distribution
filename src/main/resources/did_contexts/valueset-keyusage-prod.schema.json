@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://smart.who.int/trust/ValueSet-KeyUsage.schema.json",
+  "title": "Key Usage ValueSet Schema (PROD Environment)",
+  "description": "JSON schema for validating key usage values in DID verification methods for PROD environment",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "keyusage": {
+          "type": "string",
+          "description": "Key usage context definition for PROD environment",
+          "const": "https://smart.who.int/trust/ValueSet-KeyUsage"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "definitions": {
+    "keyUsageValue": {
+      "type": "string",
+      "enum": [
+        "SCA",
+        "UPLOAD",
+        "AUTHENTICATION",
+        "DSC"
+      ],
+      "description": "Valid key usage codes as defined in the TNG key usage value set for PROD environment"
+    }
+  }
+}

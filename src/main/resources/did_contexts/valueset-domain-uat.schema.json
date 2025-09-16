@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://worldhealthorganization.github.io/smart-trust/ValueSet-Domain-UAT.schema.json",
+  "title": "Domain ValueSet Schema (UAT Environment)",
+  "description": "JSON schema for validating domain values in DID verification methods for UAT environment",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "Domain context definition for UAT environment",
+          "const": "https://worldhealthorganization.github.io/smart-trust/ValueSet-Domain-UAT"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "definitions": {
+    "domainValue": {
+      "type": "string",
+      "enum": [
+        "DCC",
+        "DIVOC",
+        "ICAO",
+        "SHC"
+      ],
+      "description": "Valid trust domain codes as defined in the TNG domain value set for UAT environment"
+    }
+  }
+}

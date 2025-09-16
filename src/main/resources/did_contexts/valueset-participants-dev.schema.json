@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://worldhealthorganization.github.io/smart-trust/ValueSet-Participants-DEV.schema.json",
+  "title": "Participants ValueSet Schema (DEV Environment)",
+  "description": "JSON schema for validating participant codes in DID verification methods for DEV environment",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "type": "object",
+      "properties": {
+        "participant": {
+          "type": "string",
+          "description": "Participant context definition for DEV environment",
+          "const": "https://worldhealthorganization.github.io/smart-trust/ValueSet-Participants-DEV"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "definitions": {
+    "participantValue": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,3}$",
+      "description": "Valid TNG participant codes (2-3 letter country/organization codes) for DEV environment"
+    }
+  }
+}

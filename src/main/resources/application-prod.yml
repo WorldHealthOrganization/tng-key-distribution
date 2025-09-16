@@ -1,0 +1,6 @@
+dgc:
+  did:
+    contextMapping:
+      "[https://www.w3.org/ns/did/v1]": did_v1.json
+      "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
+      "[https://worldhealthorganization.github.io/smart-trust/tng-additional-context/v1]": tng-additional-context-prod_v1.json
