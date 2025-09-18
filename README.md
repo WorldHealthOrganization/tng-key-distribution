@@ -116,17 +116,35 @@ All required dependencies will be downloaded, the project build and the artifact
 * Place the keys and certificates named [above](#access-keys) into the ***certs*** folder.
 * Adjust the values in the [docker-compose.yml](docker-compose.yml) file to fit the url for the gateway you use and 
   your keys and certificates you have to access it.
-  ```yaml
+```yaml
   - DGC_GATEWAY_CONNECTOR_ENDPOINT=https://dgc-gateway.example.com
-  - DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH=file:/ec/prod/app/san/dgc/tls_trust_store.p12
-  - DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD=dgcg-p4ssw0rd
-  - DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_ALIAS=1
-  - DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH=file:/ec/prod/app/san/dgc/tls_key_store.p12
-  - DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD=dgcg-p4ssw0rd
+  - DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH=/certs/tls_trust_store.p12
+  - DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD=<password you used>
+  - DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_ALIAS=alias_you_used
+  - DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH=/certs/tls_key_store.p12
+  - DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD=<password you used>
   - DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS=ta
-  - DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH=file:/ec/prod/app/san/dgc/trust_anchor.jks
-  - DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD=dgcg-p4ssw0rd
-  ```
+  - DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH=/certs/trust_anchor.jks
+  - DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD=<password you used>
+  - DGC_DID_CRON = 0 0 */6 * * *
+  - DGC_DID_DIDUPLOADPROVIDER=local-file
+  - DGC_DID_LOCALFILE_DIRECTORY=/tmp/kdsgitworkdir/trustlistTest/v2
+  - DGC_DID_LOCALFILE_FILENAME=did.json
+  - DGC_DID_GIT_WORKDIR=/tmp/kdsgituploader
+  - DGC_DID_GIT_PREFIX=v2
+  - DGC_DID_GIT_URL=https://github.com/WorldHealthOrganization/tng-cdn-dev
+  - DG_DID_GIT_PAT=<your github personal access token>
+  - DGC_DID_DIDSIGNINGPROVIDER=local-keystore
+  - DGC_DID_LDPROOFVERIFICATIONMETHOD=<did web link to your public key>
+  - DGC_DID_DIDID=did:web:tng-cdn-dev.who.int:v2
+  - DGC_DID_TRUSTLISTPATH=trustlist
+  - DGC_DID_TRUSTLISTREFPATH=trustlist-ref
+  - DGC_DID_DIDCONTROLLER=did:web:tng-cdn-dev.who.int:v2
+  - DGC_DID_LOCALKEYSTORE_PATH=/certs/did_signer.p12
+  - DGC_DID_LOCALKEYSTORE_PASSWORD=<password you used> 
+```
+
+ For the full list of configuration options, please refer to the options given in the [Helm chart Readme](charts/tngkds/README.md) file.  
 ***Note:*** Leave the path as is and only change the file names, as the ***certs*** folder will be mapped to this folder inside the docker container.
 
 * Run the following command from the project root folder
@@ -140,8 +158,6 @@ After all containers have started, you will be able to reach the service on your
 ## Cloud deployment
 
 ## Documentation
-
-[OpenAPI Spec](https://worldhealthorganization.github.io/tng-key-distribution/)
  
 [Service description](./docs/tng-key-distribution.md)
 
@@ -150,10 +166,10 @@ After all containers have started, you will be able to reach the service on your
 
 The following channels are available for discussions, feedback, and support requests:
 
-| Type                     | Channel                                                |
-| ------------------------ | ------------------------------------------------------ |
-| **Issues**    | <a href="/../../issues" title="Open Issues"><img src="https://img.shields.io/github/issues/worldhealthorganization/tng-key-distribution?style=flat"></a>  |
-| **Other requests**    | <a href="mailto:opensource@telekom.de" title="Email DGC Team"><img src="https://img.shields.io/badge/email-DGC%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
+| Type                     | Channel                                                                                                                                                                                                |
+| ------------------------ |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Issues**    | <a href="/../../issues" title="Open Issues"><img src="https://img.shields.io/github/issues/worldhealthorganization/tng-key-distribution?style=flat"></a>                                               |
+| **Other requests**    | <a href="mailto:gdhcn-support@who.int" title="Email GDHCN Support Team"><img src="https://img.shields.io/badge/email-GDHCN%20Support%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a> |
 
 ## How to contribute
 

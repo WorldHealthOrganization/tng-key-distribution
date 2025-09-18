@@ -8,7 +8,7 @@
 This Helm chart simplifies deploying and configuring the TNG Key Distribution Service. It packages the container image, defines deployment settings (such as replicas, resource limits, and autoscaling), and allows customization of environment variables for aspects like the datasource, DID document generation, and gateway connector configuration. It also provides parameters for setting up secrets, ingress, and other deployment details, ensuring that the application can be tailored easily to different environments.
 
 
-## Values: configuration parameters for the KDS deployment explained
+### Values: configuration parameters for the KDS deployment explained
 This values are specific for the Service configuration. General values for deployment (like replicaCount, resources, ingress, etc.) are explained in the [general kubernetes documentation](https://kubernetes.io/docs/home/).
 
 The keys should be exported as environment variables to the container, by replacing `.` with `_` and capitalizing all letters. E.g. `did.enableDidGeneration` becomes `DID_ENABLEDIDGENERATION`.  
