@@ -11,8 +11,9 @@
     <cve>CVE-2012-5055</cve>
   </suppress>
   <suppress>
-    <notes>see https://tomcat.apache.org/security-9.html#Apache_Tomcat_9.x_vulnerabilities vulnerability is fixed in tomcat 9.0.38</notes>
+    <notes>see https://tomcat.apache.org/security-9.html#Apache_Tomcat_9.x_vulnerabilities vulnerability is fixed in tomcat 9.0.38, CVE-2025-49124 affects only windows and icacls.exe not used here.</notes>
     <cve>CVE-2020-13943</cve>
+      <cve>CVE-2025-49124</cve>
   </suppress>
   <suppress>
     <!-- spring-boot and spring are excluded from cfenv artifact. Related issues can be omitted. -->
