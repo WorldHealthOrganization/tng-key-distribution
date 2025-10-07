@@ -25,7 +25,6 @@ import static tng.trustnetwork.keydistribution.service.did.KdsDidContextDocument
 import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.danubetech.keyformats.crypto.ByteSigner;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.util.Base64URL;
 import eu.europa.ec.dgc.utils.CertificateUtils;
 import foundation.identity.jsonld.JsonLDException;
 import foundation.identity.jsonld.JsonLDObject;
@@ -632,7 +631,7 @@ public class DidTrustListService {
                                                                   DidTrustListEntry trustListEntry) {
         trustListEntry.setDomain(signerInformationEntity.getDomain());
         trustListEntry.setParticipant(getParticipantCode(signerInformationEntity.getCountry()));
-        trustListEntry.setKeyusage(signerInformationEntity.getGroup());
+        trustListEntry.setKeyusage(getMappedKeyUsage(signerInformationEntity.getGroup()));
     }
 
     private List<SignerInformationEntity> filterEntities(List<SignerInformationEntity> entities) {
@@ -652,6 +651,10 @@ public class DidTrustListService {
     private boolean isDeniedGroup(String group) {
         return kdsConfigProperties.getDid().getGroupDenyList().stream()
                                   .noneMatch(e -> group.equalsIgnoreCase(e));
+    }
+
+    private String getMappedKeyUsage(String group) {
+        return (group != null && !isDeniedGroup(group)) ? getMappedGroupName(group) : null;
     }
 
     /**
