@@ -222,7 +222,7 @@ public class DidTrustListService {
                     () -> trustedIssuerService.getAllDid(domain, country),
                     () -> new ArrayList<>(
                         signerInformationEntitiesList.stream()
-                          .filter(signerInformationEntity -> isDeniedGroup(signerInformationEntity.getGroup()))
+                          .filter(signerInformationEntity -> isAllowedGroup(signerInformationEntity.getGroup()))
                           .map(entity -> getMappedGroupName(entity.getGroup())).collect(Collectors.toSet()))));
             }));
 
@@ -248,7 +248,7 @@ public class DidTrustListService {
                     () -> trustedIssuerService.getAllDid(null, country),
                     () -> new ArrayList<>(
                         signerInformationEntitiesList.stream()
-                            .filter(signerInformation -> isDeniedGroup(signerInformation.getGroup()))
+                            .filter(signerInformation -> isAllowedGroup(signerInformation.getGroup()))
                             .map(entity -> getMappedGroupName(entity.getGroup())).collect(Collectors.toSet()))
                 ));
             });
@@ -313,7 +313,7 @@ public class DidTrustListService {
                     Collections::emptyList,
                     () -> new ArrayList<>(
                         signerInformationEntitiesList.stream()
-                                                     .filter(domainEntity -> isDeniedGroup(domainEntity.getGroup()))
+                                                     .filter(domainEntity -> isAllowedGroup(domainEntity.getGroup()))
                                                      .map(domainEntity -> getMappedGroupName(domainEntity.getGroup()))
                                                      .collect(Collectors.toSet()))
                 ));
@@ -341,7 +341,7 @@ public class DidTrustListService {
             () -> signerInformationService.getCertificatesByAllGroups(groups),
             Collections::emptyList,
             () -> new ArrayList<>(
-                groups.stream().filter(group -> isDeniedGroup(group))
+                groups.stream().filter(group -> isAllowedGroup(group))
                       .map(group -> getMappedGroupName(group))
                       .collect(Collectors.toSet()))));
 
@@ -487,7 +487,7 @@ public class DidTrustListService {
             String trustListDocumentId = specification.getDocumentId(false);
 
             List<String> specificationGroups = signerInformationEntities.stream()
-                                                .filter(entity -> isDeniedGroup(entity.getGroup()))
+                                                .filter(entity -> isAllowedGroup(entity.getGroup()))
                                                 .map(entity -> getMappedGroupName(entity.getGroup())).toList();
 
             if (didRefPathList.isEmpty() && kdsConfigProperties.getDid().getEnableKidLevelDidGeneration()) {
@@ -637,7 +637,7 @@ public class DidTrustListService {
     private List<SignerInformationEntity> filterEntities(List<SignerInformationEntity> entities) {
 
         return entities.stream()
-                       .filter(entity -> isDeniedGroup(entity.getGroup()))
+                       .filter(entity -> isAllowedGroup(entity.getGroup()))
                        .toList();
     }
 
@@ -648,13 +648,13 @@ public class DidTrustListService {
     }
 
 
-    private boolean isDeniedGroup(String group) {
+    private boolean isAllowedGroup(String group) {
         return kdsConfigProperties.getDid().getGroupDenyList().stream()
                                   .noneMatch(e -> group.equalsIgnoreCase(e));
     }
 
     private String getMappedKeyUsage(String group) {
-        return (group != null && !isDeniedGroup(group)) ? getMappedGroupName(group) : null;
+        return (group != null && isAllowedGroup(group)) ? getMappedGroupName(group) : null;
     }
 
     /**
