@@ -63,7 +63,7 @@ dgc:
     group-deny-list:
       - UPLOAD
     group-name-mapping:
-      CSCA: CSA
+      CSCA: SCA
 universal:
   resolver: "https://dev.uniresolver.io/1.0/identifiers"   
 
