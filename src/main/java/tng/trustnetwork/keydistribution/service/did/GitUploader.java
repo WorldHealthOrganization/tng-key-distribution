@@ -77,6 +77,7 @@ public class GitUploader implements GitProvider {
         }
 
         try {
+            // Copy and replace files from sourceDirectory to targetDirectory
             Files.walkFileTree(sourceDirectory, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
@@ -93,6 +94,35 @@ public class GitUploader implements GitProvider {
                     return FileVisitResult.CONTINUE;
                 }
             });
+
+            //Delete files/folders in targetDirectory that are NOT in sourceDirectory
+            Files.walkFileTree(targetDirectory, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Path relativePath = targetDirectory.relativize(file);
+                    Path sourceFile = sourceDirectory.resolve(relativePath);
+                    if (!Files.exists(sourceFile)) {
+                        Files.delete(file);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Path relativePath = targetDirectory.relativize(dir);
+                    Path sourceDir = sourceDirectory.resolve(relativePath);
+                    // Delete target dir if it doesn’t exist in source and is empty
+                    if (!Files.exists(sourceDir)) {
+                        try (DirectoryStream<Path> entries = Files.newDirectoryStream(dir)) {
+                            if (!entries.iterator().hasNext()) {
+                                Files.delete(dir);
+                            }
+                        }
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+
         } catch (IOException e) {
             log.error("Failed to copy files from {} to {}: {}", sourcePath, targetDirectory, e.getMessage());
         }
