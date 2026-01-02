@@ -107,27 +107,27 @@ dgc:
       "[https://www.w3.org/ns/did/v1]": did_v1.json
       "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
       "[https://worldhealthorganization.github.io/smart-trust/tng-additional-context/v1]": tng-additional-context-dev_v1.json
-    virtualCountries:
-      XA: XXA
-      XB: XXB
-      XO: XXO
-      XL: XCL
-      WH: WHO
-      XG: XXG
-      XS: XXS
-      XH: XXH
-      XC: XXC
-      XD: XXD
-      XE: XXE
-      XF: XXF
-      XI: XXI
-      XJ: XXJ
-      XK: XXK
-      XM: XML
-      YK: XYK
-      XN: XXN
-      XP: XXP
-      IO: IOM
+#    virtualCountries:
+#      XA: XXA
+#      XB: XXB
+#      XO: XXO
+#      XL: XCL
+#      WH: WHO
+#      XG: XXG
+#      XS: XXS
+#      XH: XXH
+#      XC: XXC
+#      XD: XXD
+#      XE: XXE
+#      XF: XXF
+#      XI: XXI
+#      XJ: XXJ
+#      XK: XXK
+#      XM: XML
+#      YK: XYK
+#      XN: XXN
+#      XP: XXP
+#      IO: IOM
     group-deny-list:
       - AUTHENTICATION
       - UPLOAD
