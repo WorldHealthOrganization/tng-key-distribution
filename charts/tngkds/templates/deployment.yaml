@@ -109,10 +109,19 @@ spec:
               value: {{ .Values.did.localKeyStore.password  | quote }}
             - name: DGC_DID_LOCALKEYSTORE_PATH
               value: {{ .Values.did.localKeyStore.path | quote }}
-           {{- range $key, $value := .Values.did.virtualCountries }}
-            - name: DGC_DID_VIRTUALCOUNTRIES_{{ $key | toString | upper }}
-              value: "{{ $value }}"
-           {{- end }}
+#           {{- range $key, $value := .Values.did.virtualCountries }}
+#            - name: DGC_DID_VIRTUALCOUNTRIES_{{ $key | toString | upper }}
+#              value: "{{ $value }}"
+#           {{- end }}
+            - name: SPRING_APPLICATION_JSON
+              value: |
+                {
+                  "dgc": {
+                    "did": {
+                      "virtualCountries": {{ toJson .Values.did.virtualCountries }}
+                    }
+                  }
+                }
             - name: DGC_DID_GROUPDENYLIST
               value: "{{ join "," (index .Values.did "group-deny-list") }}"
            {{- range $key, $value := index .Values.did "group-name-mapping" }}
