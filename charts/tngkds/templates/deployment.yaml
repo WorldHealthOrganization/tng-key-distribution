@@ -16,8 +16,12 @@ spec:
     metadata:
       {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        annotations:
+          # Restart automatically when value in countrymapping-cm.yaml changes
+          checksum/application-countrycode: {{ include (print $.Template.BasePath "/countrymapping-cm.yaml") . | sha256sum }}
+          {{- with .Values.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+          {{- end }}
       labels:
         {{- include "tngkds.labels" . | nindent 8 }}
     spec:
@@ -113,15 +117,8 @@ spec:
 #            - name: DGC_DID_VIRTUALCOUNTRIES_{{ $key | toString | upper }}
 #              value: "{{ $value }}"
 #           {{- end }}
-            - name: SPRING_APPLICATION_JSON
-              value: |
-                {
-                  "dgc": {
-                    "did": {
-                      "virtualCountries": {{ toJson .Values.did.virtualCountries }}
-                    }
-                  }
-                }
+            - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+              value: file:/config/
             - name: DGC_DID_GROUPDENYLIST
               value: "{{ join "," (index .Values.did "group-deny-list") }}"
            {{- range $key, $value := index .Values.did "group-name-mapping" }}
@@ -135,6 +132,9 @@ spec:
               readOnly: true
             - name: did-signing
               mountPath: /didcerts
+              readOnly: true
+            - name: application-countrycode
+              mountPath: /config
               readOnly: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -167,4 +167,11 @@ spec:
             items:
               - key: did-signer.p12
                 path: did-signer.p12
+        - name: application-countrycode
+          configMap:
+            name: application-countrycode
+            defaultMode: 0777
+            items:
+              - key: application-countrycode.yaml
+                path: application-countrycode.yaml
 
