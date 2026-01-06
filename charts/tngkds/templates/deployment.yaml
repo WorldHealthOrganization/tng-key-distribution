@@ -174,4 +174,3 @@ spec:
             items:
               - key: application-countrycode.yaml
                 path: application-countrycode.yaml
-
