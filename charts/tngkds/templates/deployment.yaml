@@ -14,14 +14,12 @@ spec:
       {{- include "tngkds.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        annotations:
-          # Restart automatically when value in countrymapping-cm.yaml changes
-          checksum/application-countrycode: {{ include (print $.Template.BasePath "/countrymapping-cm.yaml") . | sha256sum }}
-          {{- with .Values.podAnnotations }}
-          {{- toYaml . | nindent 8 }}
-          {{- end }}
+        # Restart automatically when value in countrymapping-cm.yaml changes
+        checksum/application-countrycode: {{ include (print $.Template.BasePath "/countrymapping-cm.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         {{- include "tngkds.labels" . | nindent 8 }}
     spec:
@@ -113,10 +111,6 @@ spec:
               value: {{ .Values.did.localKeyStore.password  | quote }}
             - name: DGC_DID_LOCALKEYSTORE_PATH
               value: {{ .Values.did.localKeyStore.path | quote }}
-#           {{- range $key, $value := .Values.did.virtualCountries }}
-#            - name: DGC_DID_VIRTUALCOUNTRIES_{{ $key | toString | upper }}
-#              value: "{{ $value }}"
-#           {{- end }}
             - name: SPRING_CONFIG_ADDITIONAL_LOCATION
               value: file:/config/
             - name: DGC_DID_GROUPDENYLIST
@@ -125,7 +119,7 @@ spec:
             - name: DGC_DID_GROUPNAMEMAPPING_{{ $key | toString | upper }}
               value: "{{ $value }}"
            {{- end }}
-          {{- end }}
+           {{- end }}
           volumeMounts:
             - name: secrets-jks
               mountPath: /certs
