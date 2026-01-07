@@ -111,8 +111,8 @@ spec:
               value: {{ .Values.did.localKeyStore.password  | quote }}
             - name: DGC_DID_LOCALKEYSTORE_PATH
               value: {{ .Values.did.localKeyStore.path | quote }}
-            - name: SPRING_CONFIG_ADDITIONAL_LOCATION
-              value: file:/config/
+            - name: SPRING_CONFIG_IMPORT
+              value: "optional:file:/config/application-countrycode.yaml"
             - name: DGC_DID_GROUPDENYLIST
               value: "{{ join "," (index .Values.did "group-deny-list") }}"
            {{- range $key, $value := index .Values.did "group-name-mapping" }}
