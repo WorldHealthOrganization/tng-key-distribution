@@ -24,9 +24,10 @@ jobs:
       - name: version
         run: |-
           APP_SHA=$(git rev-parse --short ${GITHUB_SHA})
-          APP_LATEST_REV=$(git rev-list --tags --max-count=1)
-          APP_LATEST_TAG=$(git describe --tags ${APP_LATEST_REV} 2> /dev/null || echo 0.0.0)
-          echo "APP_VERSION=${APP_LATEST_TAG}-${APP_SHA}" >> ${GITHUB_ENV}
+          #APP_LATEST_REV=$(git rev-list --tags --max-count=1)
+          #APP_LATEST_TAG=$(git describe --tags ${APP_LATEST_REV} 2> /dev/null || echo 0.0.0)
+          APP_LATEST_TAG_NO_PREFIX=$(git tag -l --sort=-version:refname | grep -v -E "tngkds" | head -1)
+          echo "APP_VERSION=${APP_LATEST_TAG_NO_PREFIX}-${APP_SHA}" >> ${GITHUB_ENV}
       - name: mvn
         run: |-
           mvn versions:set \
