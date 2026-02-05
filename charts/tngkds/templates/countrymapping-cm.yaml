@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: application-countrycode
+data:
+  application-countrycode.yaml: |-
+    dgc:
+      did:
+        virtualCountries:
+          {{- range $key, $value := .Values.did.virtualCountries }}
+          {{ $key }}: {{ $value | quote }}
+          {{- end }}
