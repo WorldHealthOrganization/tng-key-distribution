@@ -115,6 +115,7 @@ dgc:
       XG: XXG
       XS: XXS
       XH: XXH
+      IO: IOM
     group-deny-list:
       - AUTHENTICATION
       - UPLOAD
