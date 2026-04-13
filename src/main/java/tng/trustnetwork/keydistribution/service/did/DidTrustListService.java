@@ -629,9 +629,10 @@ public class DidTrustListService {
 
     private void setAdditionalAttributeInVerificationMethod(SignerInformationEntity signerInformationEntity,
                                                                   DidTrustListEntry trustListEntry) {
-        trustListEntry.setDomain(signerInformationEntity.getDomain());
-        trustListEntry.setParticipant(getParticipantCode(signerInformationEntity.getCountry()));
-        trustListEntry.setKeyusage(getMappedKeyUsage(signerInformationEntity.getGroup()));
+        trustListEntry.setDomain(new DidTrustListEntry.CodedValue(signerInformationEntity.getDomain()));
+        trustListEntry.setParticipant(new DidTrustListEntry
+            .CodedValue(getParticipantCode(signerInformationEntity.getCountry())));
+        trustListEntry.setKeyusage(new DidTrustListEntry.CodedValue(signerInformationEntity.getGroup()));
     }
 
     private List<SignerInformationEntity> filterEntities(List<SignerInformationEntity> entities) {
