@@ -107,14 +107,34 @@ dgc:
       "[https://www.w3.org/ns/did/v1]": did_v1.json
       "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
     virtualCountries:
+      WH: WHO
       XA: XXA
       XB: XXB
-      XO: XXO
-      XL: XCL
-      WH: WHO
+      XC: XXC
+      XD: XXD
+      XE: XXE
+      XF: XXF
       XG: XXG
-      XS: XXS
       XH: XXH
+      XI: XXI
+      XJ: XXJ
+      XK: XXK
+      XL: XCL
+      XM: XML
+      XN: XXN
+      XO: XXO
+      XP: XXP
+      XQ: XXQ
+      XR: XXR
+      XS: XXS
+      XT: XXT
+      XU: XXU
+      XV: XXV
+      XW: XXW
+      XX: XXX
+      XY: XXY
+      XZ: XXZ
+      YK: XYK
       IO: IOM
     group-deny-list:
       - AUTHENTICATION
