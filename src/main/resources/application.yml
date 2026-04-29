@@ -127,6 +127,7 @@ dgc:
       YK: XYK
       XN: XXN
       XP: XXP
+      IO: IOM
     group-deny-list:
       - AUTHENTICATION
       - UPLOAD
