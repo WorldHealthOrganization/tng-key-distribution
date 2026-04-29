@@ -21,7 +21,8 @@ public class KdsDidContextDocumentLoaderConfig {
 
     public static final List<String> DID_CONTEXTS = List.of(
         "https://www.w3.org/ns/did/v1",
-        "https://w3id.org/security/suites/jws-2020/v1");
+        "https://w3id.org/security/suites/jws-2020/v1",
+        "https://worldhealthorganization.github.io/smart-trust/tng-additional-context/v1");
 
     private static final String DID_CONTEXT_PATH = "did_contexts/";
 

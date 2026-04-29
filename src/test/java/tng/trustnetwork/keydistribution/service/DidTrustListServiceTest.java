@@ -467,7 +467,7 @@ public class DidTrustListServiceTest {
 
     private void checkJsonDocument(SignedDidTrustList parsed) throws JsonProcessingException {
 
-        Assertions.assertEquals(2, parsed.getContext().size());
+        Assertions.assertEquals(3, parsed.getContext().size());
         Assertions.assertEquals("JsonWebSignature2020", parsed.getProof().getType());
         Assertions.assertTrue(
             Instant.now().toEpochMilli() - parsed.getProof().getCreated().toInstant().toEpochMilli() < 10000);
