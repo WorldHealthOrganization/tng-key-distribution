@@ -68,35 +68,38 @@ dgc:
   gateway:
     connector:
       enabled: true
-      endpoint: ${DGC_GATEWAY_CONNECTOR_ENDPOINT}
+      endpoint: https://tng-dev.who.int
       proxy:
         enabled: false
+        host: 10.24.19.86
+        port: 8080
       max-cache-age: 300
-      tls-trust-store:
-        password: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PASSWORD}
-        path: ${DGC_GATEWAY_CONNECTOR_TLSTRUSTSTORE_PATH}
-      tls-key-store:
-        alias: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_ALIAS}
-        password: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PASSWORD}
-        path: ${DGC_GATEWAY_CONNECTOR_TLSKEYSTORE_PATH}
-      trust-anchor:
-        alias: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_ALIAS}
-        password: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PASSWORD}
-        path: ${DGC_GATEWAY_CONNECTOR_TRUSTANCHOR_PATH}
+      tls-trust-store: #CA of TNG Gateway of TLS certificate
+        alias: tng-tls-server-certificate
+        password: dgcg-p4ssw0rd
+        path: certs/tng_tls_server_truststore.p12
+      tls-key-store: # client cert key pair of participant
+        alias: clientcredentials
+        password: dgcg-p4ssw0rd
+        path: certs/tls_key_store.p12
+      trust-anchor: # TA pem file of TNG that was used for signing
+        alias: trustanchor
+        password: dgcg-p4ssw0rd
+        path: certs/trustanchor_store.jks
       enable-ddcc-support: true
   did:
-    cron: "0 0 2 * * *"
+    cron: "0 */10 * * * *"
     enableDidGeneration: true
     enableKidLevelDidGeneration: false
     didUploadProvider: local-file
     localFile:
-      directory: <root-directory-of-trustlist>
+      directory: ./tmp/kdsgitworkdir/tng-cdn-dev/v2
       file-name: did.json
     git:
-      workdir: <root-of-cloned-git-repo>
-      prefix: <prefix-dir-in-git-repo>
-      url: <git-repo-url>
-      pat: <personal-access-token-for-git>
+      workdir: ./tmp/kdsgituploader # oon clonind will checkout e.g. tng-cdn-dev
+      prefix: v2 #for copy action into git workdir from local file exporter path
+      url: https://github.com/WorldHealthOrganization/tng-cdn-dev
+      pat:
     didSigningProvider: dummy
     ld-proof-verification-method: did:web:dummy.net
     did-id: did:web:abc
@@ -106,7 +109,7 @@ dgc:
     contextMapping:
       "[https://www.w3.org/ns/did/v1]": did_v1.json
       "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
-      "[https://worldhealthorganization.github.io/smart-trust/tng-additional-context/v2]": tng-additional-context-dev_v2.json
+      "[https://worldhealthorganization.github.io/smart-trust/tng-context/v1]": tng-context_v1.json
 #    virtualCountries:
 #      XA: XXA
 #      XB: XXB
