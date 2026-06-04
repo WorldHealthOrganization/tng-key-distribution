@@ -106,7 +106,7 @@ dgc:
     contextMapping:
       "[https://www.w3.org/ns/did/v1]": did_v1.json
       "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
-      "[https://worldhealthorganization.github.io/smart-trust/tng-context/v1]": v1.json
+      "[https://worldhealthorganization.github.io/smart-trust/tng-context/v1.json]": v1.json
 #    virtualCountries:
 #      XA: XXA
 #      XB: XXB
