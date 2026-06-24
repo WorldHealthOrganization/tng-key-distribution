@@ -21,16 +21,15 @@
 package tng.trustnetwork.keydistribution.service;
 
 import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
-import eu.europa.ec.dgc.gateway.connector.model.TrustListItem;
+import eu.europa.ec.dgc.gateway.connector.model.TrustedCertificateTrustListItem;
 import java.util.ArrayList;
 import java.util.List;
-import eu.europa.ec.dgc.gateway.connector.model.TrustedCertificateTrustListItem;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import tng.trustnetwork.keydistribution.testdata.SignerInformationTestHelper;
@@ -38,7 +37,7 @@ import tng.trustnetwork.keydistribution.testdata.SignerInformationTestHelper;
 @SpringBootTest
 class SignerCertificateDownloadServiceTest {
 
-    @MockBean
+    @MockitoBean
     DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Autowired

@@ -24,14 +24,14 @@ import eu.europa.ec.dgc.gateway.connector.DgcGatewayDownloadConnector;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import tng.trustnetwork.keydistribution.testdata.SignerInformationTestHelper;
 
 @SpringBootTest
 class SignerInformationServiceTest {
 
-    @MockBean
+    @MockitoBean
     DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     @Autowired

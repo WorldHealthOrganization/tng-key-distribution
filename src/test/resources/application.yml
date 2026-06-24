@@ -54,10 +54,11 @@ dgc:
     did-controller: did:web:def
     trust-list-id-prefix: did:web:abc
     trust-list-controller-prefix: did:web:abc
+    tng-context-url: https://worldhealthorganization.github.io/smart-trust/tng-context/v1-DEV.jsonld
     contextMapping:
       "[https://www.w3.org/ns/did/v1]": did_v1.json
       "[https://w3id.org/security/suites/jws-2020/v1]": jws-2020_v1.json
-      "[https://worldhealthorganization.github.io/smart-trust/tng-context/v1.json]": v1.json
+      "[https://worldhealthorganization.github.io/smart-trust/tng-context/v1-DEV.jsonld]": v1-DEV.jsonld
     virtualCountries:
       EU: XEU
     group-deny-list:

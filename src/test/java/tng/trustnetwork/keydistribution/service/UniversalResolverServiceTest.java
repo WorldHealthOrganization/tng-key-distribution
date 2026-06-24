@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import tng.trustnetwork.keydistribution.clients.UniversalResolverClient;
 import tng.trustnetwork.keydistribution.model.EcPublicKeyJwk;
 import tng.trustnetwork.keydistribution.model.JwkVerificationMethod;
@@ -36,10 +36,10 @@ import tng.trustnetwork.keydistribution.model.JwkVerificationMethod;
 @SpringBootTest
 class UniversalResolverServiceTest {
 
-    @MockBean
+    @MockitoBean
     DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
-    @MockBean
+    @MockitoBean
     UniversalResolverClient universalResolverClientMock;
 
     @Autowired
