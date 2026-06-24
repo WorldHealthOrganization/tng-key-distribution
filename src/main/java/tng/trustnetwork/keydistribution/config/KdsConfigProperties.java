@@ -108,6 +108,8 @@ public class KdsConfigProperties {
         private String didSigningProvider;
         private String didUploadProvider;
 
+        private String tngContextUrl;
+
         private Map<String, String> contextMapping = new HashMap<>();
         private Map<String, String> virtualCountries = new HashMap<>();
 

@@ -20,8 +20,6 @@
 
 package tng.trustnetwork.keydistribution.service.did;
 
-import static tng.trustnetwork.keydistribution.service.did.KdsDidContextDocumentLoaderConfig.DID_CONTEXTS;
-
 import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.danubetech.keyformats.crypto.ByteSigner;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -475,8 +473,12 @@ public class DidTrustListService {
             return null;
         }
 
+        // Build full context list: static W3C contexts + env-specific TNG context
+        List<String> didContexts = new ArrayList<>(KdsDidContextDocumentLoaderConfig.STATIC_DID_CONTEXTS);
+        didContexts.add(configProperties.getDid().getTngContextUrl());
+
         DidTrustList trustList = new DidTrustList();
-        trustList.setContext(DID_CONTEXTS);
+        trustList.setContext(didContexts);
         trustList.setId(specification.getDocumentId(onlyReferences));
         trustList.setController(specification.getControllerId(onlyReferences));
         trustList.setVerificationMethod(new ArrayList<>());

@@ -6,6 +6,7 @@ import com.apicatalog.jsonld.loader.DocumentLoader;
 import foundation.identity.jsonld.ConfigurableDocumentLoader;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,18 +20,21 @@ import tng.trustnetwork.keydistribution.config.KdsConfigProperties;
 @Configuration
 public class KdsDidContextDocumentLoaderConfig {
 
-    public static final List<String> DID_CONTEXTS = List.of(
+    public static final List<String> STATIC_DID_CONTEXTS = List.of(
         "https://www.w3.org/ns/did/v1",
-        "https://w3id.org/security/suites/jws-2020/v1",
-        "https://worldhealthorganization.github.io/smart-trust/tng-context/v1.json");
+        "https://w3id.org/security/suites/jws-2020/v1");
 
     private static final String DID_CONTEXT_PATH = "did_contexts/";
 
     @Bean
     DocumentLoader kdsContextLoader(KdsConfigProperties configProperties) {
 
+        // Build full context list: static W3C contexts + env-specific TNG context
+        List<String> didContexts = new ArrayList<>(STATIC_DID_CONTEXTS);
+        didContexts.add(configProperties.getDid().getTngContextUrl());
+
         Map<URI, JsonDocument> contextMap = new HashMap<>();
-        for (String didContext : DID_CONTEXTS) {
+        for (String didContext : didContexts) {
             String didContextFile = configProperties.getDid().getContextMapping().get(didContext);
 
             if (didContextFile == null) {

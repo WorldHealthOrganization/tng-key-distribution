@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,7 +51,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import tng.trustnetwork.keydistribution.entity.SignerInformationEntity;
 import tng.trustnetwork.keydistribution.repository.SignerInformationRepository;
 import tng.trustnetwork.keydistribution.repository.TrustedIssuerRepository;
@@ -83,10 +82,10 @@ public class DidTrustListServiceTest {
     @Autowired
     TrustedIssuerTestHelper trustedIssuerTestHelper;
 
-    @MockBean
+    @MockitoBean
     DidUploader didUploaderMock;
 
-    @MockBean
+    @MockitoBean
     DgcGatewayDownloadConnector dgcGatewayDownloadConnector;
 
     X509Certificate certCscaDe, certCscaEu, certDscDe, certDscEu, certUploadDe;
