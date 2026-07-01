@@ -1,65 +1,61 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-parent</artifactId>
-        <version>2025.0.0</version>
+        <version>2025.0.3</version>
     </parent>
-
     <groupId>tng.trustnetwork.keydistribution</groupId>
     <artifactId>tng-key-distribution</artifactId>
     <version>latest</version>
     <packaging>jar</packaging>
-
     <name>tng-key-distribution</name>
     <description>GDHCN Key Distribution Service project.</description>
     <organization>
         <name>T-Systems International GmbH</name>
     </organization>
-
     <properties>
-        <!-- java -->
+        <!--  java  -->
         <java.version>21</java.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <!-- charset -->
+        <!--  charset  -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!-- dependencies -->
-        <owasp.version>8.3.1</owasp.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <shedlock.version>5.12.0</shedlock.version>
+        <!--  Spring / managed dependency versions: override vulnerable Spring Cloud 2025.0.0 baseline  -->
+        <spring-boot.version>3.5.16</spring-boot.version>
+        <spring-framework.version>6.2.19</spring-framework.version>
+        <spring-security.version>6.5.11</spring-security.version>
+        <tomcat.version>10.1.56</tomcat.version>
+        <jackson-bom.version>2.22.0</jackson-bom.version>
+        <!--  direct / transitive dependency vulnerability fixes  -->
+        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <postgresql.version>42.7.12</postgresql.version>
+        <nimbus-jose-jwt.version>10.9.1</nimbus-jose-jwt.version>
+        <ld-signatures-java.version>1.11.0</ld-signatures-java.version>
+        <caffeine.version>3.2.2</caffeine.version>
+        <!--  dependencies  -->
+        <owasp.version>12.2.2</owasp.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+        <shedlock.version>7.3.0</shedlock.version>
         <bcpkix.version>1.81</bcpkix.version>
-        <!-- plugins -->
+        <!--  plugins  -->
         <plugin.checkstyle.version>3.3.0</plugin.checkstyle.version>
-        <plugin.jacoco.version>0.8.10</plugin.jacoco.version>
+        <plugin.jacoco.version>0.8.15</plugin.jacoco.version>
         <plugin.license.version>2.4.0</plugin.license.version>
-        <!-- license -->
+        <!--  license  -->
         <license.projectName>Key Distribution Service / tng-key-distribution</license.projectName>
         <license.inceptionYear>2021</license.inceptionYear>
         <license.licenseName>apache_v2</license.licenseName>
-        <!-- github -->
+        <!--  github  -->
         <github.organization>WorldHealthOrganization</github.organization>
         <github.project>tng-key-distribution</github.project>
-        <!-- sonar -->
+        <!--  sonar  -->
         <sonar.organization>WorldHealthOrganization</sonar.organization>
         <sonar.projectKey>${sonar.organization}_${project.artifactId}</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.coverage.exclusions>
-            **/KeyDistributionServiceApplication.java,
-            **/model/*,
-            **/mapper/*,
-            **/entity/*,
-            **/DgcKeyStore.java,
-            **/ErrorHandler.java
-        </sonar.coverage.exclusions>
+        <sonar.coverage.exclusions> **/KeyDistributionServiceApplication.java, **/model/*, **/mapper/*, **/entity/*, **/DgcKeyStore.java, **/ErrorHandler.java </sonar.coverage.exclusions>
     </properties>
-
     <url>https://github.com/WorldHealthOrganization/tng-key-distribution</url>
     <ciManagement>
         <url>https://github.com/WorldHealthOrganization/tng-key-distribution/actions</url>
@@ -70,7 +66,6 @@
     <scm>
         <url>https://github.com/WorldHealthOrganization/tng-key-distribution</url>
     </scm>
-
     <repositories>
         <repository>
             <id>who-github</id>
@@ -81,21 +76,99 @@
             <url>https://repo.danubetech.com/repository/maven-public/</url>
         </repository>
     </repositories>
-
     <distributionManagement>
         <repository>
             <id>who-github</id>
             <url>https://maven.pkg.github.com/${github.organization}/${github.project}</url>
         </repository>
     </distributionManagement>
-
+    <dependencyManagement>
+        <dependencies>
+            <!--  Import patched Spring Boot baseline while staying on Spring Cloud 2025.0.x  -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--  Explicit CVSS >= 8 remediation overrides  -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-autoconfigure</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-crypto</artifactId>
+                <version>${spring-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-bom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${nimbus-jose-jwt.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.dgc</groupId>
             <artifactId>ddcc-gateway-lib</artifactId>
             <version>2.2.1</version>
         </dependency>
-        <!-- Spring Boot Dependencies -->
+        <!--  Spring Boot Dependencies  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -116,16 +189,8 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-
-
-        <!-- Persistence Dependencies -->
+        <!--  Persistence Dependencies  -->
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
@@ -139,10 +204,17 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-            <version>42.7.3</version>
         </dependency>
-
-        <!-- 3rd Party -->
+        <!--  Explicit safe versions for vulnerable transitive dependencies  -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+        </dependency>
+        <!--  3rd Party  -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -150,27 +222,27 @@
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>1.5.5.Final</version>
+            <version>${mapstruct.version}</version>
         </dependency>
         <dependency>
             <groupId>net.javacrumbs.shedlock</groupId>
             <artifactId>shedlock-provider-jdbc-template</artifactId>
-            <version>5.12.0</version>
+            <version>${shedlock.version}</version>
         </dependency>
         <dependency>
             <groupId>net.javacrumbs.shedlock</groupId>
             <artifactId>shedlock-spring</artifactId>
-            <version>5.12.0</version>
+            <version>${shedlock.version}</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk18on</artifactId>
-            <version>1.81</version>
+            <version>${bcpkix.version}</version>
         </dependency>
         <dependency>
             <groupId>info.weboftrust</groupId>
             <artifactId>ld-signatures-java</artifactId>
-            <version>1.1.0</version>
+            <version>${ld-signatures-java.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.bitcoinj</groupId>
@@ -181,7 +253,7 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
-            <version>3.1.8</version>
+            <version>${caffeine.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
@@ -189,13 +261,12 @@
             <version>7.3.0.202506031305-r</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>12.1.6</version>
+                <version>${owasp.version}</version>
                 <configuration>
                     <suppressionFile>./owasp/suppressions.xml</suppressionFile>
                     <failBuildOnCVSS>8</failBuildOnCVSS>
@@ -302,5 +373,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
