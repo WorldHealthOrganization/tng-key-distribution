@@ -271,13 +271,6 @@
                     <suppressionFile>./owasp/suppressions.xml</suppressionFile>
                     <failBuildOnCVSS>8</failBuildOnCVSS>
                     <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
-
-                    <!-- NVD API throttling fix -->
-                    <nvdApiKey>dd1b1b00-e7fc-4573-984d-7a76656ac43b</nvdApiKey>
-                    <nvdApiDelay>6000</nvdApiDelay>
-                    <nvdMaxRetryCount>20</nvdMaxRetryCount>
-                    <dataDirectory>${user.home}/.dependency-check-data</dataDirectory>
-
                 </configuration>
             </plugin>
             <plugin>
