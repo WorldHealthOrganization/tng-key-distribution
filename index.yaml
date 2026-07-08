@@ -3,6 +3,16 @@ entries:
   tngkds:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2026-07-08T09:01:00.663329913Z"
+    description: A Helm chart for TNG Key Distribution Service
+    digest: b7be1fa22de0c774dac0d6ceae8fed1f4a0989b8346b651a7d0ae1832411cab3
+    name: tngkds
+    type: application
+    urls:
+    - https://github.com/WorldHealthOrganization/tng-key-distribution/releases/download/tngkds-0.5.4/tngkds-0.5.4.tgz
+    version: 0.5.4
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2026-01-07T08:55:05.851242282Z"
     description: A Helm chart for TNG Key Distribution Service
     digest: 91517f1c49f6266885be467c044cf9912838a62dca3c55d42b4953af9907b88c
@@ -61,4 +71,4 @@ entries:
     urls:
     - https://github.com/WorldHealthOrganization/tng-key-distribution/releases/download/tngkds-0.3.0/tngkds-0.3.0.tgz
     version: 0.3.0
-generated: "2026-01-07T08:55:05.851275303Z"
+generated: "2026-07-08T09:01:00.663375548Z"
