@@ -110,6 +110,34 @@ public class KdsConfigProperties {
 
         private String tngContextUrl;
 
+        /**
+         * Returns the TNG context URL in its canonical, published form.
+         *
+         * <p>The environment token in the context file name is normalized to upper case
+         * (e.g. {@code .../tng-context/v1-uat.jsonld} becomes {@code .../tng-context/v1-UAT.jsonld}),
+         * because only the upper case variants are published on the CDN. This allows the deployment
+         * configuration to keep using the lower case environment name while the emitted DID
+         * {@code @context} still references a resolvable URL.
+         */
+        public String getTngContextUrl() {
+            return toPublishedContextUrl(tngContextUrl);
+        }
+
+        private static String toPublishedContextUrl(String url) {
+            if (url == null || !url.endsWith(".jsonld")) {
+                return url;
+            }
+            int slashIndex = url.lastIndexOf('/');
+            int dashIndex = url.lastIndexOf('-');
+            int dotIndex = url.lastIndexOf('.');
+            if (dashIndex <= slashIndex || dashIndex >= dotIndex) {
+                return url;
+            }
+            return url.substring(0, dashIndex + 1)
+                + url.substring(dashIndex + 1, dotIndex).toUpperCase(java.util.Locale.ROOT)
+                + url.substring(dotIndex);
+        }
+
         private Map<String, String> contextMapping = new HashMap<>();
         private Map<String, String> virtualCountries = new HashMap<>();
 
