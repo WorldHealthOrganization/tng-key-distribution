@@ -37,6 +37,15 @@ public class KdsDidContextDocumentLoaderConfig {
         for (String didContext : didContexts) {
             String didContextFile = configProperties.getDid().getContextMapping().get(didContext);
 
+            // Fall back to deriving the local file name from the context URL's last path segment,
+            // lower-cased (e.g. .../tng-context/v1-UAT.jsonld -> v1-uat.jsonld). This keeps the TNG
+            // context environment-specific without requiring a per-environment contextMapping entry,
+            // while the local resource files are stored using lower case environment names.
+            if (didContextFile == null && didContext.endsWith(".jsonld")) {
+                didContextFile = didContext.substring(didContext.lastIndexOf('/') + 1)
+                    .toLowerCase(java.util.Locale.ROOT);
+            }
+
             if (didContextFile == null) {
                 throw new BeanInitializationException("Failed to load DID-Context Document for " + didContext
                                                           + " : No Mapping to local JSON-File.");
