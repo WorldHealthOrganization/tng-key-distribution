@@ -105,6 +105,8 @@ spec:
               value: "{{ index .Values.did "trust-list-ref-path" }}"
             - name: DGC_DID_DIDCONTROLLER
               value: "{{ index .Values.did "did-controller" }}"
+            - name: DGC_DID_TNGCONTEXTURL
+              value: "{{ index .Values.did "tng-context-url" }}"
             - name: DGC_DID_LOCALKEYSTORE_ALIAS
               value: {{ .Values.did.localKeyStore.alias | quote }}
             - name: DGC_DID_LOCALKEYSTORE_PASSWORD

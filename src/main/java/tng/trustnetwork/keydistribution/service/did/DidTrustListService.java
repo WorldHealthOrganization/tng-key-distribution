@@ -634,7 +634,7 @@ public class DidTrustListService {
         trustListEntry.setDomain(new DidTrustListEntry
             .CodedValue(SEPARATOR_DID_ID + signerInformationEntity.getDomain()));
         trustListEntry.setParticipant(new DidTrustListEntry
-            .CodedValue(getParticipantCode(SEPARATOR_DID_ID + signerInformationEntity.getCountry())));
+            .CodedValue(SEPARATOR_DID_ID + getParticipantCode(signerInformationEntity.getCountry())));
         trustListEntry.setKeyusage(new DidTrustListEntry
             .CodedValue(SEPARATOR_DID_ID + signerInformationEntity.getGroup()));
     }
